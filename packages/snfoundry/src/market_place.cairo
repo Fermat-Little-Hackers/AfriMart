@@ -149,4 +149,16 @@ mod afrimart {
 
     }
 
+
+    #[generate_trait]
+    impl Private of PrivateTrait {
+        fn _PurchaseProduct(ref self: ContractState, productId: u256) {
+
+        }
+    }
+
+
+
+
+
 }
