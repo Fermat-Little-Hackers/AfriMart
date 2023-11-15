@@ -6,7 +6,7 @@
 
 #[starknet::interface]
 trait ISupplyChain<TContractState> {
-    fn isWhitelisted(self: @TContractState, name: felt252, address: felt252);
+    fn isWhitelisted(self: @TContractState, name: felt252, address: felt252) -> bool;
 	fn createShipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);
 	fn updateShipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);  
 }
@@ -16,11 +16,41 @@ mod SupplyChain {
     #[storage]
     struct Storage {
 		isWhitelisted: LegacyMap<bytes, bool>,
+		shiplog: Vec<ShipmentDetails>
     }
+
+	enum ShipmentStatus {
+		Ordered,
+		Custody,
+		Delivered
+	}
+
+	struct ShipmentDetails {
+		name: felt252,
+		address: felt252,
+		status: ShipmentStatus,
+	}
 
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
     }
+
+	#[external(v0)]
+	impl ISupplyChainImpl of ISupplyChain<ContractState>{
+		fn isWhitelisted(ref self: ContractState, name: felt252, address: felt252) -> bool {
+			true
+		}
+
+		fn createShipment(ref self: ContractState, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
+			assert(isWhitelisted());
+			let newShipment = ShipmentDetails {
+				name: _name,
+				address,
+				status: ShipmentStatus::Ordered,
+			};
+			self.shiplog;
+		}
+	}
 
 }
