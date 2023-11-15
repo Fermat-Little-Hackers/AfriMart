@@ -1,5 +1,5 @@
 use starknet::{ContractAddress, ClassHash};
-use supply_chain_child::supply_chain_child::supplyChain::targetOption;
+use supply_chain::supply_chain::SupplyChain::targetOption;
 use array::ArrayTrait;
 
 
