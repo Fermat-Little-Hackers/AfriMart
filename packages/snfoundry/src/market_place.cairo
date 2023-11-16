@@ -306,7 +306,7 @@ mod afrimart {
 
         fn getProductDetails(self: @ContractState, productId: u256) -> Item {
             let maxProductID = self.totalItems.read();
-            assert(maxProductID > productId && productId != 0, 'INVALID PRODUCT ID');
+            assert(maxProductID >= productId && productId != 0, 'INVALID PRODUCT ID');
             self.allItems.read(productId)
         }
 
@@ -364,8 +364,30 @@ mod afrimart {
         }
 
         fn getUsersCart(self: @ContractState, user: ContractAddress) -> Array::<u256> {
-            
+            let userID = self.userId.read(user);
+            assert(userID != 0, 'INVALID USER ADDRESS');
+            let noInCart = self.noOfProductsInCart.read(user);
+            let mut allProductId = ArrayTrait::new();
+            let mut i: u256 = 1;
+
+            loop {
+                if i > noInCart {
+                    break;
+                }
+                let productId = self.allProductsInCart.read((user, i));
+                allProductId.append(productId);
+                i = i + 1;
+            };
+
+            return allProductId;
         } 
+
+        fn getOrderDetails(self: @ContractState, orderId: u256) -> Array::<u256> {
+            let totalOrder = self.totalOrders.read();
+            assert(totalOrder >= orderId && orderId != 0, 'INVALID ORDER ID');
+            let orderDetails = self.allOrders.read(orderId);
+            return orderDetails;
+        }
 
 
 
