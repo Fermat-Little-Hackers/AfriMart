@@ -53,7 +53,7 @@ struct Item {
     offMarket: bool,
 }
 
-#[derive(Drop, Copy, Serde, starknet::Store)]
+#[derive(Drop, Copy, Serde, starknet::Store, PartialEq)]
 enum cartegory {
     Agriculture,
     TextileAndClothings,
@@ -91,13 +91,13 @@ trait aftimartTrait<TContractState> {
     fn removeItemFromCart(ref self: TContractState, productId: u256);
     fn checkOutCart(ref self: TContractState);
     fn getAllProducts(self: @TContractState) -> Array::<u256>;
-    fn getProductsByCategory(self: @TContractState, cartegory: u8) -> Array::<u256>;
-    fn getProductDetais(self: @TContractState, productId: u256) -> Array::<u256>;
-    fn getProductsByUser(self: @TContractState, user: ContractAddress) -> Array::<u256>;
+    fn getProductsByCategory(self: @TContractState, cartegory: cartegory) -> Array::<u256>;
+    fn getProductDetails(self: @TContractState, productId: u256) -> Item;
+    fn getProductsListedByUser(self: @TContractState, user: ContractAddress, viewer: ContractAddress) -> Array::<u256>;
+    fn getProductsBoughtByUser(self: @TContractState, user: ContractAddress, viewer: ContractAddress) -> Array::<u256>;
     fn getUserProfile(self: @TContractState, user: ContractAddress) -> userProfile;
     fn getUsersCart(self: @TContractState, user: ContractAddress) -> Array::<u256>;
     fn getOrderDetails(self: @TContractState, orderId: u256) -> Array::<u256>;
-    fn getProductDetails(self: @TContractState, productId: u256) -> Array::<u256>;
 }
 
 
@@ -267,6 +267,109 @@ mod afrimart {
                 productNumber = productNumber +1;
             }
         }
+
+        fn getAllProducts(self: @ContractState) -> Array::<u256> {
+            let mut productNumber: u256 = self.totalItems.read();
+            let mut allProductId = ArrayTrait::new();
+            let mut i:u256 = 1;
+            loop {
+                if i > productNumber {
+                    break;
+                }
+                let product: Item = self.allItems.read(i);
+                if (product.offMarket == false) {
+                    allProductId.append(product.id);
+                }
+                i = i + 1;
+            };
+            return allProductId;
+        }
+
+        fn getProductsByCategory(self: @ContractState, cartegory: cartegory ) -> Array::<u256> {
+            let mut productNumber: u256 = self.totalItems.read();
+            let mut allProductId = ArrayTrait::new();
+            let mut i:u256 = 1;
+            loop {
+                if i > productNumber {
+                    break;
+                }
+                let product: Item = self.allItems.read(i);
+                if product.cartegory == cartegory {
+                    if (product.offMarket == false) {
+                        allProductId.append(product.id);
+                    }
+                }
+                i = i + 1;
+            };
+            return allProductId;
+        }
+
+        fn getProductDetails(self: @ContractState, productId: u256) -> Item {
+            let maxProductID = self.totalItems.read();
+            assert(maxProductID > productId && productId != 0, 'INVALID PRODUCT ID');
+            self.allItems.read(productId)
+        }
+
+        fn getProductsListedByUser(self: @ContractState, user: ContractAddress, viewer: ContractAddress) -> Array::<u256> {
+            let userID = self.userId.read(user);
+            assert(userID != 0, 'INVALID USER ADDRESS');
+            let numListed = self.allProfiles.read(userID).totalItemListed;
+            let mut allProductId = ArrayTrait::new();
+            let mut allAvailableProductId = ArrayTrait::new();
+            let mut i: u256 = 1;
+
+            loop {
+                if i > numListed {
+                    break;
+                }
+                let product: u256 = self.itemsListed.read((user, i));
+                allProductId.append(product);
+                if (self.allItems.read(product).offMarket == false) {
+                    allAvailableProductId.append(product);
+                }
+                i = i + 1;
+            };
+            // Reason for extra logic is to be able to return to the seller a history of all the product he listed both available and off market
+            // while also able to return to buyers just those available on the market.
+            if  user == viewer {
+                return allProductId;
+            } else {
+                return allAvailableProductId;
+            }
+        }
+
+        fn getProductsBoughtByUser(self: @ContractState, user: ContractAddress, viewer: ContractAddress) -> Array::<u256> {
+            let userID = self.userId.read(user);
+            assert(userID != 0, 'INVALID USER ADDRESS');
+            let numListed = self.allProfiles.read(userID).totalItemsPurchased;
+            let mut allProductId = ArrayTrait::new();
+            let mut i: u256 = 1;
+
+            loop {
+                if i > numListed {
+                    break;
+                }
+                let product: u256 = self.itemsListed.read((user, i));
+                allProductId.append(product);
+                i = i + 1;
+            };
+            return allProductId;
+        }   
+
+        fn getUserProfile(self: @ContractState, user: ContractAddress) -> userProfile {
+            let userID = self.userId.read(user);
+            assert(userID != 0, 'INVALID USER ADDRESS');
+            let userProfile = self.allProfiles.read(userID);
+            return userProfile;
+        }
+
+        fn getUsersCart(self: @ContractState, user: ContractAddress) -> Array::<u256> {
+            
+        } 
+
+
+
+
 
 
 
