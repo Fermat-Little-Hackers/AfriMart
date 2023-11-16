@@ -96,6 +96,8 @@ trait aftimartTrait<TContractState> {
     fn getProductsByUser(self: @TContractState, user: ContractAddress) -> Array::<u256>;
     fn getUserProfile(self: @TContractState, user: ContractAddress) -> userProfile;
     fn getUsersCart(self: @TContractState, user: ContractAddress) -> Array::<u256>;
+    fn getOrderDetails(self: @TContractState, orderId: u256) -> Array::<u256>;
+    fn getProductDetails(self: @TContractState, productId: u256) -> Array::<u256>;
 }
 
 
@@ -250,6 +252,23 @@ mod afrimart {
             assert(productNumber != 0, 'ITEM NOT IN CALLERS CART');
             self._removeItemFromCart(productId, productNumber, get_caller_address());
         }
+
+        fn checkOutCart(ref self: ContractState) {
+            let caller = get_caller_address();
+            let noOfProducts = self.noOfProductsInCart.read(caller);
+            let mut productNumber: u256 = 1;
+            loop {
+                if productNumber > noOfProducts {
+                    break;
+                }
+                let productId = self.allProductsInCart.read((caller, productNumber));
+                self._PurchaseProduct(productId, productNumber);
+                self._removeItemFromCart(productId, productNumber, caller);
+                productNumber = productNumber +1;
+            }
+        }
+
+
 
 
 
