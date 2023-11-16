@@ -97,7 +97,7 @@ trait aftimartTrait<TContractState> {
     fn getProductsBoughtByUser(self: @TContractState, user: ContractAddress, viewer: ContractAddress) -> Array::<u256>;
     fn getUserProfile(self: @TContractState, user: ContractAddress) -> userProfile;
     fn getUsersCart(self: @TContractState, user: ContractAddress) -> Array::<u256>;
-    fn getOrderDetails(self: @TContractState, orderId: u256) -> Array::<u256>;
+    fn getOrderDetails(self: @TContractState, orderId: u256) -> order;
 }
 
 
@@ -382,23 +382,14 @@ mod afrimart {
             return allProductId;
         } 
 
-        fn getOrderDetails(self: @ContractState, orderId: u256) -> Array::<u256> {
+        fn getOrderDetails(self: @ContractState, orderId: u256) -> order {
             let totalOrder = self.totalOrders.read();
             assert(totalOrder >= orderId && orderId != 0, 'INVALID ORDER ID');
             let orderDetails = self.allOrders.read(orderId);
             return orderDetails;
         }
 
-
-
-
-
-
-
-
-
     }
-
 
     #[generate_trait]
     impl Private of PrivateTrait {
