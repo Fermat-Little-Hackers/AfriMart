@@ -1,3 +1,5 @@
+mod Rating;
+
 #[starknet::interface]
 trait IHelloStarknet<TContractState> {
     fn increase_balance(ref self: TContractState, amount: felt252);
