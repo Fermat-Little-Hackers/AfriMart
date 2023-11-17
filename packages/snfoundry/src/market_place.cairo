@@ -52,7 +52,7 @@ trait aftimartTrait<TContractState> {
 #[starknet::contract]
 mod afrimart {
     use super::{ArrayTrait, ContractAddress, aftimartTrait, userProfile, Item};
-    use starknet::{get_caller_address};
+    use starknet::{get_caller_address, get_contract_address, get_block_timestamp};
 
     #[storage]
     struct Storage {
