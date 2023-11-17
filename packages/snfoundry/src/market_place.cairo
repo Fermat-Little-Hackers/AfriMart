@@ -104,6 +104,7 @@ trait aftimartTrait<TContractState> {
     fn getUserProfile(self: @TContractState, user: ContractAddress) -> userProfile;
     fn getUsersCart(self: @TContractState, user: ContractAddress) -> Array::<cartItem>;
     fn getOrderDetails(self: @TContractState, orderId: u256) -> order;
+    fn getCartValue(self: @TContractState, user: ContractAddress) -> u256;
 }
 
 
@@ -510,6 +511,10 @@ mod afrimart {
             assert(totalOrder >= orderId && orderId != 0, 'INVALID ORDER ID');
             let orderDetails = self.allOrders.read(orderId);
             return orderDetails;
+        }
+
+        fn getCartValue(self: @ContractState, user: ContractAddress) -> u256 {
+            self.cartTotalPrice.read(user)
         }
 
     }
