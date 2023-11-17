@@ -379,9 +379,13 @@ mod afrimart {
                     break;
                 }
                 let product = self.allProductsInCart.read((caller, productNumber));
+                let currentExpenses = self._calculateExpenses(product.itemID, product.amount);
+                let totalExpenses = self.cartTotalPrice.read(get_caller_address());
+                self.cartTotalPrice.write(get_caller_address() , totalExpenses - currentExpenses);
 
                 self._PurchaseProduct(product.itemID, product.amount);
                 self._removeItemFromCart(product.itemID, productNumber, caller);
+
                 productNumber = productNumber +1;
             };
             self.emit(cartCheckedOut{by: caller});
