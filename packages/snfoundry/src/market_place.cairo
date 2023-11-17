@@ -14,6 +14,12 @@ struct userProfile {
 }
 
 #[derive(Drop, Copy, starknet::Store, Serde)]
+struct cartItem {
+    itemID: u256,
+    amount: u256,
+}
+
+#[derive(Drop, Copy, starknet::Store, Serde)]
 struct order {
     itemID: u256,
     orderId: u256,
@@ -87,7 +93,7 @@ trait aftimartTrait<TContractState> {
     fn purchaseProduct(ref self: TContractState, productId: u256, Amount: u256);
     fn confirmProductReceived(ref self: TContractState, orderId: u256);
     fn changeProductCartegory(ref self: TContractState, productId: u256, newCartegory: cartegory);
-    fn addItemToCart(ref self: TContractState, productId: u256);
+    fn addItemToCart(ref self: TContractState, productId: u256, Amount: u256);
     fn removeItemFromCart(ref self: TContractState, productId: u256);
     fn checkOutCart(ref self: TContractState);
     fn getAllProducts(self: @TContractState) -> Array::<u256>;
@@ -96,14 +102,14 @@ trait aftimartTrait<TContractState> {
     fn getProductsListedByUser(self: @TContractState, user: ContractAddress, viewer: ContractAddress) -> Array::<u256>;
     fn getProductsBoughtByUser(self: @TContractState, user: ContractAddress, viewer: ContractAddress) -> Array::<u256>;
     fn getUserProfile(self: @TContractState, user: ContractAddress) -> userProfile;
-    fn getUsersCart(self: @TContractState, user: ContractAddress) -> Array::<u256>;
+    fn getUsersCart(self: @TContractState, user: ContractAddress) -> Array::<cartItem>;
     fn getOrderDetails(self: @TContractState, orderId: u256) -> order;
 }
 
 
 #[starknet::contract]
 mod afrimart {
-    use super::{ArrayTrait, ContractAddress, aftimartTrait, userProfile, Item, order, orderPaymentStatus, deliveryStatus, cartegory, IERC20Dispatcher, IERC20DispatcherTrait};
+    use super::{ArrayTrait, ContractAddress, aftimartTrait, userProfile, Item, order, orderPaymentStatus, cartItem, deliveryStatus, cartegory, IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::{get_caller_address, get_contract_address, info::get_block_timestamp};
 
     #[storage]
@@ -136,16 +142,108 @@ mod afrimart {
 
         //Track users cart
         noOfProductsInCart: LegacyMap<ContractAddress, u256>,
-        // Mapping of user to index then productId
-        allProductsInCart: LegacyMap<(ContractAddress, u256), u256>,
+        // Mapping of user to index then cartItem Struct
+        allProductsInCart: LegacyMap<(ContractAddress, u256), cartItem>,
         //Track the Id of all products in cart by mapping a user to a product then its index
         getProductInCartIndex: LegacyMap<(ContractAddress, u256), u256>,
+        //Track the total price of a cart
+        cartTotalPrice: LegacyMap<ContractAddress, u256>,
 
     }
 
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
+        ProfileCreated: ProfileCreated,
+        ProductListed: ProductListed,
+        ProductEditied: ProductEditied,
+        productOffMarket: productOffMarket,
+        ProductPurchased: ProductPurchased,
+        ProductReceived: ProductReceived,
+        ProductCartigoryChanged: ProductCartigoryChanged,
+        ItemAddedToCart: ItemAddedToCart,
+        ItemRemovedFromCart: ItemRemovedFromCart,
+        cartCheckedOut: cartCheckedOut
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ProfileCreated {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        name: felt252,
+        #[key]
+        country: felt252,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ProductListed {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        name: felt252,
+        #[key]
+        cartegory: cartegory,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ProductEditied {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        productID: u256,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct productOffMarket {
+        #[key]
+        productID: u256,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ProductPurchased {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        productID: u256,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ProductReceived {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        orderID: u256,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ProductCartigoryChanged {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        productID: u256,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ItemAddedToCart {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        productID: u256,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ItemRemovedFromCart {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        productID: u256,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct cartCheckedOut {
+        #[key]
+        by: ContractAddress,
     }
 
     #[constructor]
@@ -171,6 +269,8 @@ mod afrimart {
             };
             self.allProfiles.write(UserId, newUser);
             self.userId.write(get_caller_address() ,UserId);
+            self.emit(ProfileCreated{by: get_caller_address(), name: Name, country: country});
+
         }
 
         fn listProduct(ref self: ContractState, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256, cartegory: cartegory){
@@ -202,6 +302,7 @@ mod afrimart {
             // store a list of items listed by a user using the users address, the index of the listed item in his list,
             // finally the Id of the Item in storage.
             self.itemsListed.write((get_caller_address(), UsersItemListedId), ItemId);
+            self.emit(ProductListed{by: get_caller_address(), name: name, cartegory: cartegory});
         }
 
         fn editProductDetails(ref self: ContractState, productId: u256, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256) {
@@ -214,6 +315,7 @@ mod afrimart {
             Item.amountAvailable = amountAvailable;
 
             self.allItems.write(productId,Item);
+            self.emit(ProductEditied{by: get_caller_address(), productID: productId});
         }
 
         fn takeProductOffMarket(ref self: ContractState, productId: u256) {
@@ -221,16 +323,19 @@ mod afrimart {
             assert(Item.seller == get_caller_address(), 'CALLER DIDNT LIST ITEM');
             Item.offMarket = true;
             self.allItems.write(productId,Item);
+            self.emit(productOffMarket{productID: productId});
         }
 
         fn purchaseProduct(ref self: ContractState, productId: u256, Amount: u256) {
             self._PurchaseProduct(productId, Amount);
+            self.emit(ProductPurchased{by: get_caller_address(), productID: productId})
         }
 
         fn confirmProductReceived(ref self: ContractState, orderId: u256) {
             let mut order = self.allOrders.read(orderId);
             assert(order.buyer == get_caller_address(), 'NOT RECORDED BUYER');
             order.shipmentStatus = deliveryStatus::PickedUpByBuyer;
+            self.emit(ProductReceived{by: get_caller_address(), orderID: orderId});
         }
 
         fn changeProductCartegory(ref self: ContractState, productId: u256, newCartegory: cartegory) {
@@ -238,19 +343,31 @@ mod afrimart {
             assert(Item.seller == get_caller_address(), 'CALLER DIDNT LIST ITEM');
             Item.cartegory = newCartegory;
             self.allItems.write(productId,Item);
+            self.emit(ProductCartigoryChanged{by: get_caller_address(), productID: productId});
         }
 
-        fn addItemToCart(ref self: ContractState, productId: u256) {
-            let number = self.noOfProductsInCart.read(get_caller_address()) + 1;
-            self.noOfProductsInCart.write(get_caller_address(), number);
-            self.allProductsInCart.write((get_caller_address(), number), productId);
-            self.getProductInCartIndex.write((get_caller_address(), productId), number);
+        fn addItemToCart(ref self: ContractState, productId: u256, Amount: u256) {
+            let caller = get_caller_address();
+            let number = self.noOfProductsInCart.read(caller) + 1;
+            let cartPrice = self.cartTotalPrice.read(caller); 
+            let productPrice = self._calculateExpenses(productId, Amount);
+            self.cartTotalPrice.write(caller, cartPrice + productPrice);
+            let item: cartItem = cartItem{itemID: productId, amount: Amount};
+            self.noOfProductsInCart.write(caller, number);
+            self.allProductsInCart.write((caller, number), item);
+            self.getProductInCartIndex.write((caller, productId), number);
+            self.emit(ItemAddedToCart{by: caller, productID: productId});
         }
 
         fn removeItemFromCart(ref self: ContractState, productId: u256) {
             let productNumber = self.getProductInCartIndex.read((get_caller_address(), productId));
+            let productAmount = self.allProductsInCart.read((get_caller_address(), productNumber)).amount;
+            let currentExpenses = self._calculateExpenses(productId, productAmount);
+            let totalExpenses = self.cartTotalPrice.read(get_caller_address());
             assert(productNumber != 0, 'ITEM NOT IN CALLERS CART');
             self._removeItemFromCart(productId, productNumber, get_caller_address());
+            self.cartTotalPrice.write(get_caller_address() , totalExpenses - currentExpenses);
+            self.emit(ItemRemovedFromCart{by: get_caller_address(), productID: productId});
         }
 
         fn checkOutCart(ref self: ContractState) {
@@ -261,11 +378,13 @@ mod afrimart {
                 if productNumber > noOfProducts {
                     break;
                 }
-                let productId = self.allProductsInCart.read((caller, productNumber));
-                self._PurchaseProduct(productId, productNumber);
-                self._removeItemFromCart(productId, productNumber, caller);
+                let product = self.allProductsInCart.read((caller, productNumber));
+
+                self._PurchaseProduct(product.itemID, product.amount);
+                self._removeItemFromCart(product.itemID, productNumber, caller);
                 productNumber = productNumber +1;
-            }
+            };
+            self.emit(cartCheckedOut{by: caller});
         }
 
         fn getAllProducts(self: @ContractState) -> Array::<u256> {
@@ -363,7 +482,7 @@ mod afrimart {
             return userProfile;
         }
 
-        fn getUsersCart(self: @ContractState, user: ContractAddress) -> Array::<u256> {
+        fn getUsersCart(self: @ContractState, user: ContractAddress) -> Array::<cartItem> {
             let userID = self.userId.read(user);
             assert(userID != 0, 'INVALID USER ADDRESS');
             let noInCart = self.noOfProductsInCart.read(user);
@@ -395,12 +514,14 @@ mod afrimart {
     impl Private of PrivateTrait {
         fn _removeItemFromCart(ref self: ContractState, productId: u256, productNumber: u256, caller: ContractAddress) {
             let noOfLastProduct = self.noOfProductsInCart.read(caller);
-            let lastProductId = self.allProductsInCart.read((caller, noOfLastProduct));
+            let lastProductId = self.allProductsInCart.read((caller, noOfLastProduct)).itemID;
+            let lastProduct = self.allProductsInCart.read((caller, noOfLastProduct));
             self.getProductInCartIndex.write((caller, lastProductId), productNumber);
             self.getProductInCartIndex.write((caller, productId), 0);
             self.noOfProductsInCart.write(caller, noOfLastProduct - 1);
-            self.allProductsInCart.write((caller, productNumber), lastProductId);
-            self.allProductsInCart.write((caller, noOfLastProduct), 0);
+            self.allProductsInCart.write((caller, productNumber), lastProduct);
+            self.allProductsInCart.write((caller, noOfLastProduct), cartItem{ itemID: 0, amount: 0});
+
         }
 
         fn _PurchaseProduct(ref self: ContractState, productId: u256, Amount: u256) {
@@ -456,6 +577,11 @@ mod afrimart {
             _userProfile.totalItemsSold = updatedCount;
             self.allProfiles.write(userId, _userProfile);
             self.itemsSold.write((seller, updatedCount), orderId);   
+        }
+
+        fn _calculateExpenses( self: @ContractState, productId: u256, Amount: u256) -> u256 {
+            let productPrice = self.allItems.read(productId).price;
+            productPrice * Amount
         }
     }
 
