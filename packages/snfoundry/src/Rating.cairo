@@ -217,13 +217,13 @@ mod Rating {
             user.reviewers.append(caller_address);
         }
 
-        // fn get_product_review(self: @ContractState, product_id: u256) -> ProductReview {
-        //     self.product_review.read(product_id)
-        // }
+        fn get_product_review(self: @ContractState, product_id: u256) -> ProductReview {
+            self.product_review.read(product_id)
+        }
 
-        // fn get_user_review(self: @ContractState, user_address: ContractAddress) -> UserReview {
-        //     self.user_review.read(user_address)
-        // }
+        fn get_user_review(self: @ContractState, user_address: ContractAddress) -> UserReview {
+            self.user_review.read(user_address)
+        }
         
         fn comment_on_product(ref self: ContractState, order_id: u256, comment: felt252) {
             let caller_address = get_caller_address();
