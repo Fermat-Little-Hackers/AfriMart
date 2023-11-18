@@ -144,6 +144,9 @@ trait aftimartTrait<TContractState> {
     fn releaseSellersPayment(ref self: TContractState, orderId: u256);
     fn getTotalCashInflow(self: @TContractState) -> (u256, u256);
     fn getPendingPayment(self: @TContractState) -> u256;
+    fn whitelistAdmin(ref self: TContractState, admin: ContractAddress);
+    fn getAdmins(self: @TContractState) -> Array<ContractAddress>;
+    fn revokeAdminRight(ref self: TContractState, admin: ContractAddress);
 }
 
 
@@ -179,6 +182,9 @@ mod afrimart {
         //System utilities
         paymentToken: IERC20Dispatcher,
         Admin: ContractAddress,
+        adminRight: LegacyMap<ContractAddress, bool>,
+        totalAdmins: u256,
+        allAdmins: LegacyMap<u256, ContractAddress>,
 
         //Track users cart
         noOfProductsInCart: LegacyMap<ContractAddress, u256>,
@@ -257,6 +263,8 @@ mod afrimart {
     struct productOffMarket {
         #[key]
         productID: u256,
+        #[key]
+        by: ContractAddress,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -358,6 +366,7 @@ mod afrimart {
         self.Admin.write(_Admin);
         self.paymentToken.write(IERC20Dispatcher{contract_address: paymentTokenAdd});
         self.supplyChainFactory.write(supplyChainFactory);
+        self.adminRight.write(_Admin, true);
     }
 
 
@@ -428,10 +437,10 @@ mod afrimart {
 
         fn takeProductOffMarket(ref self: ContractState, productId: u256) {
             let mut Item = self.allItems.read(productId);
-            assert(Item.seller == get_caller_address(), 'CALLER DIDNT LIST ITEM');
+            assert(Item.seller == get_caller_address() || self.adminRight.read(get_caller_address()) == true, 'CALLER DIDNT LIST ITEM');
             Item.offMarket = true;
             self.allItems.write(productId,Item);
-            self.emit(productOffMarket{productID: productId});
+            self.emit(productOffMarket{productID: productId, by: get_caller_address()});
         }
 
         fn purchaseProduct(ref self: ContractState, productId: u256, Amount: u256) {
@@ -706,6 +715,38 @@ mod afrimart {
        fn getPendingPayment(self: @ContractState) -> u256 {
             self.pendingPayment.read()
        } 
+
+        fn whitelistAdmin(ref self: ContractState, admin: ContractAddress){
+            assert(get_caller_address() == self.Admin.read(), 'NOT ADMIN');
+            self.adminRight.write(get_caller_address(), true);
+            self.totalAdmins.write(self.totalAdmins.read() + 1);
+            self.allAdmins.write(self.totalAdmins.read(), get_caller_address());
+        }
+
+        fn revokeAdminRight(ref self: ContractState, admin: ContractAddress) {
+            assert(get_caller_address() == self.Admin.read(), 'NOT ADMIN');
+            assert(self.adminRight.read(admin) == true, 'ADDRESS NOT AN ADMIN');
+            self.adminRight.write(admin, false);
+        }
+
+
+        fn getAdmins(self: @ContractState) -> Array<ContractAddress> {
+            let mut adminNumber: u256 = self.totalAdmins.read();
+            let mut allAdmins = ArrayTrait::new();
+            let mut i:u256 = 1;
+            loop {
+                if i > adminNumber {
+                    break;
+                }
+                let admin = self.allAdmins.read(i);
+                if (self.adminRight.read(admin) == true) {
+                    allAdmins.append(admin);
+                }
+                i = i + 1;
+            };
+            return allAdmins;
+        }
+ 
 
     }
 
