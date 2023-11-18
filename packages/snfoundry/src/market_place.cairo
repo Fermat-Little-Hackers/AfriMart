@@ -20,6 +20,16 @@ struct cartItem {
 }
 
 #[derive(Drop, Copy, starknet::Store, Serde)]
+struct nftItem {
+    itemID: u256,
+    price: u256,
+    nftContract: ContractAddress,
+    nftID: u256,
+    seller: ContractAddress,
+    offMarket: bool,
+}
+
+#[derive(Drop, Copy, starknet::Store, Serde)]
 struct order {
     itemID: u256,
     orderId: u256,
@@ -30,7 +40,7 @@ struct order {
     shipmentStatus: deliveryStatus,
 }
 
-#[derive(Drop, Copy, Serde, starknet::Store)]
+#[derive(Drop, Copy, Serde, starknet::Store, PartialEq)]
 enum orderPaymentStatus {
     paymentWithMarket,
     PaymentReleasedToSeller,
@@ -70,6 +80,27 @@ enum cartegory {
 }
 
 #[starknet::interface]
+trait IERC721CamelOnly<TContractState> {
+    fn balanceOf(self: @TContractState, account: ContractAddress) -> u256;
+    fn ownerOf(self: @TContractState, tokenId: u256) -> ContractAddress;
+    fn safeTransferFrom(
+        ref self: TContractState,
+        from: ContractAddress,
+        to: ContractAddress,
+        tokenId: u256,
+        data: Span<felt252>
+    );
+    fn transferFrom(ref self: TContractState, from: ContractAddress, to: ContractAddress, tokenId: u256);
+    fn setApprovalForAll(ref self: TContractState, operator: ContractAddress, approved: bool);
+    fn getApproved(self: @TContractState, tokenId: u256) -> ContractAddress;
+    fn isApprovedForAll(self: @TContractState, owner: ContractAddress, operator: ContractAddress) -> bool;
+    fn name(self: @TContractState) -> felt252;
+    fn symbol(self: @TContractState) -> felt252;
+    fn token_uri(self: @TContractState, token_id: u256) -> felt252;
+}
+
+
+#[starknet::interface]
 trait IERC20<TContractState> {
     fn name(self: @TContractState) -> felt252;
     fn symbol(self: @TContractState) -> felt252;
@@ -105,12 +136,18 @@ trait aftimartTrait<TContractState> {
     fn getUsersCart(self: @TContractState, user: ContractAddress) -> Array::<cartItem>;
     fn getOrderDetails(self: @TContractState, orderId: u256) -> order;
     fn getCartValue(self: @TContractState, user: ContractAddress) -> u256;
+    fn listNft(ref self: TContractState, nftContract: ContractAddress, tokenId: u256, data: Span<felt252>, price: u256);
+    fn buyNft(ref self: TContractState, productId: u256);
+    fn getAllNfts(self: @TContractState) -> Array::<u256>;
+    fn getNftDetails(self: @TContractState, productId: u256) -> nftItem;
+    fn registerSupplyChainChild(ref self: TContractState, supplyChainChild: ContractAddress);
+    fn releaseSellersPayment(ref self: TContractState, orderId: u256);
 }
 
 
 #[starknet::contract]
 mod afrimart {
-    use super::{ArrayTrait, ContractAddress, aftimartTrait, userProfile, Item, order, orderPaymentStatus, cartItem, deliveryStatus, cartegory, IERC20Dispatcher, IERC20DispatcherTrait};
+    use super::{ArrayTrait, ContractAddress, aftimartTrait, userProfile, Item, order, orderPaymentStatus, cartItem, deliveryStatus, cartegory, nftItem, IERC20Dispatcher, IERC20DispatcherTrait, IERC721CamelOnlyDispatcher, IERC721CamelOnlyDispatcherTrait};
     use starknet::{get_caller_address, get_contract_address, info::get_block_timestamp};
 
     #[storage]
@@ -150,6 +187,21 @@ mod afrimart {
         //Track the total price of a cart
         cartTotalPrice: LegacyMap<ContractAddress, u256>,
 
+        //Track NFTs in the system
+        totalNFTS: u256,
+        allNFTS: LegacyMap<u256, nftItem>,
+
+        supplyChainFactory: ContractAddress,
+
+        // Track Valid Supply Chain Child
+        validSupplyChain: LegacyMap<ContractAddress, bool>,
+
+        //Track total cash inflow
+        cashInFlow: u256,
+        nftCashInflow: u256,
+
+        // Track pending Payment
+        pendingPayment: u256,
     }
 
     #[event]
@@ -164,7 +216,11 @@ mod afrimart {
         ProductCartigoryChanged: ProductCartigoryChanged,
         ItemAddedToCart: ItemAddedToCart,
         ItemRemovedFromCart: ItemRemovedFromCart,
-        cartCheckedOut: cartCheckedOut
+        cartCheckedOut: cartCheckedOut,
+        nftListed: nftListed,
+        nftPurchased: nftPurchased,
+        supplyChainRegistered: supplyChainRegistered,
+        sellersFeeReleased: sellersFeeReleased,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -242,15 +298,64 @@ mod afrimart {
     }
 
     #[derive(Drop, starknet::Event)]
+    struct supplyChainRegistered {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        supplyChain: ContractAddress,
+    }
+
+    #[derive(Drop, starknet::Event)]
     struct cartCheckedOut {
         #[key]
         by: ContractAddress,
     }
 
+    #[derive(Drop, starknet::Event)]
+    struct nftListed {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        nftID: u256,
+        #[key]
+        nftContract: ContractAddress,   
+        #[key]
+        price: u256, 
+        #[key]
+        itemId: u256,  
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct nftPurchased {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        nftID: u256,
+        #[key]
+        nftContract: ContractAddress,   
+        #[key]
+        price: u256, 
+        #[key]
+        itemId: u256,    
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct sellersFeeReleased {
+        #[key]
+        seller: ContractAddress,
+        #[key]
+        orderId: u256,
+        #[key]
+        supplyChain: ContractAddress,   
+        #[key]
+        amount: u256,    
+    }
+
     #[constructor]
-    fn constructor(ref self: ContractState, _Admin: ContractAddress, paymentTokenAdd: ContractAddress) {
+    fn constructor(ref self: ContractState, _Admin: ContractAddress, paymentTokenAdd: ContractAddress, supplyChainFactory: ContractAddress) {
         self.Admin.write(_Admin);
         self.paymentToken.write(IERC20Dispatcher{contract_address: paymentTokenAdd});
+        self.supplyChainFactory.write(supplyChainFactory);
     }
 
 
@@ -517,6 +622,76 @@ mod afrimart {
             self.cartTotalPrice.read(user)
         }
 
+        fn listNft(ref self: ContractState, nftContract: ContractAddress, tokenId: u256, data: Span<felt252>, price: u256) {
+            let nft: IERC721CamelOnlyDispatcher = IERC721CamelOnlyDispatcher{contract_address: nftContract};
+            assert(nft.ownerOf(tokenId) == get_caller_address(), 'NOT TOKEN OWNER');
+            nft.safeTransferFrom(get_caller_address(), get_contract_address(), tokenId, data);
+            let itemId = self.totalNFTS.read() + 1;
+            self.totalNFTS.write(itemId);
+            let nftData = nftItem {
+                itemID: itemId,
+                price: price,
+                nftContract: nftContract,
+                nftID: tokenId,
+                seller: get_caller_address(),
+                offMarket: false,
+            };
+            self.allNFTS.write(itemId, nftData);  
+            self.emit(nftListed{by: get_caller_address(), nftID: tokenId, nftContract: nftContract, price: price, itemId: itemId});
+        }
+
+        fn buyNft(ref self: ContractState, productId: u256) {
+            let caller = get_caller_address();
+            let this = get_contract_address();
+            let mut nftData = self.allNFTS.read(productId);   
+            self.paymentToken.read().transferFrom(caller, this, nftData.price);
+            self.nftCashInflow.write(self.nftCashInflow.read() + nftData.price);
+            let nftContract = IERC721CamelOnlyDispatcher{contract_address: nftData.nftContract};
+            nftContract.transferFrom(this, caller, nftData.nftID);
+            nftData.offMarket = true;
+            self.allNFTS.write(productId, nftData);
+            self.emit(nftPurchased{by: caller, nftID: nftData.nftID, nftContract: nftData.nftContract, price: nftData.price, itemId: productId});
+        }
+
+        fn getAllNfts(self: @ContractState) -> Array::<u256> {
+            let mut productsNumber: u256 = self.totalNFTS.read();
+            let mut allNftId = ArrayTrait::new();
+            let mut i:u256 = 1;
+            loop {
+                if i > productsNumber {
+                    break;
+                }
+                let Nft: nftItem = self.allNFTS.read(i);
+                if (Nft.offMarket == false) {
+                    allNftId.append(Nft.itemID);
+                }
+                i = i + 1;
+            };
+            return allNftId;
+        }
+
+        fn getNftDetails(self: @ContractState, productId: u256) -> nftItem {
+            let totalNFTS = self.totalNFTS.read();
+            assert(totalNFTS >= productId && productId != 0, 'INVALID ORDER ID');
+            let nftDetails = self.allNFTS.read(productId);
+            return nftDetails;
+        }
+
+        fn registerSupplyChainChild(ref self: ContractState, supplyChainChild: ContractAddress) {
+            assert( get_caller_address() == self.supplyChainFactory.read(), 'NOT AN AUTHORIZED CALLER');
+            self.validSupplyChain.write(supplyChainChild, true);
+            self.emit(supplyChainRegistered{by: get_caller_address(), supplyChain: supplyChainChild});
+        }
+
+       fn releaseSellersPayment(ref self: ContractState, orderId: u256) {
+            assert(self.validSupplyChain.read(get_caller_address()) == true, 'UNAUTHORIZED SUPPLY CHAIN');
+            let mut orderDetails = self.allOrders.read(orderId);
+            assert(orderDetails.paymentStatus == orderPaymentStatus::paymentWithMarket, 'PAYMENT ALREADY RELEASED');
+            orderDetails.paymentStatus = orderPaymentStatus::PaymentReleasedToSeller;
+            let productDetails = self.allItems.read(orderDetails.itemID);
+            self.paymentToken.read().transfer(productDetails.seller, productDetails.price * orderDetails.amountOfProducts);
+       }
+
     }
 
     #[generate_trait]
@@ -530,7 +705,6 @@ mod afrimart {
             self.noOfProductsInCart.write(caller, noOfLastProduct - 1);
             self.allProductsInCart.write((caller, productNumber), lastProduct);
             self.allProductsInCart.write((caller, noOfLastProduct), cartItem{ itemID: 0, amount: 0});
-
         }
 
         fn _PurchaseProduct(ref self: ContractState, productId: u256, Amount: u256) {
@@ -541,7 +715,7 @@ mod afrimart {
             let callersBalance = self.paymentToken.read().balanceOf(caller);
             assert(callersBalance >= totalFee, 'INSUFFICIENT BALANCE');
             self.paymentToken.read().transferFrom(caller, this, totalFee);
-
+            self.cashInFlow.write(self.cashInFlow.read() + totalFee);
             let orderId = self._recordOrder(Item.id, Amount, caller);
             self._recordUsersPurchase(orderId, caller);
             self._recordSellerSale(orderId, Item.seller);
