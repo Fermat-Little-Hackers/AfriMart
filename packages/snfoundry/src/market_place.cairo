@@ -142,6 +142,8 @@ trait aftimartTrait<TContractState> {
     fn getNftDetails(self: @TContractState, productId: u256) -> nftItem;
     fn registerSupplyChainChild(ref self: TContractState, supplyChainChild: ContractAddress);
     fn releaseSellersPayment(ref self: TContractState, orderId: u256);
+    fn getTotalCashInflow(self: @TContractState) -> (u256, u256);
+    fn getPendingPayment(self: @TContractState) -> u256;
 }
 
 
@@ -688,9 +690,22 @@ mod afrimart {
             let mut orderDetails = self.allOrders.read(orderId);
             assert(orderDetails.paymentStatus == orderPaymentStatus::paymentWithMarket, 'PAYMENT ALREADY RELEASED');
             orderDetails.paymentStatus = orderPaymentStatus::PaymentReleasedToSeller;
+            self.allOrders.write(orderId, orderDetails);
             let productDetails = self.allItems.read(orderDetails.itemID);
             self.paymentToken.read().transfer(productDetails.seller, productDetails.price * orderDetails.amountOfProducts);
+            self.pendingPayment.write(self.pendingPayment.read() - productDetails.price * orderDetails.amountOfProducts);
+            self.emit(sellersFeeReleased{seller: productDetails.seller, orderId: orderId, supplyChain: get_caller_address(), amount: productDetails.price * orderDetails.amountOfProducts});
        }
+
+       fn getTotalCashInflow(self: @ContractState) -> (u256, u256) {
+            let totalProductInflow = self.cashInFlow.read();
+            let totalNftInflow = self.nftCashInflow.read();
+            return (totalProductInflow, totalNftInflow);
+       }
+
+       fn getPendingPayment(self: @ContractState) -> u256 {
+            self.pendingPayment.read()
+       } 
 
     }
 
@@ -719,7 +734,7 @@ mod afrimart {
             let orderId = self._recordOrder(Item.id, Amount, caller);
             self._recordUsersPurchase(orderId, caller);
             self._recordSellerSale(orderId, Item.seller);
-
+            self.pendingPayment.write(self.pendingPayment.read() + totalFee);
         }
 
         fn _recordOrder(ref self: ContractState, productId: u256, Amount: u256, caller: ContractAddress) -> u256 {
@@ -759,7 +774,7 @@ mod afrimart {
             let updatedCount = _userProfile.totalItemsSold + 1;
             _userProfile.totalItemsSold = updatedCount;
             self.allProfiles.write(userId, _userProfile);
-            self.itemsSold.write((seller, updatedCount), orderId);   
+            self.itemsSold.write((seller, updatedCount), orderId);
         }
 
         fn _calculateExpenses( self: @ContractState, productId: u256, Amount: u256) -> u256 {
