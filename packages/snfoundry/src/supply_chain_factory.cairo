@@ -183,7 +183,7 @@ use core::serde::Serde;
         isDispatchCompnay: LegacyMap<(u128, u16), bool>,
 
         // takes Order ID to return shipping details
-        trackOrderID: LegacyMap<u128, OrderLocation>,
+        trackOrderID: LegacyMap<u128, OrderLocation>,// remove restriction.
         
         overallShipmentTotal: u128,
         companyShipmentTotal: LegacyMap<(u16, u128), u128>,
@@ -198,6 +198,48 @@ use core::serde::Serde;
     #[derive(Drop, starknet::Event)]
     enum Event {
     }
+
+    #[derive(Drop, starknet::Event)]
+    struct OwnersAdded {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        for: ContractAddress,
+        #[key]
+        ownerID: u8,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct CompanyRegistered {
+        #[key]
+        by: ContractAddress,
+        #[key]
+        for: felt252,
+        #[key]
+        companyID: u16,
+        #[key]
+        companyAdminAddress: ContractAddress,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct BranchAdminCreated {
+        #[key]
+        companyID: u16,
+        #[key]
+        adminID: u128,
+        #[key]
+        adminAddress: ContractAddress,
+    }
+
+    // #[derive(Drop, starknet::Event)]
+    // struct BranchCreated {
+    //     #[key]
+    //     : ,
+    // }
+
+
+
+    
 
     #[constructor]
     fn constructor(ref self: ContractState, branchClassHash: ClassHash) {
