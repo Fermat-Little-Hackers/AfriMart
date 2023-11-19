@@ -11,7 +11,7 @@
 #[starknet::interface]
 trait ISupplyChain<TContractState> {
 	fn whitelist_account(self: @TContractState, address: ContractAddress);
-    fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
+  fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
 	fn create_shipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);
 	fn update_shipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);  
 }
@@ -115,8 +115,7 @@ mod SupplyChain {
 		}
 
 		fn create_shipment(ref self: ContractState, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
-			assert(self.factory_address.read() == get_caller_address());
-			assert(isWhitelisted(get_caller_address()));
+			assert(is_whitelisted(get_caller_address()), "Caller not whitelisted");
 			let newShipment = ShipmentDetails {
 				name: _name,
 				address,
@@ -127,8 +126,7 @@ mod SupplyChain {
 		}
 
 		fn update_shipment(ref self: ContractState, _id: u256, status: ShipmentStatus) {
-			assert(self.factory_address.read() == get_caller_address());
-			assert(is_admin, "Caller not an admin");
+			assert(self.is_admin(), "Caller not an admin");
 			let this_shipemet = self.order_id.read(_id);
 			this_shipemet.status = status;
 		}
