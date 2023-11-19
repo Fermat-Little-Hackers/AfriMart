@@ -10,15 +10,16 @@
 
 #[starknet::interface]
 trait ISupplyChain<TContractState> {
-    fn isWhitelisted(self: @TContractState, address: felt252) -> bool;
-	fn createShipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);
-	fn updateShipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);  
+	fn whitelist_account(self: @TContractState, address: ContractAddress);
+    fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
+	fn create_shipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);
+	fn update_shipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);  
 }
 
 #[starknet::contract]
 mod SupplyChain {
 	use super::ISupplyChain;
-	use starknet::{ContractAddress, getCallerAddress};
+	use starknet::{ContractAddress, get_caller_address, get_contract_address};
 	use starknet::getCallerAddress;
 
     #[storage]
@@ -40,9 +41,12 @@ mod SupplyChain {
 	}
 
 	struct ShipmentDetails {
+		order_id: u256,
 		name: felt252,
 		address: felt252,
 		status: ShipmentStatus,
+		created_by: ContractAddress,
+		products: Vec<Product>
 	}
 
 	// impl ShipmentDetails {
@@ -56,7 +60,23 @@ mod SupplyChain {
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
+		AccountWhitelisted: AccountWhitelisted,
+		ShipmentCreated: ShipmentCreated,
+		ShipmentInCustody: ShipmentInCustody,
+		ShipmentDelivered: ShipmentDelivered,
     }
+
+	#[derive(Drop, starknet::Event)]
+    struct AccountWhitelisted {
+        #[key]
+        account: ContractAddress,
+    }
+
+	#[derive(Drop, starknet::Event)]
+	struct ShipmentCreated {
+		#[key]
+		shipment_details: ShipmentDetails,
+	}
 
 
 	#[constructor]
@@ -78,23 +98,32 @@ mod SupplyChain {
 
 	#[external(v0)]
 	impl ISupplyChainImpl of ISupplyChain<ContractState>{
-		fn isWhitelisted(ref self: ContractState, address: ContractAddress ) -> bool {
+		fn whitelist_account(ref self: ContractState, address: ContractAddress) {
+			assert(self.factory_address.read() == get_caller_address);
+			self.is_whitelisted.write(address, true);
+			self.emit(AccountWhitelisted { account: address });
+		}
+
+		fn is_whitelisted(ref self: ContractState, address: ContractAddress ) -> bool {
 			self.isWhitelisted.read(address)
 		}
 
-		fn createShipment(ref self: ContractState, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
-			assert(isWhitelisted());
+		fn create_shipment(ref self: ContractState, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
+			assert(self.factory_address.read() == get_caller_address);
+			assert(isWhitelisted(get_caller_address));
 			let newShipment = ShipmentDetails {
 				name: _name,
 				address,
 				status: ShipmentStatus::Ordered,
 			};
 			self.shiplog.push(newShipment);
+			self.emit(ShipmentCreated { shipment_details: newShipment } );
 		}
 
-		fn updateShipment(ref self: ContractState, _id: u256, status: ShipmentDetails) {
+		fn update_shipment(ref self: ContractState, _id: u256, status: ShipmentDetails) {
+			assert(self.factory_address.read() == get_caller_address);
+			assert(isWhitelisted(get_caller_address));
 			assert(isWhitelisted());
-			
 		}
 	}
 
