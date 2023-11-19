@@ -25,13 +25,15 @@ mod SupplyChain {
     #[storage]
     struct Storage {
 		name: felt252,
-		company_id: u256,
+		company_id: u16,
+		admin_id: u128,
 		city: felt252,
 		state: felt252,
 		country: felt252,
 		factory_address: ContractAddress,
 		isWhitelisted: LegacyMap<ContractAddress, bool>,
-		shiplog: Vec<ShipmentDetails>
+		shiplog: Vec<ShipmentDetails>,
+		order_log: LegacyMap<u128, ShipmentDetails>
     }
 
 	enum ShipmentStatus {
@@ -108,6 +110,10 @@ mod SupplyChain {
 			self.isWhitelisted.read(address)
 		}
 
+		fn is_admin(ref self: ContractState, address: ContractAddress) -> bool {
+			self.is_admin.read() == get_caller_address
+		}
+
 		fn create_shipment(ref self: ContractState, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
 			assert(self.factory_address.read() == get_caller_address);
 			assert(isWhitelisted(get_caller_address));
@@ -120,10 +126,11 @@ mod SupplyChain {
 			self.emit(ShipmentCreated { shipment_details: newShipment } );
 		}
 
-		fn update_shipment(ref self: ContractState, _id: u256, status: ShipmentDetails) {
+		fn update_shipment(ref self: ContractState, _id: u256, status: ShipmentStatus) {
 			assert(self.factory_address.read() == get_caller_address);
-			assert(isWhitelisted(get_caller_address));
-			assert(isWhitelisted());
+			assert(is_admin, "Caller not an admin");
+			let this_shipemet = self.order_id.read(_id);
+			this_shipemet.status = status;
 		}
 	}
 
