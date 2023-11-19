@@ -149,7 +149,6 @@ trait aftimartTrait<TContractState> {
     fn revokeAdminRight(ref self: TContractState, admin: ContractAddress);
 }
 
-
 #[starknet::contract]
 mod afrimart {
     use super::{ArrayTrait, ContractAddress, aftimartTrait, userProfile, Item, order, orderPaymentStatus, cartItem, deliveryStatus, cartegory, nftItem, IERC20Dispatcher, IERC20DispatcherTrait, IERC721CamelOnlyDispatcher, IERC721CamelOnlyDispatcherTrait};
@@ -729,7 +728,6 @@ mod afrimart {
             self.adminRight.write(admin, false);
         }
 
-
         fn getAdmins(self: @ContractState) -> Array<ContractAddress> {
             let mut adminNumber: u256 = self.totalAdmins.read();
             let mut allAdmins = ArrayTrait::new();
@@ -747,7 +745,6 @@ mod afrimart {
             return allAdmins;
         }
  
-
     }
 
     #[generate_trait]
