@@ -46,22 +46,14 @@ mod SupplyChain {
 		// products: LegacyMap<u7,Product>
 	}
 
-	// impl ShipmentDetails {
-	// 	fn new(name: felt252, address: felt252, status: ShipmentStatus) -> ShipmentDetails {
-	// 		name, 
-	// 		address, 
-	// 		status
-	// 	};
-	// }
-
-    #[event]
-    #[derive(Drop, starknet::Event)]
-    enum Event {
-		AccountWhitelisted: AccountWhitelisted,
-		ShipmentCreated: ShipmentCreated,
-		// ShipmentInCustody: ShipmentInCustody,
-		// ShipmentDelivered: ShipmentDelivered,
-    }
+  #[event]
+  #[derive(Drop, starknet::Event)]
+  enum Event {
+  AccountWhitelisted: AccountWhitelisted,
+  ShipmentCreated: ShipmentCreated,
+  // ShipmentInCustody: ShipmentInCustody,
+  // ShipmentDelivered: ShipmentDelivered,
+  }
 
 	#[derive(Drop, starknet::Event)]
     struct AccountWhitelisted {
