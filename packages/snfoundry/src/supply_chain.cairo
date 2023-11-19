@@ -1,26 +1,18 @@
-// Alow whitelisting of staffs name and address
-// Allow creation of a shipment and uploading of picture of goods along with its tracking code
-// update shipment status to show that a particular good is now in their custody
-// update shipment status to show that a buyer has received his delivery
-// For each shipment creation and update make a call to the factory to help with efficient tracking.
-
-// The deployer of the contract + Factory Contract Address
-//  Product Details + Order Information
-// Dispatch Contract 
-
 #[starknet::interface]
+use starknet::ContractAddress; 
+use SupplyChain::ShipmentStatus;
 trait ISupplyChain<TContractState> {
-	fn whitelist_account(self: @TContractState, address: ContractAddress);
+	fn whitelist_account(ref self: TContractState, address: ContractAddress);
   fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
-	fn create_shipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);
-	fn update_shipment(ref self: TContractState, picture: felt252, address: felt252, trackingMode: felt252);  
+  fn create_shipment(ref self: TContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252);
+	fn update_shipment(ref self: TContractState, _id: u8, status: ShipmentStatus); 
+  fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
 }
 
 #[starknet::contract]
 mod SupplyChain {
 	use super::ISupplyChain;
 	use starknet::{ContractAddress, get_caller_address, get_contract_address};
-	use starknet::getCallerAddress;
 
     #[storage]
     struct Storage {
@@ -31,24 +23,27 @@ mod SupplyChain {
 		state: felt252,
 		country: felt252,
 		factory_address: ContractAddress,
-		isWhitelisted: LegacyMap<ContractAddress, bool>,
-		shiplog: Vec<ShipmentDetails>,
-		order_log: LegacyMap<u128, ShipmentDetails>
+		is_whitelisted: LegacyMap<ContractAddress, bool>,
+    is_admin: LegacyMap<ContractAddress, bool>,
+		shiplog: LegacyMap<u256,ShipmentDetails>,
+		order_log: LegacyMap<u8, ShipmentDetails>,
     }
 
+  #[derive(Drop, Copy, starknet::Store, SerdeDrop, starknet::Store, Serde)]
 	enum ShipmentStatus {
 		Ordered,
 		Custody,
 		Delivered
 	}
 
+  #[derive(Drop, Copy, starknet::Store, Serde)]
 	struct ShipmentDetails {
 		order_id: u256,
 		name: felt252,
 		address: felt252,
 		status: ShipmentStatus,
 		created_by: ContractAddress,
-		products: Vec<Product>
+		// products: LegacyMap<u7,Product>
 	}
 
 	// impl ShipmentDetails {
@@ -64,8 +59,8 @@ mod SupplyChain {
     enum Event {
 		AccountWhitelisted: AccountWhitelisted,
 		ShipmentCreated: ShipmentCreated,
-		ShipmentInCustody: ShipmentInCustody,
-		ShipmentDelivered: ShipmentDelivered,
+		// ShipmentInCustody: ShipmentInCustody,
+		// ShipmentDelivered: ShipmentDelivered,
     }
 
 	#[derive(Drop, starknet::Event)]
@@ -85,7 +80,7 @@ mod SupplyChain {
 	fn constructor(
 		ref self: ContractState,
 		dispatch_name: felt252,
-		dispatch_id: u256,
+		dispatch_id: u16,
 		city: felt252,
 		state: felt252,
 		country: felt252,
@@ -95,39 +90,41 @@ mod SupplyChain {
 		self.city.write(city);
 		self.state.write(state);
 		self.country.write(country);
-		self.factory_address.write();
+		self.factory_address.write(get_caller_address());
 	}
 
 	#[external(v0)]
 	impl ISupplyChainImpl of ISupplyChain<ContractState>{
 		fn whitelist_account(ref self: ContractState, address: ContractAddress) {
-			assert(self.factory_address.read() == get_caller_address());
+			assert(self.factory_address.read() == get_caller_address(), "Only the factory can whitelist an account");
 			self.is_whitelisted.write(address, true);
 			self.emit(AccountWhitelisted { account: address });
 		}
 
-		fn is_whitelisted(ref self: ContractState, address: ContractAddress ) -> bool {
-			self.isWhitelisted.read(address)
+		fn is_whitelisted(self: @ContractState, address: ContractAddress ) -> bool {
+			self.is_whitelisted.read(address)
 		}
 
 		fn is_admin(ref self: ContractState, address: ContractAddress) -> bool {
-			self.is_admin.read() == get_caller_address()
+			self.is_admin.read(address) 
 		}
 
-		fn create_shipment(ref self: ContractState, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
-			assert(is_whitelisted(get_caller_address()), "Caller not whitelisted");
+		fn create_shipment(ref self: ContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
+			assert(self.is_whitelisted(get_caller_address()), "Caller not whitelisted");
 			let newShipment = ShipmentDetails {
+        order_id,
 				name: _name,
 				address,
 				status: ShipmentStatus::Ordered,
+        created_by: get_caller_address(),
 			};
-			self.shiplog.push(newShipment);
+			self.shiplog.write(order_id,newShipment);
 			self.emit(ShipmentCreated { shipment_details: newShipment } );
 		}
 
-		fn update_shipment(ref self: ContractState, _id: u256, status: ShipmentStatus) {
-			assert(self.is_admin(), "Caller not an admin");
-			let this_shipemet = self.order_id.read(_id);
+		fn update_shipment(ref self: ContractState, _id: u8, status: ShipmentStatus) {
+			assert(self.is_admin(get_caller_address()), "Caller not an admin");
+			let mut this_shipemet = self.order_log.read(_id);
 			this_shipemet.status = status;
 		}
 	}
