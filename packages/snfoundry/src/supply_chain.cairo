@@ -101,7 +101,7 @@ mod SupplyChain {
 	#[external(v0)]
 	impl ISupplyChainImpl of ISupplyChain<ContractState>{
 		fn whitelist_account(ref self: ContractState, address: ContractAddress) {
-			assert(self.factory_address.read() == get_caller_address);
+			assert(self.factory_address.read() == get_caller_address());
 			self.is_whitelisted.write(address, true);
 			self.emit(AccountWhitelisted { account: address });
 		}
@@ -111,12 +111,12 @@ mod SupplyChain {
 		}
 
 		fn is_admin(ref self: ContractState, address: ContractAddress) -> bool {
-			self.is_admin.read() == get_caller_address
+			self.is_admin.read() == get_caller_address()
 		}
 
 		fn create_shipment(ref self: ContractState, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
-			assert(self.factory_address.read() == get_caller_address);
-			assert(isWhitelisted(get_caller_address));
+			assert(self.factory_address.read() == get_caller_address());
+			assert(isWhitelisted(get_caller_address()));
 			let newShipment = ShipmentDetails {
 				name: _name,
 				address,
@@ -127,7 +127,7 @@ mod SupplyChain {
 		}
 
 		fn update_shipment(ref self: ContractState, _id: u256, status: ShipmentStatus) {
-			assert(self.factory_address.read() == get_caller_address);
+			assert(self.factory_address.read() == get_caller_address());
 			assert(is_admin, "Caller not an admin");
 			let this_shipemet = self.order_id.read(_id);
 			this_shipemet.status = status;
