@@ -97,6 +97,12 @@ struct OrdersStats {
     overallShipmentTotal: u128,
 }
 
+#[starknet::interface]
+trait IMarketPlace<TContractState> {
+    fn registerSupplyChainChild(ref self: TContractState, supplyChainChild: ContractAddress);
+}
+
+
 
 #[starknet::interface]
 trait IDispatchFactory<TContractState>{
@@ -119,7 +125,7 @@ trait IDispatchFactory<TContractState>{
 
     // this can be called by either dispatchHq or dispatchBranch Admins
     fn createTracker(ref self: TContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) ;
-    fn updateTracker(ref self: TContractState, orderId: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
+    fn updateTracker(ref self: TContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
 
     // to be called by market place contract or Dispatch
     fn trackeItem(self: @TContractState, orderID: u128) -> OrderLocation;
@@ -136,14 +142,17 @@ trait IDispatchFactory<TContractState>{
 
 }
 
+
 #[starknet::contract]
 mod DispatchCompanyFactory {
-    use core::result::ResultTrait;
+    use snfoundry::supply_chain_factory::IMarketPlaceDispatcherTrait;
+use core::result::ResultTrait;
 use core::serde::Serde;
-    use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats};
+    use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher};
     use starknet::{get_caller_address, syscalls::deploy_syscall};
     #[storage]
     struct Storage {
+        marketPlaceAddress: ContractAddress,
         // factory owners and owners confirmations storage
         ownerID: u8,
         isOwner: LegacyMap<(u8, ContractAddress), bool>,
@@ -197,6 +206,13 @@ use core::serde::Serde;
     #[event]
     #[derive(Drop, starknet::Event)]
     enum Event {
+        OwnersAdded: OwnersAdded,
+        CompanyRegistered: CompanyRegistered,
+        BranchAdminCreated: BranchAdminCreated,
+        BranchCreated: BranchCreated,
+        ShipmentCreated: ShipmentCreated,
+        ShipmentUpdated: ShipmentUpdated,
+
     }
 
     #[derive(Drop, starknet::Event)]
@@ -231,12 +247,41 @@ use core::serde::Serde;
         adminAddress: ContractAddress,
     }
 
-    // #[derive(Drop, starknet::Event)]
-    // struct BranchCreated {
-    //     #[key]
-    //     : ,
-    // }
+    #[derive(Drop, starknet::Event)]
+    struct BranchCreated {
+        #[key]
+        companyID: u16,
+        #[key]
+        creatorID: u128,
+        #[key]
+        branchID: u128,
+        #[key]
+        branchAddress: ContractAddress,
+    }
 
+    #[derive(Drop, starknet::Event)]
+    struct ShipmentCreated {
+        #[key]
+        companyID: u16,
+        #[key]
+        branchID: u128,
+        #[key]
+        branchAddress: ContractAddress,
+        #[key]
+        orderID: u128,
+    }
+
+    #[derive(Drop, starknet::Event)]
+    struct ShipmentUpdated {
+        #[key]
+        companyID: u16,
+        #[key]
+        branchID: u128,
+        #[key]
+        branchAddress: ContractAddress,
+        #[key]
+        orderID: u128,
+    }
 
 
     
@@ -251,6 +296,7 @@ use core::serde::Serde;
         let owner_details = FactoryAdmin {adminNumber: owner_id, address: owner_address};
         self.owners.write(owner_id, owner_details);
         self.branchHash.write(branchClassHash);
+        self.emit(OwnersAdded {by: get_caller_address(), for: get_caller_address(), ownerID: owner_id});
     }
 
     #[external(v0)]
@@ -264,6 +310,7 @@ use core::serde::Serde;
             owner_id = owner_id + 1;
             self._setFactoryAdmin(factoryAdminAddress, owner_id);
             self.ownerID.write(owner_id);
+            self.emit(OwnersAdded {by: get_caller_address(), for: factoryAdminAddress, ownerID: owner_id});
             owner_id
         }
 
@@ -275,6 +322,8 @@ use core::serde::Serde;
             hq_id = hq_id + 1;
             self._setDispatchHqAdmin(hq_id, companyRepAddress, companyName, country, state, city);
             self.dispatchCompanyID.write(hq_id);
+
+            self.emit(CompanyRegistered {by: get_caller_address(), for: companyName, companyID: hq_id, companyAdminAddress: companyRepAddress});
             hq_id
 
         }
@@ -290,6 +339,8 @@ use core::serde::Serde;
             let OverallTotalAdmin = self.overAllAdminsNumber.read();
             let admin_stats = AdminStats {companyID, totalCompanyAdmins: admin_id, OverallTotalAdmin};
             self.adminStatistics.write(companyID, admin_stats);
+
+            self.emit(BranchAdminCreated{companyID, adminID: admin_id, adminAddress});
             admin_id
         }
 
@@ -300,11 +351,11 @@ use core::serde::Serde;
             // constructor arguments
             let mut constructor_args = ArrayTrait::new();
             companyID.serialize(ref constructor_args);
-            get_caller_address().serialize(ref constructor_args);
             adminID.serialize(ref constructor_args);
             city.serialize(ref constructor_args);
             state.serialize(ref constructor_args);
             country.serialize(ref constructor_args);
+            get_caller_address().serialize(ref constructor_args);
 
             //deploy contract
             let (deployed_contract_address, _) = deploy_syscall(self.branchHash.read(), 0, constructor_args.span(), false). expect('failed to deploy branch');
@@ -326,6 +377,12 @@ use core::serde::Serde;
             self.dispatchBranch.write((companyID, adminID, branch_id), branch_details);
             self.branchStatistics.write(companyID, branch_stats);
 
+            
+
+            IMarketPlaceDispatcher{contract_address: self.marketPlaceAddress.read()}.registerSupplyChainChild(deployed_contract_address);
+
+            self.emit(BranchCreated{companyID, creatorID: adminID, branchID: branch_id, branchAddress: deployed_contract_address});
+
             (branch_id, deployed_contract_address)
 
         }
@@ -342,15 +399,19 @@ use core::serde::Serde;
             let company_total_shipment = self.companyShipmentTotal.read((companyID, orderID)) + 1;
             let shipment_stats = OrdersStats {companyID, companyTotalShipment: company_total_shipment, overallShipmentTotal: new_total_shipment};
 
+            self.emit(ShipmentCreated{companyID, branchID, branchAddress: get_caller_address(), orderID});
+
         }
 
-        fn updateTracker(ref self: ContractState, orderId: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+        fn updateTracker(ref self: ContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
             
-            assert(self.isDispatchCompnay.read((orderId, companyID)) == true, 'Unauthorized Entity');
+            assert(self.isDispatchCompnay.read((orderID, companyID)) == true, 'Unauthorized Entity');
             assert(self.branchExist.read((companyID, branchID, get_caller_address())) == true, 'Unauthorized Entity');
 
 
-            self._updateTracker(orderId, companyID, branchID, previousLocation, currentLocation, nextStop, deliveryStatus);
+            self._updateTracker(orderID, companyID, branchID, previousLocation, currentLocation, nextStop, deliveryStatus);
+
+            self.emit(ShipmentUpdated{companyID, branchID, branchAddress: get_caller_address(), orderID});
         }
 
         // getter functions .....
