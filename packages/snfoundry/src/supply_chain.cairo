@@ -76,19 +76,22 @@ mod SupplyChain {
 		city: felt252,
 		state: felt252,
 		country: felt252,
+    msg_sender: ContractAddress,
 	){
 		self.name.write(dispatch_name);
 		self.company_id.write(dispatch_id);
 		self.city.write(city);
 		self.state.write(state);
 		self.country.write(country);
-		self.factory_address.write(get_caller_address());
+		self.factory_address.write(msg_sender);
+		self.factory_address.write(msg_sender);
 	}
 
-	#[external(v0)]
+	#[generate_traits]
 	impl ISupplyChainImpl of ISupplyChain<ContractState>{
 		fn whitelist_account(ref self: ContractState, address: ContractAddress) {
-			assert(self.factory_address.read() == get_caller_address(), "Only the factory can whitelist an account");
+      let caller = get_caller_address();
+			assert(self.factory_address.read() == caller, "Only the factory can whitelist an account");
 			self.is_whitelisted.write(address, true);
 			self.emit(AccountWhitelisted { account: address });
 		}
@@ -102,20 +105,23 @@ mod SupplyChain {
 		}
 
 		fn create_shipment(ref self: ContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
-			assert(self.is_whitelisted(get_caller_address()), "Caller not whitelisted");
+      let caller = get_caller_address();
+			assert(self.is_whitelisted(caller), "Caller not whitelisted");
+      let caller = get_caller_address();
 			let newShipment = ShipmentDetails {
         order_id,
 				name: _name,
 				address,
 				status: ShipmentStatus::Ordered,
-        created_by: get_caller_address(),
+        created_by: caller,
 			};
 			self.shiplog.write(order_id,newShipment);
 			self.emit(ShipmentCreated { shipment_details: newShipment } );
 		}
 
 		fn update_shipment(ref self: ContractState, _id: u8, status: ShipmentStatus) {
-			assert(self.is_admin(get_caller_address()), "Caller not an admin");
+      let caller = get_caller_address();
+			assert(self.is_admin(caller), "Caller not an admin");
 			let mut this_shipemet = self.order_log.read(_id);
 			this_shipemet.status = status;
 		}
