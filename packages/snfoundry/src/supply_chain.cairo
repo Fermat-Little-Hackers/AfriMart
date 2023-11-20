@@ -6,13 +6,14 @@ trait ISupplyChain<TContractState> {
 	fn whitelist_account(ref self: TContractState, address: ContractAddress);
 	fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
 	fn create_shipment(ref self: TContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252);
-	fn update_shipment(ref self: TContractState, _id: u8, status: OrderStatus); 
+	fn update_shipment(ref self: TContractState, order_id: u256, next_location: felt252, new_status: OrderStatus);
 	fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
 }
 
 #[starknet::interface]
 trait IFactory<TContractState> {
-	fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) ;
+	fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
+	fn updateTracker(ref self: TContractState, orderId: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
 }
 
 #[starknet::contract]
@@ -36,7 +37,7 @@ use super::ISupplyChain;
 		is_whitelisted: LegacyMap<ContractAddress, bool>,
 		is_admin: LegacyMap<ContractAddress, bool>,
 		shiplog: LegacyMap<u256,ShipmentDetails>,
-		order_log: LegacyMap<u8, ShipmentDetails>,
+		order_log: LegacyMap<u256, ShipmentDetails>,
     }
 
   #[derive(Drop, Copy, starknet::Store, Serde)]
@@ -132,11 +133,22 @@ use super::ISupplyChain;
 			self.emit(ShipmentCreated { shipment_details: newShipment } );
 		}
 
-		fn update_shipment(ref self: ContractState, _id: u8, status: OrderStatus) {
+		fn update_shipment(ref self: ContractState, order_id: u256, next_location: felt252, new_status: OrderStatus) {
 			let caller = get_caller_address();
 			assert(self.is_whitelisted(caller), 'Caller not a STAFF');
-			let mut this_shipemet = self.order_log.read(_id);
-			this_shipemet.status = status;
+			let mut this_shipment = self.order_log.read(order_id);
+			let address = this_shipment.address;
+			this_shipment.status = new_status;
+			let result = IFactoryDispatcher { contract_address: self.factory_address.read() };
+			result.updateTracker(
+				order_id,
+				self.company_id.read(),
+				self.branch_id.read(),
+				self.city.read(),
+				self.city.read(),
+				next_location,
+				new_status
+			);
 		}
 	}
 
