@@ -1,5 +1,4 @@
 use starknet::ContractAddress; 
-use SupplyChain::ShipmentStatus;
 use super::order_status::OrderStatus;
 
 #[starknet::interface]
@@ -11,16 +10,24 @@ trait ISupplyChain<TContractState> {
 	fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
 }
 
+#[starknet::interface]
+trait IFactory<TContractState> {
+	fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) ;
+}
+
 #[starknet::contract]
 mod SupplyChain {
-	use super::ISupplyChain;
-	use starknet::{ContractAddress, get_caller_address, get_contract_address};
+	use snfoundry::supply_chain::IFactoryDispatcherTrait;
+use super::ISupplyChain;
+	use starknet::{ContractAddress, get_caller_address, get_contract_address,};
 	use super::OrderStatus;
+	use super::IFactoryDispatcher;
 
     #[storage]
     struct Storage {
 		name: felt252,
 		company_id: u16,
+		branch_id: u128,
 		admin_id: u128,
 		city: felt252,
 		state: felt252,
@@ -110,6 +117,17 @@ mod SupplyChain {
 				status: OrderStatus::Processing,
         		created_by: caller,
 			};
+
+			let result = IFactoryDispatcher { contract_address: self.factory_address.read() };
+			result.createTracker(
+				order_id,
+				self.company_id.read(),
+				self.branch_id.read(),
+				address,
+				address,
+				address,
+				OrderStatus::Processing
+			);
 			self.shiplog.write(order_id,newShipment);
 			self.emit(ShipmentCreated { shipment_details: newShipment } );
 		}
