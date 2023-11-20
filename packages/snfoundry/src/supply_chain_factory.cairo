@@ -98,6 +98,8 @@ trait IMarketPlace<TContractState> {
 #[starknet::interface]
 trait IDispatchFactory<TContractState>{
 
+    fn setMarketPlace(ref self: TContractState, marketPlaceAddr: ContractAddress);
+
     fn setFactoryAdmin(ref self: TContractState, factoryAdminAddress: ContractAddress) -> u8; // set factory admin id
     fn getFactoryAdmin(self: @TContractState, adminID: u8) -> FactoryAdmin;
 
@@ -296,6 +298,11 @@ use core::serde::Serde;
     impl DispatchFactoryImpl of IDispatchFactory<ContractState>{
 
         // setter functions ..
+        fn setMarketPlace(ref self: ContractState, marketPlaceAddr: ContractAddress) {
+            assert(self.isFactoryAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
+            self.marketPlaceAddress.write(marketPlaceAddr);
+        }
+        
         fn setFactoryAdmin(ref self: ContractState, factoryAdminAddress: ContractAddress) -> u8{
             let mut owner_id = self.ownerID.read();
             assert(self.isFactoryAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel!!');
