@@ -60,12 +60,12 @@ struct OrderOrigin {
     companyID: u16,
     branchAddress: ContractAddress,
     branchID: u128,
-    orderID: u128,
+    orderID: u256,
 }
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct OrderLocation {
-    orderID: u128,
+    orderID: u256,
     companyID: u16,
     branchID: u128,
     deliveryStatus: OrderStatus,
@@ -124,11 +124,11 @@ trait IDispatchFactory<TContractState>{
 
 
     // this can be called by either dispatchHq or dispatchBranch Admins
-    fn createTracker(ref self: TContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) ;
-    fn updateTracker(ref self: TContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
+    fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) ;
+    fn updateTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
 
     // to be called by market place contract or Dispatch
-    fn trackeItem(self: @TContractState, orderID: u128) -> OrderLocation;
+    fn trackeItem(self: @TContractState, orderID: u256) -> OrderLocation;
 
     // get total factory admins
     fn getTotalFactoryAdmin(self: @TContractState, adminID: u8) -> u8;
@@ -187,15 +187,15 @@ use core::serde::Serde;
         overallBranchTotal: u128,
 
         // takes orderID to reveal shipment origin
-        orderOriginator: LegacyMap<u128, OrderOrigin>,        
+        orderOriginator: LegacyMap<u256, OrderOrigin>,        
         // takes orderID and conpanyID to confirm shipping company updating tracker is the creator.
-        isDispatchCompnay: LegacyMap<(u128, u16), bool>,
+        isDispatchCompnay: LegacyMap<(u256, u16), bool>,
 
         // takes Order ID to return shipping details
-        trackOrderID: LegacyMap<u128, OrderLocation>,// remove restriction.
+        trackOrderID: LegacyMap<u256, OrderLocation>,// remove restriction.
         
         overallShipmentTotal: u128,
-        companyShipmentTotal: LegacyMap<(u16, u128), u128>,
+        companyShipmentTotal: LegacyMap<(u16, u256), u128>,
         shipmentStats: LegacyMap<u16, OrdersStats>,
 
         
@@ -268,7 +268,7 @@ use core::serde::Serde;
         #[key]
         branchAddress: ContractAddress,
         #[key]
-        orderID: u128,
+        orderID: u256,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -280,7 +280,7 @@ use core::serde::Serde;
         #[key]
         branchAddress: ContractAddress,
         #[key]
-        orderID: u128,
+        orderID: u256,
     }
 
 
@@ -387,7 +387,7 @@ use core::serde::Serde;
 
         }
 
-        fn createTracker(ref self: ContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+        fn createTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
             assert(self.branchExist.read((companyID, branchID, get_caller_address())) == true, 'Unauthorized Entity');
 
             self._createTracker(orderID, companyID, branchID, previousLocation, currentLocation, nextStop, deliveryStatus);
@@ -403,7 +403,7 @@ use core::serde::Serde;
 
         }
 
-        fn updateTracker(ref self: ContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+        fn updateTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
             
             assert(self.isDispatchCompnay.read((orderID, companyID)) == true, 'Unauthorized Entity');
             assert(self.branchExist.read((companyID, branchID, get_caller_address())) == true, 'Unauthorized Entity');
@@ -438,7 +438,7 @@ use core::serde::Serde;
         }
 
 
-        fn trackeItem(self: @ContractState, orderID: u128) -> OrderLocation {
+        fn trackeItem(self: @ContractState, orderID: u256) -> OrderLocation {
             let order_location = self.trackOrderID.read(orderID);
             order_location
         }
@@ -532,14 +532,14 @@ use core::serde::Serde;
             self.dispatchAdmins.write((companyID, branchAdminID), admin_details);
         }
 
-        fn _createTracker(ref self: ContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+        fn _createTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
             let item_location = OrderLocation {orderID, companyID, branchID, deliveryStatus, previousLocation, currentLocation, nextStop};
             self.trackOrderID.write(orderID, item_location);
             self.isDispatchCompnay.write((orderID, companyID), true);
 
         }
 
-        fn _updateTracker(ref self: ContractState, orderID: u128, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+        fn _updateTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
             let new_item_location = OrderLocation {orderID, companyID, branchID, deliveryStatus, previousLocation, currentLocation, nextStop};
             self.trackOrderID.write(orderID, new_item_location);
         }
