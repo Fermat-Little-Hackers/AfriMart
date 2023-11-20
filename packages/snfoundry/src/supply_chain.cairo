@@ -12,8 +12,8 @@ trait ISupplyChain<TContractState> {
 
 #[starknet::interface]
 trait IFactory<TContractState> {
-	fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
-	fn updateTracker(ref self: TContractState, orderId: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
+	fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, nextStop: felt252, deliveryStatus: OrderStatus) ;
+    fn updateTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, nextStop: felt252, deliveryStatus: OrderStatus);
 }
 
 #[starknet::contract]
@@ -125,8 +125,6 @@ use super::ISupplyChain;
 				self.company_id.read(),
 				self.branch_id.read(),
 				address,
-				address,
-				address,
 				OrderStatus::Processing
 			);
 			self.shiplog.write(order_id,newShipment);
@@ -144,8 +142,6 @@ use super::ISupplyChain;
 				order_id,
 				self.company_id.read(),
 				self.branch_id.read(),
-				self.city.read(),
-				self.city.read(),
 				next_location,
 				new_status
 			);
