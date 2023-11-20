@@ -1,12 +1,13 @@
-#[starknet::interface]
 use starknet::ContractAddress; 
 use SupplyChain::ShipmentStatus;
+
+#[starknet::interface]
 trait ISupplyChain<TContractState> {
 	fn whitelist_account(ref self: TContractState, address: ContractAddress);
-  fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
-  fn create_shipment(ref self: TContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252);
+	fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
+	fn create_shipment(ref self: TContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252);
 	fn update_shipment(ref self: TContractState, _id: u8, status: ShipmentStatus); 
-  fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
+	fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
 }
 
 #[starknet::contract]
@@ -24,7 +25,7 @@ mod SupplyChain {
 		country: felt252,
 		factory_address: ContractAddress,
 		is_whitelisted: LegacyMap<ContractAddress, bool>,
-    is_admin: LegacyMap<ContractAddress, bool>,
+		is_admin: LegacyMap<ContractAddress, bool>,
 		shiplog: LegacyMap<u256,ShipmentDetails>,
 		order_log: LegacyMap<u8, ShipmentDetails>,
     }
@@ -87,11 +88,11 @@ mod SupplyChain {
 		self.factory_address.write(msg_sender);
 	}
 
-	#[generate_traits]
+	#[external(v0)]
 	impl ISupplyChainImpl of ISupplyChain<ContractState>{
 		fn whitelist_account(ref self: ContractState, address: ContractAddress) {
       let caller = get_caller_address();
-			assert(self.factory_address.read() == caller, "Only the factory can whitelist an account");
+			assert(self.factory_address.read() == caller, 'NOT FACTORY');
 			self.is_whitelisted.write(address, true);
 			self.emit(AccountWhitelisted { account: address });
 		}
@@ -106,7 +107,7 @@ mod SupplyChain {
 
 		fn create_shipment(ref self: ContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
       let caller = get_caller_address();
-			assert(self.is_whitelisted(caller), "Caller not whitelisted");
+			assert(self.is_whitelisted(caller), 'Caller not whitelisted');
       let caller = get_caller_address();
 			let newShipment = ShipmentDetails {
         order_id,
@@ -120,8 +121,8 @@ mod SupplyChain {
 		}
 
 		fn update_shipment(ref self: ContractState, _id: u8, status: ShipmentStatus) {
-      let caller = get_caller_address();
-			assert(self.is_admin(caller), "Caller not an admin");
+			let caller = get_caller_address();
+			assert(self.is_whitelisted(caller), 'Caller not a STAFF');
 			let mut this_shipemet = self.order_log.read(_id);
 			this_shipemet.status = status;
 		}
