@@ -7,16 +7,7 @@
 
 use starknet::{ContractAddress, ClassHash};
 use array::ArrayTrait;
-
-#[derive(Copy, Drop, starknet::Store, Serde)]
-enum OrderStatus{
-    Processing,
-    Shipped,
-    Arrived,
-    Enroute,
-    Delivered,
-    Canceled,
-}
+use super::order_status::OrderStatus;
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct FactoryAdmin {

@@ -1,12 +1,13 @@
 use starknet::ContractAddress; 
 use SupplyChain::ShipmentStatus;
+use super::order_status::OrderStatus;
 
 #[starknet::interface]
 trait ISupplyChain<TContractState> {
 	fn whitelist_account(ref self: TContractState, address: ContractAddress);
 	fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
 	fn create_shipment(ref self: TContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252);
-	fn update_shipment(ref self: TContractState, _id: u8, status: ShipmentStatus); 
+	fn update_shipment(ref self: TContractState, _id: u8, status: OrderStatus); 
 	fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
 }
 
@@ -14,6 +15,7 @@ trait ISupplyChain<TContractState> {
 mod SupplyChain {
 	use super::ISupplyChain;
 	use starknet::{ContractAddress, get_caller_address, get_contract_address};
+	use super::OrderStatus;
 
     #[storage]
     struct Storage {
@@ -30,19 +32,12 @@ mod SupplyChain {
 		order_log: LegacyMap<u8, ShipmentDetails>,
     }
 
-  #[derive(Drop, Copy, starknet::Store, SerdeDrop, starknet::Store, Serde)]
-	enum ShipmentStatus {
-		Ordered,
-		Custody,
-		Delivered
-	}
-
   #[derive(Drop, Copy, starknet::Store, Serde)]
 	struct ShipmentDetails {
 		order_id: u256,
 		name: felt252,
 		address: felt252,
-		status: ShipmentStatus,
+		status: OrderStatus,
 		created_by: ContractAddress,
 		// products: LegacyMap<u7,Product>
 	}
@@ -108,19 +103,18 @@ mod SupplyChain {
 		fn create_shipment(ref self: ContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
       let caller = get_caller_address();
 			assert(self.is_whitelisted(caller), 'Caller not whitelisted');
-      let caller = get_caller_address();
 			let newShipment = ShipmentDetails {
-        order_id,
+        		order_id,
 				name: _name,
 				address,
-				status: ShipmentStatus::Ordered,
-        created_by: caller,
+				status: OrderStatus::Processing,
+        		created_by: caller,
 			};
 			self.shiplog.write(order_id,newShipment);
 			self.emit(ShipmentCreated { shipment_details: newShipment } );
 		}
 
-		fn update_shipment(ref self: ContractState, _id: u8, status: ShipmentStatus) {
+		fn update_shipment(ref self: ContractState, _id: u8, status: OrderStatus) {
 			let caller = get_caller_address();
 			assert(self.is_whitelisted(caller), 'Caller not a STAFF');
 			let mut this_shipemet = self.order_log.read(_id);
