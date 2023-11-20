@@ -7,16 +7,7 @@
 
 use starknet::{ContractAddress, ClassHash};
 use array::ArrayTrait;
-
-#[derive(Copy, Drop, starknet::Store, Serde)]
-enum OrderStatus{
-    Processing,
-    Shipped,
-    Arrived,
-    Enroute,
-    Delivered,
-    Canceled,
-}
+use super::order_status::OrderStatus;
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct FactoryAdmin {
@@ -124,8 +115,8 @@ trait IDispatchFactory<TContractState>{
 
 
     // this can be called by either dispatchHq or dispatchBranch Admins
-    fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) ;
-    fn updateTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus);
+    fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, nextStop: felt252, deliveryStatus: OrderStatus) ;
+    fn updateTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, nextStop: felt252, deliveryStatus: OrderStatus);
 
     // to be called by market place contract or Dispatch
     fn trackeItem(self: @TContractState, orderID: u256) -> OrderLocation;
@@ -176,6 +167,8 @@ use core::serde::Serde;
         overAllAdminsNumber: u128,
 
         branchHash: ClassHash,
+
+        addressToBranch: LegacyMap<ContractAddress, DispatchBranch>,
         // takes CompanyID, admin ID and branch contract address to generated a branch id at child deployment
         branchID: LegacyMap<(u16, u128, ContractAddress), u128>,
         // take CompanyID, branch ID and branch contract address to confirm that branch exists
@@ -380,6 +373,7 @@ use core::serde::Serde;
             
 
             IMarketPlaceDispatcher{contract_address: self.marketPlaceAddress.read()}.registerSupplyChainChild(deployed_contract_address);
+            self.addressToBranch.write(deployed_contract_address, branch_details);
 
             self.emit(BranchCreated{companyID, creatorID: adminID, branchID: branch_id, branchAddress: deployed_contract_address});
 
@@ -387,11 +381,14 @@ use core::serde::Serde;
 
         }
 
-        fn createTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+        fn createTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, nextStop: felt252, deliveryStatus: OrderStatus) {
             assert(self.branchExist.read((companyID, branchID, get_caller_address())) == true, 'Unauthorized Entity');
+            let branch_location = self.addressToBranch.read(get_caller_address()).location.city;
 
-            self._createTracker(orderID, companyID, branchID, previousLocation, currentLocation, nextStop, deliveryStatus);
+            self._createTracker(orderID, companyID, branchID, branch_location, nextStop, deliveryStatus);
             let order_originator = OrderOrigin {companyID, branchAddress: get_caller_address(), branchID, orderID};
+
+
             
             self.orderOriginator.write(orderID, order_originator);
             self.overallShipmentTotal.write(self.overallShipmentTotal.read() + 1);
@@ -403,13 +400,16 @@ use core::serde::Serde;
 
         }
 
-        fn updateTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+        fn updateTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, nextStop: felt252, deliveryStatus: OrderStatus) {
             
             assert(self.isDispatchCompnay.read((orderID, companyID)) == true, 'Unauthorized Entity');
             assert(self.branchExist.read((companyID, branchID, get_caller_address())) == true, 'Unauthorized Entity');
+            let current_location = self.addressToBranch.read(get_caller_address()).location.city;
 
 
-            self._updateTracker(orderID, companyID, branchID, previousLocation, currentLocation, nextStop, deliveryStatus);
+
+
+            self._updateTracker(orderID, companyID, branchID, current_location, nextStop, deliveryStatus);
 
             self.emit(ShipmentUpdated{companyID, branchID, branchAddress: get_caller_address(), orderID});
         }
@@ -532,15 +532,20 @@ use core::serde::Serde;
             self.dispatchAdmins.write((companyID, branchAdminID), admin_details);
         }
 
-        fn _createTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
-            let item_location = OrderLocation {orderID, companyID, branchID, deliveryStatus, previousLocation, currentLocation, nextStop};
+        fn _createTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+            let item_location = OrderLocation {orderID, companyID, branchID, deliveryStatus, previousLocation: 'market Place', currentLocation, nextStop};
             self.trackOrderID.write(orderID, item_location);
             self.isDispatchCompnay.write((orderID, companyID), true);
 
         }
 
-        fn _updateTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, previousLocation: felt252, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
-            let new_item_location = OrderLocation {orderID, companyID, branchID, deliveryStatus, previousLocation, currentLocation, nextStop};
+        fn _updateTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+            // let new_item_location = OrderLocation {orderID, companyID, branchID, deliveryStatus, previousLocation, currentLocation, nextStop};
+            let mut new_item_location = self.trackOrderID.read(orderID);
+            new_item_location.previousLocation = new_item_location.currentLocation;
+            new_item_location.currentLocation = currentLocation;
+            new_item_location.nextStop = nextStop;
+            new_item_location.deliveryStatus = deliveryStatus;
             self.trackOrderID.write(orderID, new_item_location);
         }
     }
