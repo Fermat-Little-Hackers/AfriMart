@@ -1,24 +1,34 @@
 use starknet::ContractAddress; 
-use SupplyChain::ShipmentStatus;
+use super::order_status::OrderStatus;
 
 #[starknet::interface]
 trait ISupplyChain<TContractState> {
 	fn whitelist_account(ref self: TContractState, address: ContractAddress);
 	fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
 	fn create_shipment(ref self: TContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252);
-	fn update_shipment(ref self: TContractState, _id: u8, status: ShipmentStatus); 
+	fn update_shipment(ref self: TContractState, order_id: u256, next_location: felt252, new_status: OrderStatus);
 	fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
+}
+
+#[starknet::interface]
+trait IFactory<TContractState> {
+	fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, nextStop: felt252, deliveryStatus: OrderStatus) ;
+    fn updateTracker(ref self: TContractState, orderID: u256, companyID: u16, branchID: u128, nextStop: felt252, deliveryStatus: OrderStatus);
 }
 
 #[starknet::contract]
 mod SupplyChain {
-	use super::ISupplyChain;
-	use starknet::{ContractAddress, get_caller_address, get_contract_address};
+	use snfoundry::supply_chain::IFactoryDispatcherTrait;
+use super::ISupplyChain;
+	use starknet::{ContractAddress, get_caller_address, get_contract_address,};
+	use super::OrderStatus;
+	use super::IFactoryDispatcher;
 
     #[storage]
     struct Storage {
 		name: felt252,
 		company_id: u16,
+		branch_id: u128,
 		admin_id: u128,
 		city: felt252,
 		state: felt252,
@@ -27,22 +37,15 @@ mod SupplyChain {
 		is_whitelisted: LegacyMap<ContractAddress, bool>,
 		is_admin: LegacyMap<ContractAddress, bool>,
 		shiplog: LegacyMap<u256,ShipmentDetails>,
-		order_log: LegacyMap<u8, ShipmentDetails>,
+		order_log: LegacyMap<u256, ShipmentDetails>,
     }
-
-  #[derive(Drop, Copy, starknet::Store, SerdeDrop, starknet::Store, Serde)]
-	enum ShipmentStatus {
-		Ordered,
-		Custody,
-		Delivered
-	}
 
   #[derive(Drop, Copy, starknet::Store, Serde)]
 	struct ShipmentDetails {
 		order_id: u256,
 		name: felt252,
 		address: felt252,
-		status: ShipmentStatus,
+		status: OrderStatus,
 		created_by: ContractAddress,
 		// products: LegacyMap<u7,Product>
 	}
@@ -108,23 +111,40 @@ mod SupplyChain {
 		fn create_shipment(ref self: ContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
       let caller = get_caller_address();
 			assert(self.is_whitelisted(caller), 'Caller not whitelisted');
-      let caller = get_caller_address();
 			let newShipment = ShipmentDetails {
-        order_id,
+        		order_id,
 				name: _name,
 				address,
-				status: ShipmentStatus::Ordered,
-        created_by: caller,
+				status: OrderStatus::Processing,
+        		created_by: caller,
 			};
+
+			let result = IFactoryDispatcher { contract_address: self.factory_address.read() };
+			result.createTracker(
+				order_id,
+				self.company_id.read(),
+				self.branch_id.read(),
+				address,
+				OrderStatus::Processing
+			);
 			self.shiplog.write(order_id,newShipment);
 			self.emit(ShipmentCreated { shipment_details: newShipment } );
 		}
 
-		fn update_shipment(ref self: ContractState, _id: u8, status: ShipmentStatus) {
+		fn update_shipment(ref self: ContractState, order_id: u256, next_location: felt252, new_status: OrderStatus) {
 			let caller = get_caller_address();
 			assert(self.is_whitelisted(caller), 'Caller not a STAFF');
-			let mut this_shipemet = self.order_log.read(_id);
-			this_shipemet.status = status;
+			let mut this_shipment = self.order_log.read(order_id);
+			let address = this_shipment.address;
+			this_shipment.status = new_status;
+			let result = IFactoryDispatcher { contract_address: self.factory_address.read() };
+			result.updateTracker(
+				order_id,
+				self.company_id.read(),
+				self.branch_id.read(),
+				next_location,
+				new_status
+			);
 		}
 	}
 

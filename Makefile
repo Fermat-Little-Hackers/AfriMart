@@ -1,6 +1,10 @@
 start katana:
 	katana --accounts 3 --seed 0 --gas-price 250
 
+start frontend:
+	cd ./packages/afri_mart && \
+	bun dev
+
 build:
 	cd ./packages/snfoundry/ && \
 	scarb build
