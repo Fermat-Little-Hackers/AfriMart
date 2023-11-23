@@ -1,9 +1,18 @@
 import React from 'react'
 import ProductAmountButton from './productButton'
 import Stars from '../../../../components/market-place/stars'
+import { useYourContext } from '../../../../context/YourContext';
+import ConfirmPurchasePopUp from '@/components/market-place/confirmPurchasePopUp';
+
 
 
 const ProductsDetails = () => {
+    const { sharedState, setSharedState} = useYourContext();
+    const handlePurchaseClick = () => {
+        // Open the popup when the "CHECK OUT" button is clicked
+        setSharedState(true);
+      };
+
   return (
     <div className="flex flex-row gap-10 mx-20 my-20 h-[65vh]">
                 <div className="flex flex-col w-[40%] gap-2">
@@ -26,14 +35,14 @@ const ProductsDetails = () => {
                             <button
                                 type="button"
                                 className='bg-blue-500 text-white px-4 py-2 rounded-3xl'
-                                onclick="startSearch()"
+                                onClick={handlePurchaseClick}
                             >
                                 ADD TO CART
                             </button>
                             <button
                                 type="button"
                                 className=' bg-blue-500 text-white px-4 py-2 rounded-3xl'
-                                onclick="startSearch()"
+                                onClick={handlePurchaseClick}
                             >
                                 BUY NOW
                             </button>
@@ -48,6 +57,10 @@ const ProductsDetails = () => {
                         </p>
                     </div>
                 </div>
+                {/* Popup */}
+                {sharedState && (
+                    <ConfirmPurchasePopUp itemName={' of DANSHIKI MARTERIAL'} price={50} />
+                )}
             </div>
   )
 }

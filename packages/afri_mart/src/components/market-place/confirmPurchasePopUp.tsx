@@ -3,11 +3,15 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useYourContext } from '../../context/YourContext';
 
+interface ConfirmPurchasePopUpProps {
+    itemName: string;
+    price: number;
+  }
 
-function ConfirmPurchasePopUp() {
+function ConfirmPurchasePopUp({ itemName, price }: ConfirmPurchasePopUpProps) {
     const { sharedState, setSharedState } = useYourContext();
+    const [waitText, setWaitText] = useState(`Confirm you intend to make a purchase ${itemName} worth $${price} from AfriMart`);
     const [imageSrc, setImageSrc] = useState('/image/wait.svg');
-    const [waitText, setWaitText] = useState('Confirm you intend to make a purchase wort $650 from AfriMart');
     const [isDisabled, setIsDisabled] = useState(false);
 
     const handleProcessPayment = () => {
