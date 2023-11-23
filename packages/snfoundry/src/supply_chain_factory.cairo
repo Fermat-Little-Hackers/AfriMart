@@ -15,12 +15,20 @@ struct FactoryAdmin {
     address: ContractAddress,
 }
 
+
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct Location {
     country: felt252,
     state: felt252,
     city: felt252,
 }
+
+#[derive(Copy, Drop, starknet::Store, Serde)]
+struct ItemStatus {
+    OrderID: u256,
+    status: OrderStatus,
+}
+
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct DispatchHq {
@@ -122,6 +130,7 @@ trait IDispatchFactory<TContractState>{
 
     // to be called by market place contract or Dispatch
     fn trackeItem(self: @TContractState, orderID: u256) -> OrderLocation;
+    fn trackAllItems(self: @TContractState) -> Array::<ItemStatus>;
 
     // get total factory admins
     fn getTotalFactoryAdmin(self: @TContractState, adminID: u8) -> u8;
@@ -141,7 +150,7 @@ mod DispatchCompanyFactory {
     use snfoundry::supply_chain_factory::IMarketPlaceDispatcherTrait;
 use core::result::ResultTrait;
 use core::serde::Serde;
-    use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher};
+    use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher, ItemStatus};
     use starknet::{get_caller_address, syscalls::deploy_syscall};
     #[storage]
     struct Storage {
@@ -190,6 +199,8 @@ use core::serde::Serde;
         trackOrderID: LegacyMap<u256, OrderLocation>,// remove restriction.
         
         overallShipmentTotal: u128,
+        // increments with each recorded orderId
+        trackOrderIdNumber: LegacyMap<u128, u256>,
         companyShipmentTotal: LegacyMap<(u16, u256), u128>,
         shipmentStats: LegacyMap<u16, OrdersStats>,
 
@@ -402,6 +413,7 @@ use core::serde::Serde;
             let new_total_shipment  = self.overallShipmentTotal.read();
             let company_total_shipment = self.companyShipmentTotal.read((companyID, orderID)) + 1;
             let shipment_stats = OrdersStats {companyID, companyTotalShipment: company_total_shipment, overallShipmentTotal: new_total_shipment};
+            self.trackOrderIdNumber.write(new_total_shipment, orderID);
 
             self.emit(ShipmentCreated{companyID, branchID, branchAddress: get_caller_address(), orderID});
 
@@ -448,6 +460,28 @@ use core::serde::Serde;
         fn trackeItem(self: @ContractState, orderID: u256) -> OrderLocation {
             let order_location = self.trackOrderID.read(orderID);
             order_location
+        }
+
+        fn trackAllItems(self: @ContractState) -> Array::<ItemStatus> {
+            let all_orders = self.overallShipmentTotal.read();
+            let mut i: u128 = 1;
+            let mut all_status = ArrayTrait::new();
+            
+
+            loop {
+                if i <= all_orders {
+                    let orderId = self.trackOrderIdNumber.read(i);
+                    let order_location = self.trackOrderID.read(orderId);
+                    let status = order_location.deliveryStatus;
+                    let item_status = ItemStatus {OrderID: orderId, status: status};
+                    all_status.append(item_status);
+
+                } else {
+                    break;
+                }
+                i = i +1;
+            };
+            return all_status;
         }
 
         fn getTotalFactoryAdmin(self: @ContractState, adminID: u8) -> u8{
