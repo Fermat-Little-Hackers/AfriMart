@@ -1,5 +1,6 @@
 import React from 'react'
 import Stars from '../../../../components/market-place/stars'
+import { FaUser } from 'react-icons/fa';
 
 const ProductsReviews = () => {
   return (
@@ -12,7 +13,9 @@ const ProductsReviews = () => {
 
         <div className="flex flex-row gap-10">
             <div className="">
-                <div className="border-solid border-2 border-black h-[3rem] rounded-3xl w-[3rem]"></div>
+            <div className="border-solid border-2 border-black h-[3rem] rounded-3xl w-[3rem] flex items-center justify-center">
+                <FaUser />
+            </div>
             </div>
             <div className="w-[80%] flex flex-col gap-1">
                 <p> Emmanuel John </p>
@@ -24,7 +27,9 @@ const ProductsReviews = () => {
         </div>
         <div className="flex flex-row gap-10">
             <div className="">
-                <div className="border-solid border-2 border-black h-[3rem] rounded-3xl w-[3rem]"></div>
+                <div className="border-solid border-2 border-black h-[3rem] rounded-3xl w-[3rem] flex items-center justify-center">
+                    <FaUser />
+                </div>
             </div>
             <div className="w-[80%]">
                 <p> Emmanuel John </p>
