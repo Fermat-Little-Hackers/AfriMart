@@ -1,6 +1,7 @@
 use starknet::{ContractAddress};
 use array::ArrayTrait;
 
+
 #[derive(Drop, Copy, starknet::Store, Serde)]
 struct userProfile {
     id: u256,
