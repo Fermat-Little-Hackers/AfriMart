@@ -15,8 +15,8 @@ const CartPrice = () => {
 
 
   return (
-    <div className='border-2 border-black h-fit w-[35%] p-10'>
-        <p className='mb-7'>PRICE</p>
+    <div className='border-2 border-black h-fit md:w-[35%] p-5 md:p-10'>
+        <p className='md:mb-7 mb-5'>PRICE</p>
         <div className='w-[100%] flex flex-col gap-5'>
             <div className='flex flex-row w-[100%] gap-5'>
                 <div className='w-[65%]'> <p> Price</p></div>
