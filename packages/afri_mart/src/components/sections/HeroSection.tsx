@@ -25,7 +25,7 @@ export const HeroSection = () => {
                 At AfriMart, we celebrate the vibrant tapestry of African heritage. Our platform is a haven for talented Africans to showcase their cultural prowess, from breathtaking NFTs to captivating artifacts, paintings, and sculptures. Immerse yourself in the beauty, history, and diversity of Africa, all at your fingertips.
             </p>
             <div className="mt-10 flex justify-center space-x-6">
-                <ButtonLink href="/create">Create certificate</ButtonLink>
+                <ButtonLink href="/create">Launch App</ButtonLink>
                 <ButtonLink
                     href="https://youtu.be/XxSID43ElUQ"
                     variant="outline"
