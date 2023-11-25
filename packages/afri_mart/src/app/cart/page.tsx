@@ -1,9 +1,16 @@
+import Search from '../../components/market-place/search'
+import OurPartners from '../../components/market-place/ourPartners'
+import TrendingProducts from './components/trendingProducts'
+import CartContent from './components/cartContent'
+import React from 'react'
+
 export default function Home() {
     return (
         <div>
-            <p>
-                This holds all the products a user is interested in and proceeds to the checkout
-            </p>
+            <Search />
+            <CartContent />
+            <TrendingProducts />
+            <OurPartners />
         </div>
     )
 }
