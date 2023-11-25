@@ -40,7 +40,7 @@ const Filterdisplay : React.FC<filterProps> = ({ title})  => {
         }
     ]
     return (
-        <div className="md:border-2 md:border-black mx-auto w-[1400px] md:mx-auto h-fit md:h-[75vh] px-0 md:p-10 mt-10 md:mt-10">
+        <div className="md:border-2 md:border-black mx-auto w-[1400px] md:mx-auto h-fit md:h-[85vh] px-0 md:p-10 mt-10 md:mt-10">
             <div className="w-full mx-auto">
                 <p>
                 {title}
