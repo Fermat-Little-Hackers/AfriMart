@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback } from 'react';
 import {useRegisteredContext} from '../../context/registeredContext'
 import ProfileForm from './createProfile'
+import React from 'react';
 
 const startSearch = () => {
     
