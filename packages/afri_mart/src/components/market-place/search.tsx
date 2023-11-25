@@ -1,13 +1,38 @@
 'use client'
 import { FaShoppingCart, FaUser, FaBars, FaSearch } from 'react-icons/fa';
 import Link from "next/link";
-
+import { useState, useEffect, useCallback } from 'react';
+import {useRegisteredContext} from '../../context/registeredContext'
+import ProfileForm from './createProfile'
 
 const startSearch = () => {
     
 }
 
+
+
 const Search = () => {
+
+  const [isRegistered, setIsRegistered] = useState(false);
+  const { sharedState, setSharedState } = useRegisteredContext();
+
+  const handleProfileCheck = () => {
+    !isRegistered ? setSharedState(true) : setSharedState(false);
+  }
+
+  const handleStateChange = useCallback(() => {
+
+    // logic to handle the state change goes here
+    console.log('State changed:', sharedState);
+
+    // ROUTE TO THE USER PROFILE PAGE
+  }, [sharedState]);
+
+  useEffect(() => {
+    handleStateChange();
+  }, [sharedState, handleStateChange]);
+
+
     return(
     <div>
         <div className='menuBar flex flex-row md:flex-row mx-5 md:mx-20 my-5 md:justify-between gap-2 md:gap-0'>
@@ -33,15 +58,22 @@ const Search = () => {
                 <FaShoppingCart />
               </div>
             </Link>
-            <div className='border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>
-              <FaUser />
-            </div>
+            <button
+                type="button"
+                className='h-[2.7rem] rounded-3xl w-[2.7rem]'
+                onClick={handleProfileCheck}
+            >
+              <div className='border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>
+                <FaUser />
+              </div>
+            </button>
             {/* <div className='border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>
               <FaBars />
             </div> */}
           </div>
         </div>
         <hr></hr>
+        {sharedState && ( <ProfileForm /> )}
     </div>
     )
 }
