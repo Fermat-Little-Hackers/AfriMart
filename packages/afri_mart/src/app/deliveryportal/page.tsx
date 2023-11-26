@@ -10,14 +10,16 @@ const DeliveryPortal = () => {
   return (
     <div className="">
       <Search />
-        <div className="flex flec-row gap-10 mx-20 mt-10">
-          <div className="w-[20vw]">
+      <div className="px-5 md:px-20 w-[100vw]">
+        <div className="flex flex-col md:flex-row gap-5 md:gap-20 mt-10">
+          <div className="md:w-[20%] w-[80%]">
             <SideMenu />
           </div>
-          <div className="w-[80vw]">
+          <div className="md:w-[80%] w-[100%]">
             <PageContents />
           </div>
         </div>
+      </div>
       <OurPartners />
     </div>
   );

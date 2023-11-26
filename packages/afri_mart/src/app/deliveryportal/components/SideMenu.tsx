@@ -21,8 +21,8 @@ const SideMenu  = () => {
     }
 
     return (
-    <div className="border-2 border-black w-[20vw]">
-       <div className="gap-4 flex flex-col p-5">
+    <div className="border-2 border-black ">
+       <div className="gap-6 flex flex-col p-5">
         {/* <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div> */}
             <div className="hover:cursor-pointer" onClick={handleClick} style={sortColor('Home') ? {color: "gray"} : {color: 'black'}} id="Home"> Home </div>
             <div className="hover:cursor-pointer" onClick={handleClick} style={sortColor('deployBranch') ? {color: "gray"} : {color: 'black'}} id="deployBranch"> Deploy Branch </div>

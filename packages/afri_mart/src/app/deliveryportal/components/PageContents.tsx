@@ -6,6 +6,10 @@ import OnboardMarketPlace from "./OnboardMarketPlace";
 import RegisterBranchAdmins from "./RegisterBranchAdmins";
 import RegisterDirectors from "./RegisterDirectors";
 import RegisterSupplychain from "./RegisterSupplychain";
+import Home from "./Home";
+import RegisterShipment from "./RegisterShipment";
+import TrackShipment from "./TrackShipment";
+import UpdateShipment from "./UpdateShipment";
 
 
 
@@ -20,7 +24,7 @@ const PageContents  = () => {
         } else if (sharedState == 'OnboardMarketPlace'){
             return (<OnboardMarketPlace />)
         } else if (sharedState == 'Home') {
-            return (<p>HOME</p>)
+            return (<Home/>)
         } else if (sharedState == 'RegisterBranchAdmins') {
             return (<RegisterBranchAdmins />)
         } else if (sharedState == 'RegisterDirectors') {
@@ -28,20 +32,20 @@ const PageContents  = () => {
         } else if (sharedState == 'RegisterSupplychain') {
             return (<RegisterSupplychain />)
         } else if (sharedState == 'RegisterNewShipment') {
-            return (<p>REGISTER NEW SHIPMENT</p>)
+            return (<RegisterShipment/>)
         } else if (sharedState == 'TrackSipment') {
-            return (<p>TRACK SHIPMENT</p>)
+            return (<TrackShipment/>)
         } else if (sharedState == 'UpdateShipmentLocation') {
-            return (<p>UPDATE SHIPMENT</p>)
+            return (<UpdateShipment />)
         } else {
-            return (<p>OMOHH NOTHING YET</p>)
+            return (<Home/>)
         }
 
         
     }
 
     return (
-    <div className="border-2 border-black h-[100vh]">
+    <div className="border-2 border-black h-fit px-5 md:px-20 py-7 md:py-16">
        { renderContents()}
     </div>
   )
