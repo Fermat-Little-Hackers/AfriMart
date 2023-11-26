@@ -39,6 +39,7 @@ struct order {
     paymentTime: u64,
     paymentStatus: orderPaymentStatus,
     shipmentStatus: deliveryStatus,
+    processingDelivery: bool,
 }
 
 #[derive(Drop, Copy, Serde, starknet::Store, PartialEq)]
@@ -145,9 +146,11 @@ trait aftimartTrait<TContractState> {
     fn releaseSellersPayment(ref self: TContractState, orderId: u256);
     fn getTotalCashInflow(self: @TContractState) -> (u256, u256);
     fn getPendingPayment(self: @TContractState) -> u256;
+    fn getItemsSold(self: @TContractState, user: ContractAddress) -> (Array::<u256>, Array::<u256>);
     fn whitelistAdmin(ref self: TContractState, admin: ContractAddress);
     fn getAdmins(self: @TContractState) -> Array<ContractAddress>;
     fn revokeAdminRight(ref self: TContractState, admin: ContractAddress);
+    fn beginProcessingDelivery(ref self: TContractState, orderId: u256);
 }
 
 #[starknet::contract]
@@ -745,6 +748,37 @@ mod afrimart {
             };
             return allAdmins;
         }
+
+        fn beginProcessingDelivery(ref self: ContractState, orderId: u256) {
+            let mut orderDetails = self.allOrders.read(orderId);
+            let seller = self.allItems.read(orderDetails.itemID).seller;
+            assert(seller == get_caller_address(), 'NOT SELLER');
+            assert(orderDetails.processingDelivery == false, 'DELIVERY ALREADY PROCESSED');
+            orderDetails.processingDelivery = true;
+            self.allOrders.write(orderId, orderDetails);
+        }
+
+        fn getItemsSold(self: @ContractState, user: ContractAddress) -> (Array::<u256>, Array::<u256>) {
+            let userId = self.userId.read(user);
+            let userProfile = self.allProfiles.read(self.userId.read(user));
+            let totalSales = userProfile.totalItemsSold;
+            let mut i: u256 = 1;
+            let mut pendingProcessing = ArrayTrait::new();
+            let mut processed = ArrayTrait::new();
+            loop {
+                if i > totalSales {
+                    break;
+                }
+                let orderId = self.itemsSold.read((user, i));
+                let order = self.allOrders.read(orderId);
+                if (order.processingDelivery == false) {
+                    pendingProcessing.append(orderId);
+                } else {
+                    processed.append(orderId);
+                }
+            };
+            return (pendingProcessing, processed);
+        }
  
     }
 
@@ -789,6 +823,7 @@ mod afrimart {
                 paymentTime: get_block_timestamp(),
                 paymentStatus: orderPaymentStatus::paymentWithMarket,
                 shipmentStatus: deliveryStatus::awaitingReleaseFromSeller,
+                processingDelivery: false,
             };
             self.allOrders.write(orderId, orderDetails);
             // update the item record

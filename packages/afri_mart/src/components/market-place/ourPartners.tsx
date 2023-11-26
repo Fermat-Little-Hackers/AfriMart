@@ -2,7 +2,7 @@ import React from 'react'
 
 const OurPartners = () => {
   return (
-    <div className="border-2 border-black my-10 mx-5 md:my-20 md:mx-20 md:h-[30vh] py-3 px-3 md:py-7 md:px-10 mb-40">
+    <div className="border-2 border-black my-10 mx-5 md:my-20 md:mx-20 md:h-fit py-3 px-3 md:py-7 md:px-10 mb-40">
         <div className="mb-3 md:mb-7">
             <p>
                 OUR PARTNERS
