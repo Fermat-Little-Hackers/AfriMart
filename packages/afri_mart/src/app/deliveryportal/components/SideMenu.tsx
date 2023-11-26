@@ -13,13 +13,13 @@ const SideMenu  = () => {
       setTextVisible(!textVisible);
     };
 
-    const handleClick = (e) => {
+    const handleClick = (e: any) => {
         console.log(e);
         setSharedState(e.target.id);
         console.log(e.target.id);
     }
 
-    const sortColor = (active) => {
+    const sortColor = (active: string) => {
         if (active == sharedState) {
                 return true;
         } else {
