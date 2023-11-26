@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import Search from "@/components/market-place/search";
 import SideFilter from "./components/sideFilter";
-
 import AllPurchases from "./components/AllPurchases";
+import UserDetails from "./components/userDetails";
 
 export default function Home() {
     const [title, setTitle] = useState('All Purchases')
