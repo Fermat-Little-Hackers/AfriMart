@@ -14,7 +14,10 @@ export default function Home() {
     <div>
       <Search />
       <div className="flex space-x-24 justify-center">
+        <div>
+        <UserDetails />
         <SideFilter onClickAction={props} />
+        </div>
         <AllPurchases title={title} />
       </div>
     </div>
