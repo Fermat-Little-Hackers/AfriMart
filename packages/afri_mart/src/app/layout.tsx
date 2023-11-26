@@ -7,10 +7,13 @@ import { StarknetProvider } from '@/components/starknet-provider';
 import { SupplyChainContextProvider } from '../context/supplyChainContext';
 import './globals.css';
 import { StarknetConfig, InjectedConnector } from '@starknet-react/core'
+// import {YourContextProvider} from '../context/YourContext;
 import { Chain, goerli, mainnet } from '@starknet-react/chains';
 import { ProviderInterface, RpcProvider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
+import { YourContextProvider } from '../context/YourContext';
+
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -33,11 +36,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               }
             }}
           >
+        <SupplyChainContextProvider>
         <RegisteredContextProvider>
           <YourContextProvider>
             <StarknetProvider>{children}</StarknetProvider>
           </YourContextProvider>
         </RegisteredContextProvider>
+        </SupplyChainContextProvider>
         </StarknetConfig>
       </body>
     </html>
