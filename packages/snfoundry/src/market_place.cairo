@@ -7,11 +7,11 @@ struct userProfile {
     id: u256,
     name: felt252,
     address: ContractAddress,
-    country: felt252,
-    region: felt252,
+    profileImg: felt252,
     totalItemListed: u256,
     totalItemsPurchased: u256,
     totalItemsSold: u256,
+    isCreated: bool,
 }
 
 #[derive(Drop, Copy, starknet::Store, Serde)]
@@ -118,7 +118,7 @@ trait IERC20<TContractState> {
 
 #[starknet::interface]
 trait aftimartTrait<TContractState> {
-    fn createProfile(ref self:TContractState, Name: felt252, country: felt252, region: felt252);
+    fn createProfile(ref self:TContractState, Name: felt252, country: felt252, region: felt252, profileImg: felt252);
     fn listProduct(ref self:TContractState, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256, cartegory: cartegory);
     fn editProductDetails(ref self: TContractState, productId: u256, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256);
     fn takeProductOffMarket(ref self: TContractState, productId: u256);
@@ -372,17 +372,17 @@ mod afrimart {
 
     #[external(v0)]
     impl afrimartExternalImpl of super::aftimartTrait<ContractState> {
-        fn createProfile(ref self: ContractState, Name: felt252, country: felt252, region: felt252) {
+        fn createProfile(ref self: ContractState, Name: felt252, country: felt252, region: felt252, profileImg: felt252) {
             let UserId: u256 = self.totalProfiles.read() + 1;
             self.totalProfiles.write(UserId);
             let newUser = userProfile{
                 id: UserId, name: Name, 
-                address: get_caller_address(), 
-                country: country,
-                region: region,
+                address: get_caller_address(),
+                profileImg: profileImg,
                 totalItemListed: 0, 
                 totalItemsPurchased: 0,
                 totalItemsSold: 0,
+                isCreated: true,
             };
             self.allProfiles.write(UserId, newUser);
             self.userId.write(get_caller_address() ,UserId);

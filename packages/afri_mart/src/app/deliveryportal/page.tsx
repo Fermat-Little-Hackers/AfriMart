@@ -1,19 +1,26 @@
 import React from "react";
+// import {useState} from "react";
 import Search from "@/components/market-place/search";
-import DeployBranch from "./components/DeployBranch";
-import OnboardMarketPlace from "./components/OnboardMarketPlace";
-import RegisterBranchAdmins from "./components/RegisterBranchAdmins";
-import RegisterDirectors from "./components/RegisterDirectors";
-import RegisterSupplychain from "./components/RegisterSupplychain";
+import SideMenu from "./components/SideMenu";
+import PageContents from "./components/PageContents";
+import OurPartners from "../../components/market-place/ourPartners";
 
 const DeliveryPortal = () => {
-  const adminFactory = true;
-  const companyAdmin = true;
-  const branchAdmin = true;
+
   return (
-    <div>
+    <div className="">
       <Search />
-      <div></div>
+      <div className="px-5 md:px-20 w-[100vw]">
+        <div className="flex flex-col md:flex-row gap-5 md:gap-20 mt-10">
+          <div className="md:w-[20%] w-[80%]">
+            <SideMenu />
+          </div>
+          <div className="md:w-[80%] w-[100%]">
+            <PageContents />
+          </div>
+        </div>
+      </div>
+      <OurPartners />
     </div>
   );
 };
