@@ -86,7 +86,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
     }
   }
     return (
-    <div className="border-2 border-black w-[300px] mt-20">
+    <div className="border-2 border-black w-[300px] mmx:w-[200px] mt-20 smx:hidden lmx:hidden">
        <div className="">
         <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div>
         <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>CRAFT AND ART</div>
