@@ -8,6 +8,7 @@ import './globals.css';
 import { StarknetConfig, InjectedConnector } from '@starknet-react/core'
 import { Chain, goerli, mainnet } from '@starknet-react/chains';
 import { ProviderInterface, RpcProvider } from 'starknet';
+import clsx from 'clsx';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,7 +19,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   ];
     return (
       <html lang="en">
-      <body className={inter.className}>
+        <body className={clsx("bg-[var(--black-2)] bg-grainy-pattern ", inter.className)}>
       <StarknetConfig 
           connectors={connectors} 
           chains={[mainnet, goerli]} 
