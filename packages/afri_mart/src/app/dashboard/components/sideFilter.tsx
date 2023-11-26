@@ -7,9 +7,9 @@ interface ClickProps {
 
 const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
   const [isAllPurchases, setIsAllPurchases] = useState(true);
-  const [isListedItem, setIsListedItem] = useState(true);
-  const [isPendingDelivery, setIsPendingDelivery] = useState(true);
-  const [isSoldItem, setIsSoldItem] = useState(true);
+  const [isListedItem, setIsListedItem] = useState(false);
+  const [isPendingDelivery, setIsPendingDelivery] = useState(false);
+  const [isSoldItem, setIsSoldItem] = useState(false);
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const clickedElementId = (event.target as HTMLDivElement).id;
@@ -22,7 +22,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
     }
 
     if (clickedElementId == "listedItems") {
-      onClickAction("All Purchases");
+      onClickAction("Listed Items");
       setIsAllPurchases(false);
       setIsListedItem(true);
       setIsPendingDelivery(false);
@@ -30,7 +30,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
     }
 
     if (clickedElementId == "pendingDelivery") {
-      onClickAction("All Purchases");
+      onClickAction("Pending Delivery");
       setIsAllPurchases(false);
       setIsListedItem(false);
       setIsPendingDelivery(true);
@@ -38,7 +38,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
     }
 
     if (clickedElementId == "soldItems") {
-      onClickAction("All Purchases");
+      onClickAction("Sold Items");
       setIsAllPurchases(false);
       setIsListedItem(false);
       setIsPendingDelivery(false);
@@ -47,7 +47,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
   };
 
   return (
-    <div>
+    <div className="border-2 border-black w-[300px] mt-20">
       <div>
         <div
           className="my-[41px] mx-auto w-[150px] hover:cursor-pointer"

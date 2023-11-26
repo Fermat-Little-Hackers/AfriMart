@@ -6,13 +6,16 @@ import SideFilter from "./components/sideFilter";
 import AllPurchases from "./components/AllPurchases";
 
 export default function Home() {
-  const props = (message: string) => {};
+    const [title, setTitle] = useState('All Purchases')
+  const props = (message: string) => {
+    setTitle(message);
+  };
   return (
     <div>
       <Search />
       <div className="flex space-x-24 justify-center">
         <SideFilter onClickAction={props} />
-        <AllPurchases />
+        <AllPurchases title={title} />
       </div>
     </div>
   );
