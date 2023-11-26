@@ -6,16 +6,14 @@ module.exports = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    screens: {
-      'sm': '640px',
-      'md': '768px',
-      'lg': '1024px',
-      'xl': '1280px',
-      '2xl': '1536px',
-      xsm: { max: "320px" },
-      mobile: { max: "480px" },
+    extend: {
+      screens: {
+        smx: { max: "645px" },
+        lmx: { max: "1227px" },
+        xlg: { max: "1431px" },
+        mmx: { max: "1430px" },
+      },
     },
-    extend: {},
   },
   plugins: [],
 }
