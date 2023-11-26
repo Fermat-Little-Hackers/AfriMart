@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 const DeployBranch = () => {
-  const [companyId, setCompanyId] = useState();
-  const [adminId, setAdminId] = useState();
+  const [companyId, setCompanyId] = useState<number>();
+  const [adminId, setAdminId] = useState<number>();
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
