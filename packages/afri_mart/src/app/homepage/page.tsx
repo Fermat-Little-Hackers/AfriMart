@@ -14,8 +14,8 @@ const Homepage = () => {
 
   return (
     <div>
-      <HomeSearch />
-      <div className="flex space-x-24 justify-center">
+        <HomeSearch />
+        <div className='flex space-x-24 xlg:space-x-0 mmx:gap-[30px] smx:space-x-0 lmx:space-x-0 justify-center'>
         <Sidefilter onClickAction={handleFilterClick} />
         <Trendingbar />
       </div>
