@@ -11,7 +11,7 @@ const ProductsDetails = () => {
     const handlePurchaseClick = () => {
         // Open the popup when the "CHECK OUT" button is clicked
         setSharedState(true);
-      };
+    };
 
   return (
     <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
