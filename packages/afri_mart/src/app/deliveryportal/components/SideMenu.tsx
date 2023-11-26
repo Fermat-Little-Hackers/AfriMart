@@ -14,7 +14,7 @@ const SideMenu  = () => {
     };
 
     const handleClick = (e: any) => {
-        console.log(e);
+        toggleTextVisibility();
         setSharedState(e.target.id);
         console.log(e.target.id);
     }
