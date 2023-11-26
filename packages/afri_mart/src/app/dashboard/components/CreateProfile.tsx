@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const Userprofile = () => {
+const CreateProfile = () => {
   const [name, setName] = useState("");
   const [country, setCountry] = useState("");
   const [region, setRegion] = useState("");
@@ -69,4 +69,4 @@ const Userprofile = () => {
   );
 };
 
-export default Userprofile;
+export default CreateProfile;
