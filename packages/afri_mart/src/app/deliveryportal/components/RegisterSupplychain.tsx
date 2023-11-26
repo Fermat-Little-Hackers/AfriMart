@@ -35,11 +35,11 @@ const RegisterSupplychain = () => {
 
   return (
     <div className="">
-      <h3 className="mb-7 text-2xl">Register Supply Chain</h3>
+      <h3 className="mb-7 text-xl md:text-2xl">Register Supply Chain</h3>
       <div className="justify-start text-left border-2 border-black">
         <form
           onSubmit={registerSupplychain}
-          className="p-20 bg-white rounded shadow-md"
+          className="p-5 md:p-20 bg-white rounded shadow-md"
         >
           <div className="mb-4">
             <label

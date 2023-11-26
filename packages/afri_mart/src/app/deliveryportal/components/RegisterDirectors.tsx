@@ -12,8 +12,8 @@ const RegisterDirectors = () => {
   };
   return (
     <div className="">
-    <h3 className="mb-7 text-2xl">Register Directors</h3>
-    <div className="justify-start p-10 text-left border-2 border-black">
+    <h3 className="mb-7 text-xl md:text-2xl">Register Directors</h3>
+    <div className="justify-start p-5 md:p-10 text-left border-2 border-black">
       <form className="space-y-4" onSubmit={onboardDirector}>
 
           <div>

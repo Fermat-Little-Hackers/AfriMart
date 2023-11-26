@@ -1,11 +1,18 @@
 'use client'
-import React, { HTMLInputTypeAttribute } from "react";
+import React, { HTMLInputTypeAttribute, useState } from "react";
 import {useSupplyChainContext} from "../../../context/supplyChainContext"
+import { FaShoppingCart, FaUser, FaBars, FaTimes } from 'react-icons/fa';
 
 
 
 const SideMenu  = () => {
     const { sharedState, setSharedState } = useSupplyChainContext();
+    const [textVisible, setTextVisible] = useState(false);
+
+    const toggleTextVisibility = () => {
+      setTextVisible(!textVisible);
+    };
+
     const handleClick = (e) => {
         console.log(e);
         setSharedState(e.target.id);
@@ -20,9 +27,19 @@ const SideMenu  = () => {
         }
     }
 
+    const sortIcon = () => {
+        
+    }
+
     return (
-    <div className="border-2 border-black ">
-       <div className="gap-6 flex flex-col p-5">
+    <div className={`${textVisible ? 'border-2 border-black' : 'border-0'} md:border-2 md:border-black`}>
+        <div
+            className={`border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center md:hidden cursor-pointer`}
+            onClick={toggleTextVisibility}
+        > 
+            {textVisible ? <FaTimes /> : <FaBars />}
+        </div>
+       <div className={`${textVisible ? 'block md:flex' : 'hidden md:flex'} gap-6 flex flex-col p-5`}>
         {/* <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div> */}
             <div className="hover:cursor-pointer" onClick={handleClick} style={sortColor('Home') ? {color: "gray"} : {color: 'black'}} id="Home"> Home </div>
             <div className="hover:cursor-pointer" onClick={handleClick} style={sortColor('deployBranch') ? {color: "gray"} : {color: 'black'}} id="deployBranch"> Deploy Branch </div>

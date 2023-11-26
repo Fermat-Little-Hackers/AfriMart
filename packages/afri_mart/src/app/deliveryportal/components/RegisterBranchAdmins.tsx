@@ -34,8 +34,8 @@ const RegisterBranchAdmins = () => {
 
   return (
     <div className="">
-    <h3 className="mb-7 text-2xl">Register New Admins</h3>
-    <div className="justify-start p-10 text-left border-2 border-black">
+    <h3 className="mb-7 text-xl md:text-2xl">Register New Admins</h3>
+    <div className="justify-start p-5 md:p-10 text-left border-2 border-black">
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-4">
         <label htmlFor="companyId" className="block text-gray-600 text-sm font-semibold mb-2">

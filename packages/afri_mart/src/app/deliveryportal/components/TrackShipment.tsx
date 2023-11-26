@@ -23,8 +23,8 @@ const TrackShipment = () => {
 
   return (
     <div className="">
-    <h3 className="mb-7 text-2xl">Track Shipment</h3>
-    <div className="justify-start p-10 text-left border-2 border-black">
+    <h3 className="mb-7 text-xl md:text-2xl">Track Shipment</h3>
+    <div className="justify-start p-5 md:p-10 text-left border-2 border-black">
       <div className='flex items-center border-2 border-black w-full md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl'>
             <input
               type="search"
