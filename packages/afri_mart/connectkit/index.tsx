@@ -2,23 +2,104 @@
 
 // wagmi but for starknet
 
-import { Button } from "@/components/atomic/Button"
 import { useAccount } from "@starknet-react/core";
+import { type ConnectOptions, type DisconnectOptions, connect, disconnect , } from "get-starknet"
+import clsx from "clsx";
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
+import { AccountInterface, ProviderInterface } from "starknet";
+import { ConnectedStarknetWindowObject } from "get-starknet-core";
+
+
+function handleConnect(options?: ConnectOptions) {
+    return async () => {
+        const res = await connect(options);
+
+    };
+}
+
+export interface ConnectConfig {
+    provider: ProviderInterface | undefined,
+    setProvider: Dispatch<SetStateAction<ProviderInterface | undefined>> ,
+    account: AccountInterface | undefined,
+    setAccount: Dispatch<SetStateAction<AccountInterface | undefined>>,
+    address: string | undefined,
+    setAddress: Dispatch<SetStateAction<string | undefined>>
+    isConnected: boolean | undefined,
+    setIsConnected: Dispatch<SetStateAction<boolean | undefined>>
+    connection: ConnectedStarknetWindowObject | undefined,
+    setConnection: Dispatch<SetStateAction< ConnectedStarknetWindowObject | undefined>>,
+}
+
+const ConnectkitContext = createContext<ConnectConfig | undefined>(undefined);
+export const ConnectkitProvider = ({children}: {children: ReactNode}) => {
+    const [provider, setProvider] = useState<ProviderInterface>();
+    const [account, setAccount] = useState<AccountInterface>();
+    const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
+    const [isConnected, setIsConnected] = useState<boolean>();
+    const [address, setAddress] = useState<string>();
+    return(
+        <ConnectkitContext.Provider 
+        value={
+            {
+                provider, setProvider, 
+                account, setAccount, 
+                address, setAddress, 
+                isConnected, setIsConnected,
+                connection, setConnection,
+            }
+            }>
+            {children}
+        </ConnectkitContext.Provider>
+    )
+}
 
 export const ConnectButton = () => {
-    const { address , account , status } = useAccount();
-    if (status == 'disconnected') return <DisconnectedWalletButton />
-    else return  <ConnectedWalletButton />
+    const value = useContext(ConnectkitContext);
+    if (!value) return
+    const { provider, setProvider, account, setAccount, address, setAddress, isConnected, setIsConnected, setConnection, connection } = value;    
+    const handleConnect = async () => {
+            const connection = await connect({ modalMode: "alwaysAsk"});
+            if (connection && connection.isConnected) {
+                setConnection(connection);
+                setAccount(connection.account);
+                setAddress(connection.selectedAddress);
+                setIsConnected(true);
+            }
+        }
+    
+
+    const handleDisconnect = async () => {
+            await disconnect();
+            setConnection(undefined);
+            setAccount(undefined);
+            setAddress(undefined);
+            setIsConnected(false);
+        };
+    
+
+    if (isConnected) {
+        return <ConnectedWalletButton handleDisconnect={handleDisconnect} address={address} />
+    }  else return  <DisconnectedWalletButton handleConnect={handleConnect} />
     
 }    
     
-export const DisconnectedWalletButton = () => {
+const DisconnectedWalletButton = ({handleConnect}:{handleConnect: Function}) => {
     return(
-        <Button>Connect</Button>
+        <button 
+        className={clsx(
+            "rounded-md bg-white text-slate-900 py-2 px-4 h-max"
+        )}
+            onClick={() => handleConnect({ modalMode: "alwaysAsk" })}
+        >Connect Button -&gt;</button>
     )
 }
-export const ConnectedWalletButton = () => {
-    return(
-        <Button>Connect</Button>
+
+const ConnectedWalletButton = ({handleDisconnect, address}: {handleDisconnect: Function, address?: string}) => {
+        return(
+            <button 
+            onClick={() => handleDisconnect()}
+            className={clsx(
+                "rounded-md bg-white text-slate-900 py-2 px-4 h-max"
+            )}>{address }</button>
     )
 }
