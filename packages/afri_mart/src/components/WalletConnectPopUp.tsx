@@ -2,19 +2,20 @@ import React from 'react'
 import Image from 'next/image';
 import { useConnect } from '@starknet-react/core';
 import { Button } from './ui/Button';
+import { useYourContext } from '@/context/YourContext';
 
 
 const WalletsToConnect: React.FC = () => {
+    const {wantToConnect, setWantToConnect} = useYourContext();
+
     return (
         <div className="fixed top-0 left-0 w-full h-full flex md:items-center justify-center bg-gray-700 bg-opacity-70">
             <div className="md:max-w-xl w-[80%] h-fit mt-[10vh] mx-auto md:mt-10 p-6 md:p-10 bg-gray-100 rounded-md shadow-md">
-                <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+                <div className="sm:mx-auto sm:w-full sm:max-w-sm flex flex-row gap-4">
                     <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                         Select Prefered Wallet
                     </h2>
-                    <div>
-                        <button>Close</button>
-                    </div>
+                    <Button type="submit" className='text-black' onClick={() => setWantToConnect(!wantToConnect)}>Close</Button>
                 </div>
                 <div>
                     {AvailableWallets()}

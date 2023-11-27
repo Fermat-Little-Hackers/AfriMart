@@ -3,6 +3,7 @@ import { useAccount, useConnect, useDisconnect } from "@starknet-react/core";
 import { useMemo, useState } from "react";
 import { Button } from "./ui/Button";
 import WalletsToConnect from "./WalletConnectPopUp";
+import { useYourContext } from "@/context/YourContext";
 
 function WalletConnected() {
   const { address } = useAccount();
@@ -15,14 +16,14 @@ function WalletConnected() {
 
   return (
     <div>
-      <span>Connected: {shortenedAddress}</span>
+      <span>{shortenedAddress}</span>
       <button onClick={() => disconnect()}>Disconnect</button>
     </div>
   );
 }
 
 function ConnectWallet() {
-  const [wantToConnect, setWantToConnect] = useState<boolean>();
+  const {wantToConnect, setWantToConnect} = useYourContext();
 
   return (
     <div>
