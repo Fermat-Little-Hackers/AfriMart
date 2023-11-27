@@ -7,11 +7,11 @@ struct userProfile {
     id: u256,
     name: felt252,
     address: ContractAddress,
-    country: felt252,
-    region: felt252,
+    profileImg: felt252,
     totalItemListed: u256,
     totalItemsPurchased: u256,
     totalItemsSold: u256,
+    isCreated: bool,
 }
 
 #[derive(Drop, Copy, starknet::Store, Serde)]
@@ -39,6 +39,7 @@ struct order {
     paymentTime: u64,
     paymentStatus: orderPaymentStatus,
     shipmentStatus: deliveryStatus,
+    processingDelivery: bool,
 }
 
 #[derive(Drop, Copy, Serde, starknet::Store, PartialEq)]
@@ -118,7 +119,7 @@ trait IERC20<TContractState> {
 
 #[starknet::interface]
 trait aftimartTrait<TContractState> {
-    fn createProfile(ref self:TContractState, Name: felt252, country: felt252, region: felt252);
+    fn createProfile(ref self:TContractState, Name: felt252, country: felt252, region: felt252, profileImg: felt252);
     fn listProduct(ref self:TContractState, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256, cartegory: cartegory);
     fn editProductDetails(ref self: TContractState, productId: u256, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256);
     fn takeProductOffMarket(ref self: TContractState, productId: u256);
@@ -145,9 +146,11 @@ trait aftimartTrait<TContractState> {
     fn releaseSellersPayment(ref self: TContractState, orderId: u256);
     fn getTotalCashInflow(self: @TContractState) -> (u256, u256);
     fn getPendingPayment(self: @TContractState) -> u256;
+    fn getItemsSold(self: @TContractState, user: ContractAddress) -> (Array::<u256>, Array::<u256>);
     fn whitelistAdmin(ref self: TContractState, admin: ContractAddress);
     fn getAdmins(self: @TContractState) -> Array<ContractAddress>;
     fn revokeAdminRight(ref self: TContractState, admin: ContractAddress);
+    fn beginProcessingDelivery(ref self: TContractState, orderId: u256);
 }
 
 #[starknet::contract]
@@ -372,17 +375,17 @@ mod afrimart {
 
     #[external(v0)]
     impl afrimartExternalImpl of super::aftimartTrait<ContractState> {
-        fn createProfile(ref self: ContractState, Name: felt252, country: felt252, region: felt252) {
+        fn createProfile(ref self: ContractState, Name: felt252, country: felt252, region: felt252, profileImg: felt252) {
             let UserId: u256 = self.totalProfiles.read() + 1;
             self.totalProfiles.write(UserId);
             let newUser = userProfile{
                 id: UserId, name: Name, 
-                address: get_caller_address(), 
-                country: country,
-                region: region,
+                address: get_caller_address(),
+                profileImg: profileImg,
                 totalItemListed: 0, 
                 totalItemsPurchased: 0,
                 totalItemsSold: 0,
+                isCreated: true,
             };
             self.allProfiles.write(UserId, newUser);
             self.userId.write(get_caller_address() ,UserId);
@@ -745,6 +748,37 @@ mod afrimart {
             };
             return allAdmins;
         }
+
+        fn beginProcessingDelivery(ref self: ContractState, orderId: u256) {
+            let mut orderDetails = self.allOrders.read(orderId);
+            let seller = self.allItems.read(orderDetails.itemID).seller;
+            assert(seller == get_caller_address(), 'NOT SELLER');
+            assert(orderDetails.processingDelivery == false, 'DELIVERY ALREADY PROCESSED');
+            orderDetails.processingDelivery = true;
+            self.allOrders.write(orderId, orderDetails);
+        }
+
+        fn getItemsSold(self: @ContractState, user: ContractAddress) -> (Array::<u256>, Array::<u256>) {
+            let userId = self.userId.read(user);
+            let userProfile = self.allProfiles.read(self.userId.read(user));
+            let totalSales = userProfile.totalItemsSold;
+            let mut i: u256 = 1;
+            let mut pendingProcessing = ArrayTrait::new();
+            let mut processed = ArrayTrait::new();
+            loop {
+                if i > totalSales {
+                    break;
+                }
+                let orderId = self.itemsSold.read((user, i));
+                let order = self.allOrders.read(orderId);
+                if (order.processingDelivery == false) {
+                    pendingProcessing.append(orderId);
+                } else {
+                    processed.append(orderId);
+                }
+            };
+            return (pendingProcessing, processed);
+        }
  
     }
 
@@ -789,6 +823,7 @@ mod afrimart {
                 paymentTime: get_block_timestamp(),
                 paymentStatus: orderPaymentStatus::paymentWithMarket,
                 shipmentStatus: deliveryStatus::awaitingReleaseFromSeller,
+                processingDelivery: false,
             };
             self.allOrders.write(orderId, orderDetails);
             // update the item record

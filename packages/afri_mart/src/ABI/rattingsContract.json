@@ -1,0 +1,358 @@
+[
+    {
+      "type": "impl",
+      "name": "RatingImpl",
+      "interface_name": "snfoundry::Rating::IRating"
+    },
+    {
+      "type": "struct",
+      "name": "core::integer::u256",
+      "members": [
+        {
+          "name": "low",
+          "type": "core::integer::u128"
+        },
+        {
+          "name": "high",
+          "type": "core::integer::u128"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "snfoundry::Rating::IRating",
+      "items": [
+        {
+          "type": "function",
+          "name": "get_user_rating",
+          "inputs": [
+            {
+              "name": "user_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u32"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_product_rating",
+          "inputs": [
+            {
+              "name": "product_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u32"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "review_product",
+          "inputs": [
+            {
+              "name": "order_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "rating",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "review",
+              "type": "core::felt252"
+            },
+            {
+              "name": "extra_info_url",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "review_user",
+          "inputs": [
+            {
+              "name": "order_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "rating",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "review",
+              "type": "core::felt252"
+            },
+            {
+              "name": "extra_info_url",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "get_product_review",
+          "inputs": [
+            {
+              "name": "product_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Array::<core::felt252>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_user_review",
+          "inputs": [
+            {
+              "name": "user_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Array::<core::felt252>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "comment_on_product",
+          "inputs": [
+            {
+              "name": "order_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "comment",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "comment_on_user",
+          "inputs": [
+            {
+              "name": "order_id",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "comment",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "get_user_comments",
+          "inputs": [
+            {
+              "name": "user_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Array::<core::felt252>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_product_comments",
+          "inputs": [
+            {
+              "name": "product_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Array::<core::felt252>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_user_reviewers",
+          "inputs": [
+            {
+              "name": "user_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Array::<core::starknet::contract_address::ContractAddress>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_product_reviewers",
+          "inputs": [
+            {
+              "name": "product_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Array::<core::starknet::contract_address::ContractAddress>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_user_extra_info_url",
+          "inputs": [
+            {
+              "name": "user_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Array::<core::felt252>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "get_product_extra_info_url",
+          "inputs": [
+            {
+              "name": "product_id",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Array::<core::felt252>"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "constructor",
+      "name": "constructor",
+      "inputs": [
+        {
+          "name": "marketplace_contract",
+          "type": "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "snfoundry::Rating::Rating::UserReviewed",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "user_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "key"
+        },
+        {
+          "name": "reviewed_by",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "key"
+        },
+        {
+          "name": "rating",
+          "type": "core::integer::u32",
+          "kind": "key"
+        },
+        {
+          "name": "review",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "extra_info_url",
+          "type": "core::felt252",
+          "kind": "key"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "snfoundry::Rating::Rating::ProductReviewed",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "product_id",
+          "type": "core::integer::u256",
+          "kind": "key"
+        },
+        {
+          "name": "reviewed_by",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "key"
+        },
+        {
+          "name": "rating",
+          "type": "core::integer::u32",
+          "kind": "key"
+        },
+        {
+          "name": "review",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "extra_info_url",
+          "type": "core::felt252",
+          "kind": "key"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "snfoundry::Rating::Rating::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UserReviewed",
+          "type": "snfoundry::Rating::Rating::UserReviewed",
+          "kind": "nested"
+        },
+        {
+          "name": "ProductReviewed",
+          "type": "snfoundry::Rating::Rating::ProductReviewed",
+          "kind": "nested"
+        }
+      ]
+    }
+  ]

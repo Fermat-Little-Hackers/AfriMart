@@ -13,19 +13,19 @@ const TrendingProducts = () => {
         <div className="flex flex-col md:flex-row justify-between gap-3 md:gap-16">
           <div className='flex flex-row w-[100%] md:w-[50%] gap-3 md:gap-16'>
             <div className='w-[50%]'>
-              <ProductCard />
+            <ProductCard name='Ashoki material' price={100} />
             </div>
             <div className='w-[50%]'>
-              <ProductCard />
+            <ProductCard name='Ashoki material' price={100} />
             </div>
           </div>
 
           <div className='flex flex-row w-[100%] md:w-[50%] gap-3 md:gap-16'>
             <div className='w-[50%]'>
-              <ProductCard />
+            <ProductCard name='Ashoki material' price={100} />
             </div>
             <div className='w-[50%]'>
-              <ProductCard />
+            <ProductCard name='Ashoki material' price={100} />
             </div>
           </div>
         </div>
