@@ -15,6 +15,10 @@ const config: Config = {
       '2xl': '1536px',
       xsm: { max: "320px" },
       mobile: { max: "480px" },
+      smx: { max: "645px" },
+      lmx: { max: "1227px" },
+      xlg: { max: "1431px" },
+      mmx: { max: "1430px" },
     },
     extend: {
       backgroundImage: {
