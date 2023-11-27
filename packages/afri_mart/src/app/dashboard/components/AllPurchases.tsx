@@ -21,8 +21,8 @@ const AllPurchases : React.FC<filterProps> = ({ title})  => {
     },
   ]
 
-  return     <div className="md:border-2 md:border-black mx-auto w-[800px] md:mx-auto h-fit md:h-[60vh] px-0 md:p-10 mt-10 md:mt-20">
-  <div className="w-full mx-auto">
+  return    ( <div className="border-2 border-black smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto smx:w-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-fit md:h-[60vh] p-6 mt-20">
+  <div className="w-full smx:w-[100%] mx-auto">
       <p>
       {title}
       </p>                    
@@ -34,7 +34,7 @@ const AllPurchases : React.FC<filterProps> = ({ title})  => {
      </div>                
         ))}
         </section>
-</div>
+</div>)
 };
 
 export default AllPurchases;
