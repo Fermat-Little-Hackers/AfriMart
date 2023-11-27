@@ -7,6 +7,15 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+      xsm: { max: "320px" },
+      mobile: { max: "480px" },
+    },
     extend: {
       backgroundImage: {
         'grainny-pattern': "url('https://assets-global.website-files.com/61a2afe49efe185eaee53f8c/61a2afe49efe180a42e53fe2_grain.gif')",

@@ -12,7 +12,6 @@ export const HeroSection = () => {
                 <h1 className="font-serif text-9xl text-[var(--sand)]">Afrimath</h1>
                 <p className={clsx("text-[var(--sand)] ", "mt-32")}>Where cultural treasures tell timeless stories</p>
             </div>
-
         </Container>
     );
 };

@@ -9,7 +9,6 @@ export const SectionII = () => {
     return (
         <Container className="flex h-3/4">
             <div className="w-full">
-                Hello
                 <motion.div>
                     <Logo />
                 </motion.div>
