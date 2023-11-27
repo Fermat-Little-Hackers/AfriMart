@@ -1,5 +1,7 @@
 export const BackgroundPattern = () => {
     return(
-        <div></div>
+        <div>
+            The Backgrount Pattern
+        </div>
     )
 }

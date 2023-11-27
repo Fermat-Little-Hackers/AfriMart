@@ -14,14 +14,14 @@ const SideMenu  = () => {
       setTextVisible(!textVisible);
     };
 
-    const handleClick = (e) => {
-        console.log(e);
+    const handleClick = (e: any) => {
+        toggleTextVisibility();
         setSharedState(e.target.id);
         toggleTextVisibility();
         console.log(e.target.id);
     }
 
-    const sortColor = (active) => {
+    const sortColor = (active: string) => {
         if (active == sharedState) {
                 return true;
         } else {
