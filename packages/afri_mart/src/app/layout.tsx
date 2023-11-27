@@ -8,10 +8,11 @@ import { SupplyChainContextProvider } from '../context/supplyChainContext';
 import './globals.css';
 import { StarknetConfig, InjectedConnector } from '@starknet-react/core'
 import { Chain, goerli, mainnet } from '@starknet-react/chains';
-import { ProviderInterface, RpcProvider } from 'starknet';
+import { ProviderInterface, RpcProvider, provider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
+import { ConnectkitProvider } from '../../connectkit';
 
 
 const inter = Inter({ subsets: ['latin'] });
@@ -26,7 +27,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <body className={clsx("", inter.className)}>
         <StarknetConfig 
             connectors={connectors} 
-            chains={[mainnet, goerli]} 
+            chains={[goerli, mainnet, goerli]} 
             provider={function (chain: Chain): ProviderInterface | null {
               if (chain == goerli) {
                 return new RpcProvider({ nodeUrl: process.env.NEXT_PUBLIC_RPC?? "" });
@@ -35,6 +36,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               }
             }}
           >
+            <ConnectkitProvider config={{provider}} >
+
         <SupplyChainContextProvider>
         <RegisteredContextProvider>
           <YourContextProvider>
@@ -42,6 +45,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </YourContextProvider>
         </RegisteredContextProvider>
         </SupplyChainContextProvider>
+            </ConnectkitProvider>
         </StarknetConfig>
       </body>
     </html>
