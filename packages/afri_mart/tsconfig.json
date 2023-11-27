@@ -34,7 +34,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "src/app/product/[id]/page.js", "src/app/product/[id]/components/productsDetails.js", "src/context/registeredContext.js"  ],
+, "src/app/Product/[id]/page.js", "src/app/Product/[id]/components/productsDetails.js", "src/context/registeredContext.js", "src/components/addresses.js"  ],
   "exclude": [
     "node_modules"
   ]

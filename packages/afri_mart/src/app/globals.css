@@ -1,3 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --sand: #ffdfbf;
+  --charcoal: #22201e;
+  --terracota: #cc6448;
+  --seashell: #f9f3ed;
+  --rouge: #611d0b;
+  --border-light: rgba(49, 49, 49, .6);
+  --primary-2: #9a9a9a;
+  --border-dark: #181d1f;
+  --olive: #776d55;
+  --dark-slate-grey: #393838;
+  --white: white;
+  --coral: #ff7955;
+  --sienna: #aa4c33;
+  --ivory: #f9f3ed;
+  --black: #0c0e0f;
+  --dark-slate-grey-2: #2f393d;
+  --black-2: #1b1b1b;
+  --black-2-3: rgba(49, 49, 49, .13);
+  --black-3: rgba(49, 49, 49, .23);
+  --other-black: #1b1b1b;
+  --eke-green: #0f8050;
+  --big-5-brown: #51241d;
+  --house-heads-blue: #283cac;
+  --kohl-pink: #9b0039;
+  --jameela-yellow: #b86808;
+  --tii-green: #6e7d5e;
+  --rukundo-green: #0a3931;
+  --afroroasters-brown: #74261d;
+  --protea-beige: #b5a298;
+}
