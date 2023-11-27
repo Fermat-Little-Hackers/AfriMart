@@ -9,7 +9,7 @@ import RegisterSupplychain from "./RegisterSupplychain";
 import Home from "./Home";
 import RegisterShipment from "./RegisterShipment";
 import TrackShipment from "./TrackShipment";
-import UpdateShipment from "./UpdateShipment";
+import UpdateShipment from "./updateShipment";
 
 
 
