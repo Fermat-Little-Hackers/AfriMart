@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import  { useState } from "react";
 import Search from "@/components/market-place/search";
 import SideFilter from "./components/sideFilter";
 import UserDetails from "./components/userDetails";
@@ -8,7 +8,7 @@ import OurPartners from "@/components/market-place/ourPartners";
 import Content from "./components/content";
 import SelectCat from "./components/Selectcat";
 
-export default function Home() {
+const Dashboard = () => {
     const [title, setTitle] = useState('All Purchases')
   const props = (message: string) => {
     setTitle(message);
@@ -31,3 +31,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default Dashboard;
