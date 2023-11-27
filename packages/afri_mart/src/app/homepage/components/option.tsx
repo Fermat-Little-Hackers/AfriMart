@@ -3,7 +3,7 @@ interface ClickProps {
     onClickAction: (message: string) => void;
   }
 
-const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
+const Option : React.FC<ClickProps> = ({ onClickAction }) => {
     const [isAgric, setIsAgric] = useState(true);
     const [isCraft, setIsCraft] = useState(false);
     const [isFashion, setIsFashion] = useState(false);
@@ -85,19 +85,26 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
         setIsPhysical(true)
     }
   }
-    return (
-    <div className="border-2 border-black w-[300px] mmx:w-[200px] mt-20 smx:hidden lmx:hidden">
-       <div className="">
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>CRAFT AND ART</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="fashion" onClick={handleClick} style={{color: isFashion ? 'grey' : 'black'}}>FASHION</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="artifacts" onClick={handleClick} style={{color: isArtifacts ? 'grey' : 'black'}}>ARTIFACTS</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>TEXTILES AND FABRICS</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="digital" onClick={handleClick} style={{color: isDigital ? 'grey' : 'black'}}>DIGITAL ARTS</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="physical" onClick={handleClick} style={{color: isPhysical ? 'grey' : 'black'}}>PHYSICAL ARTS</div>
-       </div>
+  return (
+    <div className="hidden smx:block smx:w-[90%] mx-auto">
+
+    <div className="smx:flex smx:mt-10">
+    <div className="my-2 w-[70px] text-center rounded-xl py-1 border-black text-[15px]  smx:h-[30px] smx:border-2 hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRIC</div>
+    <div className="mx-auto my-2 w-[120px] text-center rounded-xl py-1 border-black  smx:h-[30px] smx:border-2 hover:cursor-pointer" id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>CRAFT&ART</div>
+    <div className="mx-auto my-2 w-[100px] text-center rounded-xl py-1 border-black   smx:h-[30px] smx:border-2 hover:cursor-pointer" id="fashion" onClick={handleClick} style={{color: isFashion ? 'grey' : 'black'}}>FASHION</div>
+    
     </div>
+    <div className="smx:flex space-x-2">
+    <div className="mx-auto my-2 w-[110px] text-center rounded-xl py-1 border-black smx:h-[30px] smx:border-2 hover:cursor-pointer" id="artifacts" onClick={handleClick} style={{color: isArtifacts ? 'grey' : 'black'}}>ARTIFACTS</div>
+    <div className="mx-auto my-2 w-[150px] text-[13px] rounded-xl py-1 border-black   smx:h-[30px] smx:border-2 hover:cursor-pointer" id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>TEXTILES & FABRICS</div>
+    <div className="mx-auto my-2 w-[100px] text-[13px] rounded-xl py-1 border-black   smx:h-[30px] smx:border-2 hover:cursor-pointer" id="digital" onClick={handleClick} style={{color: isDigital ? 'grey' : 'black'}}>DIGITAL ARTS</div>
+    </div>
+    
+    <div className="smx:w-[100%]">
+    <div className="my-2 w-[120px] text-[13px] rounded-xl p-1 border-black smx:h-[40px] smx:border-2 flex justify-start hover:cursor-pointer" id="physical" onClick={handleClick} style={{color: isPhysical ? 'grey' : 'black'}}>PHYSICAL ARTS</div>
+    </div>
+   </div>
   )
 }
 
-export default Sidefilter
+export default Option

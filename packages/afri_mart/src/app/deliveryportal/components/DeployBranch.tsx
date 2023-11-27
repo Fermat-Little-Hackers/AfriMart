@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
 
 const DeployBranch = () => {
+<<<<<<< HEAD
   const [companyId, setCompanyId] = useState<number>();
   const [adminId, setAdminId] = useState<number>();
+=======
+  const [companyId, setCompanyId] = useState<any>();
+  const [adminId, setAdminId] = useState<any>();
+>>>>>>> 0aecd837961329457ffc7ec8e58991335935f94c
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
 
   const handleCompanyId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCompanyId(Number(e.target.value));
+    setCompanyId(e.target.value);
   };
 
   const handleAdminId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAdminId(Number(e.target.value));
+    setAdminId(e.target.value);
   };
 
   const handleCity = (e: React.ChangeEvent<HTMLInputElement>) => {

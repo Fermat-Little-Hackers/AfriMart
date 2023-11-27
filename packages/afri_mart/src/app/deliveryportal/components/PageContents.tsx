@@ -13,8 +13,6 @@ import UpdateShipment from "./UpdateShipment";
 
 
 
-
-
 const PageContents  = () => {
     const { sharedState, setSharedState } = useSupplyChainContext();
 
