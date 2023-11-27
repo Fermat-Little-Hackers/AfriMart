@@ -6,8 +6,7 @@ import { useAccount } from "@starknet-react/core";
 import { type ConnectOptions, type DisconnectOptions, connect, disconnect , } from "get-starknet"
 import clsx from "clsx";
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
-import { ProviderInterface } from "starknet";
-import config from '../tailwind.config';
+import { AccountInterface, ProviderInterface } from "starknet";
 
 
 function handleConnect(options?: ConnectOptions) {
@@ -19,7 +18,11 @@ function handleConnect(options?: ConnectOptions) {
 
 export interface ConnectConfig {
     provider: ProviderInterface,
-    account: 
+    account?: AccountInterface,
+    setAccount?: Dispatch<SetStateAction<AccountInterface>>,
+    address?: string,
+    isConnected?: boolean,
+    setIsConnected?: Dispatch<SetStateAction<boolean>>
 }
 
 const ConnectkitContext = createContext<ConnectConfig | undefined>(undefined);
