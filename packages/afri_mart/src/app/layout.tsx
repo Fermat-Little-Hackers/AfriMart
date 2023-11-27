@@ -24,17 +24,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body className={clsx("", inter.className)}>
-        <StarknetConfig 
-            connectors={connectors} 
-            chains={[mainnet, goerli]} 
-            provider={function (chain: Chain): ProviderInterface | null {
-              if (chain == goerli) {
-                return new RpcProvider({ nodeUrl: process.env.NEXT_PUBLIC_RPC?? "" });
-              } else {
-                return new RpcProvider({ nodeUrl: ''})
-              }
-            }}
-          >
         <SupplyChainContextProvider>
         <RegisteredContextProvider>
           <YourContextProvider>
@@ -42,7 +31,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </YourContextProvider>
         </RegisteredContextProvider>
         </SupplyChainContextProvider>
-        </StarknetConfig>
       </body>
     </html>
   );
