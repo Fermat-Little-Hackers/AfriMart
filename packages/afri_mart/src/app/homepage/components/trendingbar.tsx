@@ -21,7 +21,7 @@ const Trendingbar = () => {
         },
     ]
     return (
-        <div className="border-2 border-black mx-auto w-[1000px] mmx:w-[70%] smx:w-[95%] lmx:w-[95%] smx:mt-5 h-[60vh] smx:h-[65vh] p-10 lmx:p-[5px] smx:p-[5px] mt-20">
+        <div className="border-2 border-black mx-auto w-[1000px] smx:mx-[30px] smx:w-[70%] lmx:w-[95%] smx:mt-5 h-[60vh] smx:h-[65vh] p-10 lmx:p-[5px] smx:p-[5px] mt-20">
             <div className="w-full mx-auto">
                 <p>
                 TRENDING PRODUCTS

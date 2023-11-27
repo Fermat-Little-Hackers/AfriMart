@@ -4,6 +4,7 @@ import Sidefilter from "./components/sidefilter";
 import Filterdisplay from "./components/filterdisplay";
 import Trendingbar from "./components/trendingbar";
 import OurPartners from "@/components/market-place/ourPartners";
+import Option from "./components/option";
 import { useState } from "react";
 
 const Homepage = () => {
@@ -19,6 +20,7 @@ const Homepage = () => {
         <Sidefilter onClickAction={handleFilterClick} />
         <Trendingbar />
       </div>
+      <Option onClickAction={handleFilterClick} />
       <Filterdisplay title={productTitle} />
       <OurPartners />
     </div>

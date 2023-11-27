@@ -24,17 +24,17 @@ const HomeSearch = () => {
               <FaBars />
             </div> */}
           </div>
-          <div className='smx:w-[100%] flex mx-auto smx:mx-0 justify-end items-center border-2 w-[70rem] smx:w-[20rem] lmx:w-[40%] border-black h-10 p-5 pr-0 rounded-3xl smx:mx-auto smx:justify-end smx:mt-2'>
+          <div className='smx:w-[100%] flex mx-auto smx:mx-0 justify-end items-center border-2 w-[70rem] smx:w-[100%] lmx:w-[100%] border-black h-10 p-5 pr-0 rounded-3xl smx:mx-auto smx:justify-end smx:mt-2'>
             <input
               type="search"
               name="search"
               id="search"
               placeholder="..."
-              className='outline-none focus:outline-none w-[80%] smx:w-[20%] mr-6'
+              className='outline-none focus:outline-none w-[80%] smx:w-[100%] mr-6'
             />
             <button
               type="button"
-              className=' bg-gray-600 text-white px-2 w-[150px] smx:w-[40%] py-2 rounded-3xl flex items-center'
+              className=' bg-gray-600 text-white px-2 w-[150px] smx:w-[80%] py-2 rounded-3xl flex items-center'
               onClick={startSearch}
             >
               <FaSearch className="mr-2" /> Search
