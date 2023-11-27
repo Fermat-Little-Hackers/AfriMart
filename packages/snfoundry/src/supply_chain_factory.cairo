@@ -142,6 +142,10 @@ trait IDispatchFactory<TContractState>{
     fn getBranchStats(self: @TContractState, adminID: u8) -> Array::<BranchStats>;
     fn getOrderStats(self: @TContractState, adminID: u8) -> Array::<OrdersStats>;
 
+    fn getCompanyId(self: @TContractState, address: ContractAddress) -> u16;
+    fn getAdminId(self: @TContractState, address: ContractAddress) -> u128;
+    fn getBranchId(self: @TContractState, address: ContractAddress) -> u128;
+
 }
 
 
@@ -560,6 +564,18 @@ use core::serde::Serde;
             };
 
             return all_shipment_stats;
+        }
+
+        fn getCompanyId(self: @ContractState, address: ContractAddress) -> u16{
+            self.returnCompanyIds.read(address)
+        }
+
+        fn getAdminId(self: @ContractState, address: ContractAddress) -> u128 {
+            self.returnAdminIds.read(address)
+        }
+
+        fn getBranchId(self: @ContractState, address: ContractAddress) -> u128 {
+            self.returnBranchIds.read(address)
         }
 
     }
