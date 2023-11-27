@@ -19,7 +19,6 @@ export default function Home() {
   const { account, address, status } = useAccount();
   return (
     <main className="flex flex-col items-center justify-center min-h-screen  bg-[var(--black-2)] bg-grainy-pattern text-white">
-      <Header />
       <HeroSection />
       <SectionII />
       <LandingSections />
@@ -28,7 +27,6 @@ export default function Home() {
       <Brands />
       <GreatArt />
       <SectionIII />
-      <Footer />
     </main>
   );
 }
