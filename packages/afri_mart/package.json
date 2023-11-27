@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@argent/get-starknet": "^6.4.7",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@starknet-react/chains": "^0.1.0",
