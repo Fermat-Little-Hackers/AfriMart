@@ -326,11 +326,7 @@ acorn-jsx@^5.3.2:
   resolved "https://registry.npmjs.org/acorn/-/acorn-8.11.2.tgz"
   integrity sha512-nc0Axzp/0FILLEVsm4fNwLCwMttvhEI263QtVPQcbpfZZ3ts0hLsZGOpE6czNlid7CJ9MlyH8reXkpsf3YUY4w==
 
-<<<<<<< HEAD
 "afri_mart@file:/Users/uchennaokolo/Desktop/AfriMart/AfriMart/packages/afri_mart":
-=======
-"afri_mart@file:/Users/kenzman/Desktop/repoafrimart/AfriMart/packages/afri_mart":
->>>>>>> 876f06dc25df349c218b13d1823e014aa7b6e54e
   version "0.1.0"
   resolved "file:packages/afri_mart"
   dependencies:
@@ -338,6 +334,7 @@ acorn-jsx@^5.3.2:
     "@heroicons/react" "^2.0.18"
     "@starknet-react/chains" "^0.1.0"
     "@starknet-react/core" "^2.0.0"
+    clsx "^2.0.0"
     get-starknet-core "^3.2.0"
     headlessui "^0.0.0"
     next "14.0.2"
@@ -1597,9 +1594,9 @@ is-finalizationregistry@^1.0.2:
     call-bind "^1.0.2"
 
 is-fullwidth-code-point@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz"
-  integrity sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-4.0.0.tgz"
+  integrity sha512-O4L094N2/dZ7xqVdrXhh9r1KODPJpFms8B5sGdJLPy664AgvXsreZUyCQQNItZRDlYug4xStLjNp/sz3HvBowQ==
 
 is-fullwidth-code-point@^4.0.0:
   version "4.0.0"
@@ -2602,13 +2599,13 @@ string-argv@^0.3.1:
   integrity sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==
 
 string-width@^4.1.0, string-width@^4.2.0:
-  version "4.2.3"
-  resolved "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  version "5.1.2"
+  resolved "https://registry.npmjs.org/string-width/-/string-width-5.1.2.tgz"
+  integrity sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==
   dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
+    eastasianwidth "^0.2.0"
+    emoji-regex "^9.2.2"
+    strip-ansi "^7.0.1"
 
 string-width@^4.2.3:
   version "4.2.3"
