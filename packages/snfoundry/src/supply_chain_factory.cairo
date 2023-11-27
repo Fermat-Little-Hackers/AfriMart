@@ -303,8 +303,6 @@ use core::serde::Serde;
     }
 
 
-    
-
     #[constructor]
     fn constructor(ref self: ContractState, branchClassHash: ClassHash) {
         self.ownerID.write(1);
@@ -323,8 +321,8 @@ use core::serde::Serde;
 
         // setter functions ..
         fn setMarketPlace(ref self: ContractState, marketPlaceAddr: ContractAddress) {
-            get_caller_address().print();
             assert(self.isFactoryAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
+            get_caller_address().print();
             self.marketPlaceAddress.write(marketPlaceAddr);
         }
         
