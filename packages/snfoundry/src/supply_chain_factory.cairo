@@ -156,6 +156,7 @@ use core::result::ResultTrait;
 use core::serde::Serde;
     use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher, ItemStatus};
     use starknet::{get_caller_address, syscalls::deploy_syscall};
+    use debug::PrintTrait;
     #[storage]
     struct Storage {
         // return Ids
@@ -322,6 +323,7 @@ use core::serde::Serde;
 
         // setter functions ..
         fn setMarketPlace(ref self: ContractState, marketPlaceAddr: ContractAddress) {
+            get_caller_address().print();
             assert(self.isFactoryAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
             self.marketPlaceAddress.write(marketPlaceAddr);
         }

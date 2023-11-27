@@ -5,7 +5,7 @@ use traits::TryInto;
 use starknet::{ContractAddress, contract_address_const,ClassHash};
 use starknet::Felt252TryIntoContractAddress;
 
-use snforge_std::{declare, ContractClassTrait,get_class_hash};
+use snforge_std::{declare, ContractClassTrait,get_class_hash, start_prank};
 use snfoundry::market_place::{aftimartTraitSafeDispatcher, aftimartTraitSafeDispatcherTrait};
 use snfoundry::Rating::{IRatingSafeDispatcher, IRatingSafeDispatcherTrait};
 use snfoundry::supply_chain_factory::{IDispatchFactoryDispatcher, IDispatchFactoryDispatcherTrait};
@@ -23,6 +23,19 @@ fn test_deployment_works() {
     assert(!rating_contract_address.is_zero(), 'wrong_rating');
 }
 
+fn test_setmarketplace_works (){
+    let admin_address = contract_address_const::<'admin_address'>();
+    let pranker_address = contract_address_const::<'pranker_address'>();
+    start_prank(admin_address,pranker_address);
+    let supply_factory_address = deploy_supply_factory();
+    let market_contract_address = deploy_market_contract(supply_factory_address);
+
+    let market_dispatcher = IDispatchFactoryDispatcher {contract_address : supply_factory_address};
+    market_dispatcher.setMarketPlace(market_contract_address);
+
+
+
+}
 
 // *************************************************************************
 //                          SETUP CONTRACTS
