@@ -1,10 +1,7 @@
 import React from "react";
 import Puchasecard from "./Puchasecard";
 
-interface filterProps {
-    title : string;
-}
-const AllPurchases : React.FC<filterProps> = ({ title})  => {
+const AllPurchases = ()  => {
   const data = [
     {
       title : 'Ashoke Material',
@@ -21,19 +18,12 @@ const AllPurchases : React.FC<filterProps> = ({ title})  => {
     },
   ]
 
-  return    ( <div className="border-2 border-black smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto smx:w-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-fit md:h-[60vh] p-6 mt-20">
-  <div className="w-full smx:w-[100%] mx-auto">
-      <p>
-      {title}
-      </p>                    
-  </div>
-      <section className="">    
+  return    ( <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">   
       {data.map((item,index) => (             
-       <div key={index} className="w-[20%]">
+       <div key={index} className="w-[20%] space-y-10">
        <Puchasecard title={item.title} amount={item.amount} quantity={item.quantity} />
      </div>                
         ))}
-        </section>
 </div>)
 };
 

@@ -7,7 +7,14 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    
+    extend: {
+      screens: {
+        smx: { max: "645px" },
+        lmx: { max: "1227px" },
+        xlg: { max: "1431px" },
+        mmx: { max: "1430px" },
+      },
+    },
   },
   plugins: [],
 };
