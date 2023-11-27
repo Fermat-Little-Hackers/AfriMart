@@ -6,7 +6,7 @@ import { Header } from "@/components/sections/Header";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { useAccount } from "@starknet-react/core";
 import Link from "next/link";
-import { ConnectButton } from "../../connectkit";
+// import { ConnectButton } from "../../connectkit";
 import { SectionII } from "@/components/sections/SectionII";
 import { SectionIII } from "@/components/sections/SectionIII";
 import { GreatArt } from "@/components/sections/GreatArt";

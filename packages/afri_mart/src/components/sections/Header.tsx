@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ConnectButton } from '../../../connectkit';
+// import { ConnectButton } from '../../../connectkit';
 // components/Header.js
 
 export const Header = () => {
@@ -9,7 +9,7 @@ export const Header = () => {
             <button className={clsx("text-white font-['acumin-pro-wide']" ) }>
                 LAUNCH APP
             </button>
-            <ConnectButton />
+            {/* <ConnectButton /> */}
         </header>
     );
 };
