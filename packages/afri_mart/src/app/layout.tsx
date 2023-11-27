@@ -17,8 +17,6 @@ import { ConnectkitProvider } from '../../connectkit';
 
 const inter = Inter({ subsets: ['latin'] });
 
-const provider = new RpcProvider({ nodeUrl: process.env.NEXT_PUBLIC_RPC ?? "" });
-
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const connectors = [
     new InjectedConnector({ options: { id: 'braavos' } }),
@@ -38,7 +36,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               }
             }}
           >
-            <ConnectkitProvider config={{provider}} >
+            <ConnectkitProvider >
 
         <SupplyChainContextProvider>
         <RegisteredContextProvider>

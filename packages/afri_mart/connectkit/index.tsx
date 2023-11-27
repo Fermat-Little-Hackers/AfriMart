@@ -7,6 +7,7 @@ import { type ConnectOptions, type DisconnectOptions, connect, disconnect , } fr
 import clsx from "clsx";
 import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
 import { AccountInterface, ProviderInterface } from "starknet";
+import { ConnectedStarknetWindowObject } from "get-starknet-core";
 
 
 function handleConnect(options?: ConnectOptions) {
@@ -17,64 +18,88 @@ function handleConnect(options?: ConnectOptions) {
 }
 
 export interface ConnectConfig {
-    provider: ProviderInterface,
-    account?: AccountInterface,
-    setAccount?: Dispatch<SetStateAction<AccountInterface>>,
-    address?: string,
-    isConnected?: boolean,
-    setIsConnected?: Dispatch<SetStateAction<boolean>>
+    provider: ProviderInterface | undefined,
+    setProvider: Dispatch<SetStateAction<ProviderInterface | undefined>> ,
+    account: AccountInterface | undefined,
+    setAccount: Dispatch<SetStateAction<AccountInterface | undefined>>,
+    address: string | undefined,
+    setAddress: Dispatch<SetStateAction<string | undefined>>
+    isConnected: boolean | undefined,
+    setIsConnected: Dispatch<SetStateAction<boolean | undefined>>
+    connection: ConnectedStarknetWindowObject | undefined,
+    setConnection: Dispatch<SetStateAction< ConnectedStarknetWindowObject | undefined>>,
 }
 
 const ConnectkitContext = createContext<ConnectConfig | undefined>(undefined);
-export const ConnectkitProvider = ({children, config }: {children: ReactNode, config: ConnectConfig}) => {
+export const ConnectkitProvider = ({children}: {children: ReactNode}) => {
+    const [provider, setProvider] = useState<ProviderInterface>();
+    const [account, setAccount] = useState<AccountInterface>();
+    const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
+    const [isConnected, setIsConnected] = useState<boolean>();
+    const [address, setAddress] = useState<string>();
     return(
-        <ConnectkitContext.Provider value={config}>
+        <ConnectkitContext.Provider 
+        value={
+            {
+                provider, setProvider, 
+                account, setAccount, 
+                address, setAddress, 
+                isConnected, setIsConnected,
+                connection, setConnection,
+            }
+            }>
             {children}
         </ConnectkitContext.Provider>
     )
 }
 
 export const ConnectButton = () => {
-    const [provider, setProvider] = useState();
-    const [account, setAccount] = useState();
-    const [connection, setConnection] = useState();
-    const [isConnected, setIsConnected] = useState<boolean>();
-    const [address, setAddress] = useState();
+    const value = useContext(ConnectkitContext);
+    if (!value) return
+    const { provider, setProvider, account, setAccount, address, setAddress, isConnected, setIsConnected, setConnection, connection } = value;    
+    const handleConnect = async () => {
+            const connection = await connect({ modalMode: "alwaysAsk"});
+            if (connection && connection.isConnected) {
+                setConnection(connection);
+                setAccount(connection.account);
+                setAddress(connection.selectedAddress);
+                setIsConnected(true);
+            }
+        }
     
 
-
-    function handleDisconnect(options?: DisconnectOptions) {
-        return async () => {
+    const handleDisconnect = async () => {
             await disconnect();
             setConnection(undefined);
             setAccount(undefined);
             setAddress(undefined);
             setIsConnected(false);
         };
-    }
+    
+
     if (isConnected) {
-        return <ConnectedWalletButton />
-    }  else return  <DisconnectedWalletButton />
+        return <ConnectedWalletButton handleDisconnect={handleDisconnect} address={address} />
+    }  else return  <DisconnectedWalletButton handleConnect={handleConnect} />
     
 }    
     
-const DisconnectedWalletButton = () => {
+const DisconnectedWalletButton = ({handleConnect}:{handleConnect: Function}) => {
     return(
         <button 
         className={clsx(
             "rounded-md bg-white text-slate-900 py-2 px-4 h-max"
         )}
-            onClick={handleConnect({ modalMode: "alwaysAsk" })}
+            onClick={() => handleConnect({ modalMode: "alwaysAsk" })}
         >Connect Button -&gt;</button>
     )
 }
 
-const ConnectedWalletButton = () => {
+const ConnectedWalletButton = ({handleDisconnect, address}: {handleDisconnect: Function, address?: string}) => {
         return(
             <button 
-            onClick={handleDisconnect()}
+            onClick={() => handleDisconnect()}
             className={clsx(
                 "rounded-md bg-white text-slate-900 py-2 px-4 h-max"
-            )}></button>
+            )}>{address }</button>
     )
 }
