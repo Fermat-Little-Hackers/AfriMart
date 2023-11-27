@@ -3,7 +3,7 @@ import ProductCard from "../../../../components/market-place/productCard"
 
 const SimilarProducts = () => {
   return (
-    <div className="md:border-2 md:border-black mx-5 md:mx-20 h-fit md:h-[60vh] px-0 md:p-10 flex flex-col gap-5 md:gap-7 mt-10 md:mt-20">
+    <div className="md:border-2 md:border-black mx-5 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-5 md:gap-7 mt-10 md:mt-20">
         <div className="">
             <p>
                 SIMILAR PRODUCTS
