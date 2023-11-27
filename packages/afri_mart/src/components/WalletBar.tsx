@@ -1,7 +1,9 @@
 "use client";
 import { useAccount, useConnect, useDisconnect } from "@starknet-react/core";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "./ui/Button";
+import WalletsToConnect from "./WalletConnectPopUp";
+import { useYourContext } from "@/context/YourContext";
 
 function WalletConnected() {
   const { address } = useAccount();
@@ -14,32 +16,25 @@ function WalletConnected() {
 
   return (
     <div>
-      <span>Connected: {shortenedAddress}</span>
+      <span>{shortenedAddress}</span>
       <button onClick={() => disconnect()}>Disconnect</button>
     </div>
   );
 }
 
 function ConnectWallet() {
-  const { connectors, connect } = useConnect();
+  const {wantToConnect, setWantToConnect} = useYourContext();
 
   return (
     <div>
-      <span>Choose a wallet: </span>
-      {connectors.map((connector) => {
-        return (
-          <Button
-            key={connector.id}
-            onClick={() => connect({ connector })}
-            className="gap-x-2 mr-2"
-          >
-            {connector.id}
-          </Button>
-        );
-      })}
+      <div>
+        <Button onClick={() => setWantToConnect(!wantToConnect)}>Connect Wallet</Button>
+        {wantToConnect && (<WalletsToConnect />)}
+      </div>
     </div>
   );
 }
+
 
 export default function WalletBar() {
   const { address } = useAccount();
