@@ -7,7 +7,6 @@ import { StarknetProvider } from '@/components/starknet-provider';
 import { SupplyChainContextProvider } from '../context/supplyChainContext';
 import './globals.css';
 import { StarknetConfig, InjectedConnector } from '@starknet-react/core'
-// import {YourContextProvider} from '../context/YourContext;
 import { Chain, goerli, mainnet } from '@starknet-react/chains';
 import { ProviderInterface, RpcProvider } from 'starknet';
 import clsx from 'clsx';
@@ -24,13 +23,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   ];
   return (
     <html lang="en">
-      <body className={clsx("bg-[var(--black-2)] bg-grainy-pattern ", inter.className)}>
+      <body className={clsx("", inter.className)}>
         <StarknetConfig 
             connectors={connectors} 
             chains={[mainnet, goerli]} 
             provider={function (chain: Chain): ProviderInterface | null {
               if (chain == goerli) {
-                return new RpcProvider({ nodeUrl: process.env.NEXT_PUBLIC_RPC });
+                return new RpcProvider({ nodeUrl: process.env.NEXT_PUBLIC_RPC?? "" });
               } else {
                 return new RpcProvider({ nodeUrl: ''})
               }
