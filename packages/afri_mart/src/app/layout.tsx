@@ -13,6 +13,7 @@ import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
 
+import PagesLayout from './PagesLayout';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,11 +26,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <html lang="en">
       <body className={clsx("", inter.className)}>
         <SupplyChainContextProvider>
-        <RegisteredContextProvider>
-          <YourContextProvider>
-            <StarknetProvider>{children}</StarknetProvider>
-          </YourContextProvider>
-        </RegisteredContextProvider>
+          <RegisteredContextProvider>
+            <YourContextProvider>
+              <StarknetProvider>
+                <PagesLayout>{children}</PagesLayout>
+              </StarknetProvider>
+            </YourContextProvider>
+          </RegisteredContextProvider>
         </SupplyChainContextProvider>
       </body>
     </html>
