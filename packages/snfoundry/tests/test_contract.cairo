@@ -2,7 +2,7 @@ use array::ArrayTrait;
 use result::ResultTrait;
 use option::OptionTrait;
 use traits::TryInto;
-use starknet::{ContractAddress, contract_address_const,ClassHash};
+use starknet::{ContractAddress, contract_address_const,ClassHash, get_caller_address};
 use starknet::Felt252TryIntoContractAddress;
 
 use snforge_std::{declare, ContractClassTrait,get_class_hash, start_prank};
@@ -10,6 +10,7 @@ use snfoundry::market_place::{aftimartTraitSafeDispatcher, aftimartTraitSafeDisp
 use snfoundry::Rating::{IRatingSafeDispatcher, IRatingSafeDispatcherTrait};
 use snfoundry::supply_chain_factory::{IDispatchFactoryDispatcher, IDispatchFactoryDispatcherTrait};
 use core::zeroable::Zeroable;
+use debug::PrintTrait;
 
 
 #[test]
@@ -23,17 +24,27 @@ fn test_deployment_works() {
     assert(!rating_contract_address.is_zero(), 'wrong_rating');
 }
 
+#[test]
 fn test_setmarketplace_works (){
     let admin_address = contract_address_const::<'admin_address'>();
-    let pranker_address = contract_address_const::<'pranker_address'>();
-    start_prank(admin_address,pranker_address);
+    let dispatch_hq_admin = contract_address_const::<'dispatch_hq_admin_address'>();
+    
     let supply_factory_address = deploy_supply_factory();
     let market_contract_address = deploy_market_contract(supply_factory_address);
+  
+    let factory_dispatcher = IDispatchFactoryDispatcher {contract_address : supply_factory_address};
 
-    let market_dispatcher = IDispatchFactoryDispatcher {contract_address : supply_factory_address};
-    market_dispatcher.setMarketPlace(market_contract_address);
+    start_prank(supply_factory_address,admin_address);
+    factory_dispatcher.setMarketPlace(market_contract_address);
+    let res = factory_dispatcher.getMarketPlace();
 
+    let new_admin = contract_address_const::<'admin_address'>();
+    let admin_id = factory_dispatcher.setFactoryAdmin(new_admin);
 
+    let res2 = factory_dispatcher.setDispatchHqAdmin(dispatch_hq_admin,'ucherider', 'Nigeria', 'Lagos', 'ikorodu');
+    res2.print();
+    assert(res == market_contract_address, 'incorrect_market');
+    assert(admin_id == 2, 'incorrect_admin');
 
 }
 
@@ -46,9 +57,10 @@ fn compute_supply_chain_hash() -> ClassHash {
     contract.class_hash
 }
 fn deploy_supply_factory() -> ContractAddress {
+    let admin_address = contract_address_const::<'admin_address'>();
     let contract = declare('DispatchCompanyFactory');
     let hash = compute_supply_chain_hash();
-    contract.deploy(@array![hash.into()]).unwrap()
+    contract.deploy(@array![hash.into(), admin_address.into()]).unwrap()
 }
 
 fn deploy_market_contract(supply_factory_address : ContractAddress) -> ContractAddress {
