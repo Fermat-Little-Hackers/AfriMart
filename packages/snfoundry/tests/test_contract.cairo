@@ -28,6 +28,7 @@ fn test_deployment_works() {
 fn test_setmarketplace_works (){
     let admin_address = contract_address_const::<'admin_address'>();
     let dispatch_hq_admin = contract_address_const::<'dispatch_hq_admin_address'>();
+    let dispatch_admin = contract_address_const::<'dispatch_admin_address'>();
     
     let supply_factory_address = deploy_supply_factory();
     let market_contract_address = deploy_market_contract(supply_factory_address);
@@ -42,9 +43,18 @@ fn test_setmarketplace_works (){
     let admin_id = factory_dispatcher.setFactoryAdmin(new_admin);
 
     let res2 = factory_dispatcher.setDispatchHqAdmin(dispatch_hq_admin,'ucherider', 'Nigeria', 'Lagos', 'ikorodu');
-    res2.print();
+    
+    start_prank(supply_factory_address,dispatch_hq_admin);
+    let dispatch_admin_id = factory_dispatcher.setDispatchAdmin(dispatch_admin);
+
+    start_prank(supply_factory_address,dispatch_admin);
+    let (id, child_address) = factory_dispatcher.createBranch('ikorodu', 'Lagos', 'Nigeria');
+
+    assert(!child_address.is_zero(), 'bad_child');
     assert(res == market_contract_address, 'incorrect_market');
+    assert(res2 == 0, 'invalid_hq_admin');
     assert(admin_id == 2, 'incorrect_admin');
+    assert(dispatch_admin_id == 1, 'invalid_dis');
 
 }
 
