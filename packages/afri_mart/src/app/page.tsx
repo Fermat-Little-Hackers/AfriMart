@@ -6,7 +6,7 @@ import { Header } from "@/components/sections/Header";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { useAccount } from "@starknet-react/core";
 import Link from "next/link";
-import { ConnectButton } from "../../connectkit";
+// import { ConnectButton } from "../../connectkit";
 import { SectionII } from "@/components/sections/SectionII";
 import { SectionIII } from "@/components/sections/SectionIII";
 import { GreatArt } from "@/components/sections/GreatArt";
@@ -19,7 +19,6 @@ export default function Home() {
   const { account, address, status } = useAccount();
   return (
     <main className="flex flex-col items-center justify-center min-h-screen  bg-[var(--black-2)] bg-grainy-pattern text-white">
-      {/* <Header /> */}
       <HeroSection />
       <SectionII />
       <LandingSections />
@@ -28,7 +27,6 @@ export default function Home() {
       <Brands />
       <GreatArt />
       <SectionIII />
-      {/* <Footer /> */}
     </main>
   );
 }

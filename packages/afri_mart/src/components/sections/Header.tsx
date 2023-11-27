@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ConnectButton } from '../../../connectkit';
+// import { ConnectButton } from '../../../connectkit';
 // components/Header.js
 
 import Link from "next/link";
