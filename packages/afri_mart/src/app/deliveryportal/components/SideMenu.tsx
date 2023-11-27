@@ -1,5 +1,6 @@
 'use client'
 import React, { HTMLInputTypeAttribute, useState } from "react";
+// import {useSupplyChainContext} from "../../../context/supplyChainContext"
 import {useSupplyChainContext} from "../../../context/supplyChainContext"
 import { FaShoppingCart, FaUser, FaBars, FaTimes } from 'react-icons/fa';
 
@@ -16,6 +17,7 @@ const SideMenu  = () => {
     const handleClick = (e: any) => {
         toggleTextVisibility();
         setSharedState(e.target.id);
+        toggleTextVisibility();
         console.log(e.target.id);
     }
 

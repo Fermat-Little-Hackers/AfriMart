@@ -11,7 +11,7 @@ const ProductsDetails = () => {
     const handlePurchaseClick = () => {
         // Open the popup when the "CHECK OUT" button is clicked
         setSharedState(true);
-      };
+    };
 
   return (
     <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
@@ -26,7 +26,7 @@ const ProductsDetails = () => {
             </div>
         </div>
 
-        <div className="border-2 border-black h-[100%] w-[100%] md:p-10 flex flex-col justify-between mt-5 md:mt-0">
+        <div className="border-2 border-black h-fit w-[100%] md:p-10 flex flex-col justify-between mt-5 md:mt-0">
             <div className='flex flex-col gap-3 p-5 md:p-0'>
                 <p>DANSHIKI MARTERIAL</p>
                 <p>$50</p>
@@ -48,7 +48,7 @@ const ProductsDetails = () => {
                     </button>
                 </div>
             </div>
-            <div className="border-2 border-black mr-10 w-[100%] h-[45%] p-4">
+            <div className="border-2 border-black mr-10 w-[100%] h-fit md:h-[45%] p-4 md:mt-5">
                 <p className='mb-3'>
                     DESCRIPTION
                 </p>

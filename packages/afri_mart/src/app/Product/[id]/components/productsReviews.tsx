@@ -4,7 +4,7 @@ import { FaUser } from 'react-icons/fa';
 
 const ProductsReviews = () => {
   return (
-    <div className="border-2 border-black mx-5 md:mx-20 md:h-[45vh] px-3 py-3 md:px-10 md:py-7 flex flex-col gap-5 md:gap-7">
+    <div className="border-2 border-black mx-5 md:mx-20 h-fit md:h-[45vh] px-3 py-3 md:px-10 md:py-7 flex flex-col gap-5 md:gap-7">
         <div className="">
             <p>
                 REVIEWS
