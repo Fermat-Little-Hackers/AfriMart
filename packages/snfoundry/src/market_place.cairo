@@ -7,6 +7,8 @@ struct userProfile {
     id: u256,
     name: felt252,
     address: ContractAddress,
+    region: felt252,
+    country: felt252,
     profileImg: felt252,
     totalItemListed: u256,
     totalItemsPurchased: u256,
@@ -381,6 +383,8 @@ mod afrimart {
             let newUser = userProfile{
                 id: UserId, name: Name, 
                 address: get_caller_address(),
+                region: region,
+                country: country,
                 profileImg: profileImg,
                 totalItemListed: 0, 
                 totalItemsPurchased: 0,
@@ -585,18 +589,18 @@ mod afrimart {
             let userID = self.userId.read(user);
             assert(userID != 0, 'INVALID USER ADDRESS');
             let numListed = self.allProfiles.read(userID).totalItemsPurchased;
-            let mut allProductId = ArrayTrait::new();
+            let mut allOrderId = ArrayTrait::new();
             let mut i: u256 = 1;
 
             loop {
                 if i > numListed {
                     break;
                 }
-                let product: u256 = self.itemsListed.read((user, i));
-                allProductId.append(product);
+                let product: u256 = self.itemsPurchased.read((user, i));
+                allOrderId.append(product);
                 i = i + 1;
             };
-            return allProductId;
+            return allOrderId;
         }   
 
         fn getUserProfile(self: @ContractState, user: ContractAddress) -> userProfile {

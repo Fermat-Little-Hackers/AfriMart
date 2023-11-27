@@ -2,12 +2,12 @@ import React from 'react'
 
 export const SupplyChainFactoryAddr = () => {
   return (
-    '0x00ddf380993a721b3babf43dfd0bb04a94ed1cb3b671171a43dc0c3dcfb2cb7a'
+    '0x06ac2a46651be803133e1cb44f7c8b7f01f19ff266c4856f98addbb562ff96b5'
   )
 }
 export const MarketPlaceAddr = () => {
   return (
-    '0x010364f59eab18484c3900121232cfa385286379ef1700abf4dbfb87f143436a'
+    '0x02116bfe76e0e53af2be9b189994545a6bf13db7e3ed65ee9bdf29e93407b95e'
   )
 }
 export const RattingAddr = () => {
