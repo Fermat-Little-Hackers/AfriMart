@@ -6,6 +6,7 @@ import { YourContextProvider } from '../context/YourContext';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { SupplyChainContextProvider } from '../context/supplyChainContext';
 import './globals.css';
+import PagesLayout from './PagesLayout';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,7 +17,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         <SupplyChainContextProvider>
           <RegisteredContextProvider>
             <YourContextProvider>
-              <StarknetProvider>{children}</StarknetProvider>
+              <StarknetProvider>
+                <PagesLayout>{children}</PagesLayout>
+              </StarknetProvider>
             </YourContextProvider>
           </RegisteredContextProvider>
         </SupplyChainContextProvider>
