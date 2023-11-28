@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image';
-import { useConnect, ConnectorIcons } from '@starknet-react/core';
+import { useConnect } from '@starknet-react/core';
 import { Button } from './ui/Button';
 import { useYourContext } from '@/context/YourContext';
 import { FaShoppingCart, FaUser, FaBars, FaTimes } from 'react-icons/fa';
@@ -16,7 +16,7 @@ const WalletsToConnect: React.FC = () => {
                     <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                         Select Prefered Wallet
                     </h2>
-                    <Button type="submit" className='text-black' onClick={() => setWantToConnect(!wantToConnect)}><FaTimes /></Button>
+                    <Button type="submit" className=' bg-gray-100 w-[2rem] h-[2rem] rounded-xl' onClick={() => setWantToConnect(!wantToConnect)}><FaTimes /></Button>
                 </div>
                 <div>
                     {AvailableWallets()}
@@ -36,7 +36,7 @@ const AvailableWallets = () => {
 
     return (
         <div className="mt-5 md:mt-10 sm:mx-auto sm:w-full sm:max-w-sm items-center">
-            <div className='flex flex-col'>
+            <div className='flex flex-col gap-3'>
                 {
                     connectors.map((connector: any) => {
                         return (
@@ -46,7 +46,7 @@ const AvailableWallets = () => {
                                 onClick={() => connect({ connector })}
                                 className="gap-x-2 mr-2"
                             >
-                                {`Connect with ${connector.id} ${connector.name}`}
+                                {`Connect with ${connector.id}`}
                             </Button>
                             </div>
                         );
