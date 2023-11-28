@@ -36,18 +36,19 @@ const Search = () => {
 
     return(
     <div>
-        <div className='menuBar flex flex-row md:flex-row mx-5 md:mx-20 my-5 md:justify-between gap-2 md:gap-0'>
-          <div className='flex items-center border-2 border-black w-full md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl'>
+        <div className='menuBar sticky flex flex-row md:flex-row mx-5 md:mx-20 my-5 md:justify-between gap-2 md:gap-0'>
+          <div className='flex items-center  w-full md:w-[30rem] h-10 ring-1 ring-[var(--sienna)] p-4 pr-0 rounded-lg  shadow-lg outline-none'>
             <input
               type="search"
               name="search"
               id="search"
               placeholder="..."
-              className='outline-none focus:outline-none w-full md:w-[80%] mr-4 md:mr-6'
+              className='focus:outline-none w-full md:w-[80%] mr-4 md:mr-6
+              lock rounded-md border-0 text-gray-900 font sm:text-sm sm:leading-6 bg-transparent outline-none active:outline-none placeholder:outline-none'
             />
             <button
               type="button"
-              className=' bg-gray-600 text-white px-2 md:px-4 py-2 rounded-3xl flex items-center'
+              className=' bg-[var(--sienna)] text-white px-2 md:px-4 py-2 rounded-lg flex items-center'
               onClick={startSearch}
             >
               <FaSearch className="mr-2" /> Search
