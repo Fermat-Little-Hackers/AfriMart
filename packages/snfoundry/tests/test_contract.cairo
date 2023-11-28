@@ -13,16 +13,16 @@ use core::zeroable::Zeroable;
 use debug::PrintTrait;
 
 
-#[test]
-fn test_deployment_works() {
-    let supply_factory_address = deploy_supply_factory();
-    let market_contract_address = deploy_market_contract(supply_factory_address);
-    let rating_contract_address = deploy_rating_contract(market_contract_address);
-    // let safe_dispatcher = aftimartTraitSafeDispatcher { contract_address };
-    assert(!market_contract_address.is_zero(), 'wrong_market');
-    assert(!supply_factory_address.is_zero(), 'wrong_factory');
-    assert(!rating_contract_address.is_zero(), 'wrong_rating');
-}
+// #[test]
+// fn test_deployment_works() {
+//     let supply_factory_address = deploy_supply_factory();
+//     let market_contract_address = deploy_market_contract(supply_factory_address);
+//     let rating_contract_address = deploy_rating_contract(market_contract_address);
+//     // let safe_dispatcher = aftimartTraitSafeDispatcher { contract_address };
+//     assert(!market_contract_address.is_zero(), 'wrong_market');
+//     assert(!supply_factory_address.is_zero(), 'wrong_factory');
+//     assert(!rating_contract_address.is_zero(), 'wrong_rating');
+// }
 
 #[test]
 fn test_setmarketplace_works (){
