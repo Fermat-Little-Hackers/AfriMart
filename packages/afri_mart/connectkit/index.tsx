@@ -102,25 +102,24 @@ function ConnectButtoN() {
         <main className="main">
             {
               connection ? 
-            <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={disconnectWallet}>
-              <div>
-                <p>
-                  Disconnect Wallet
-                </p>
-                <p className="description">
+            <button className="md:h-10 h-10 border-2 rounded-xl flex flex-row gap-2 justify-center items-center md:py-3 md:px-0 p-2" onClick={disconnectWallet}>
+
+              <div className=''>
+                <p className="description text-xs md:text-sm">
                 {
-                    address ? address : ''
+                    address ? `${address.slice(0, 5)}.....${address.slice(-5)}` : ''
                 }
                 </p>
               </div>
-              <div>
-                <FaTimes stroke={1.5} />
-              </div>
+                <div className='border-2 bg-red-700'>
+                    <FaTimes stroke={1.5} />
+                </div>
+              
             </button>
               :
             <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={connectWallet}>
               <div>
-                <p>
+                <p className='flex text-sm md:text-base'>
                   Connect Wallet
                 </p>
               </div>
