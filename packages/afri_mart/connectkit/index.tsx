@@ -3,6 +3,8 @@
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
 import { useState, useEffect } from 'react'
 import { Contract, Provider, constants } from 'starknet'
+import { IconWallet } from "@tabler/icons-react"
+import { FaShoppingCart, FaUser, FaBars, FaTimes, FaGoogleWallet } from 'react-icons/fa';
 
 // import contractAbi from './abis/abi.json'
 // const contractAddress = "0x077e0925380d1529772ee99caefa8cd7a7017a823ec3db7c003e56ad2e85e300"
@@ -24,13 +26,13 @@ function ConnectButtoN() {
         setAddress(connection.selectedAddress)
       }
 
-      if(connection?.chainId !== 'SN_MAIN') {
-        alert("you need to switch to mainnet to proceed!")
+      if(connection?.chainId !== 'SN_GOERLI') {
+        alert("you need to switch to GOERLI to proceed!")
         try {
           await window?.starknet?.request({
             type: "wallet_switchStarknetChain",
             params: {
-              chainId: "SN_MAIN"
+              chainId: "SN_GOERLI"
             }
           });
         }
@@ -51,24 +53,10 @@ function ConnectButtoN() {
       setAddress(connection.selectedAddress)
     }
 
-    if(connection?.chainId !== 'SN_MAIN') {
-      alert("you need to switch to mainnet to proceed!")
-      try {
-        await window?.starknet?.request({
-          type: "wallet_switchStarknetChain",
-          params: {
-            chainId: "SN_MAIN"
-          }
-        });
-      }
-      catch(error : any) {
-        alert(error.message)
-      }
-    }
   }
 
   const disconnectWallet = async() => {
-    await disconnect()
+    await disconnect({ clearLastWallet: true });
     setConnection(undefined)
     setAccount(undefined)
     setAddress('')
@@ -114,16 +102,32 @@ function ConnectButtoN() {
         <main className="main">
             {
               connection ? 
-                <button className="connect" onClick={disconnectWallet}>Disconnect</button>
-              :
-                <button className="connect" onClick={connectWallet}>Connect wallet</button>
-            }
+            <button className="md:h-10 h-10 border-2 rounded-xl flex flex-row gap-2 justify-center items-center md:py-3 md:px-0 p-2" onClick={disconnectWallet}>
 
-          <p className="description">
-          {
-            address ? address : ''
-          }
-          </p>
+              <div className=''>
+                <p className="description text-xs md:text-sm">
+                {
+                    address ? `${address.slice(0, 5)}.....${address.slice(-5)}` : ''
+                }
+                </p>
+              </div>
+                <div className='border-2 bg-red-700'>
+                    <FaTimes stroke={1.5} />
+                </div>
+              
+            </button>
+              :
+            <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={connectWallet}>
+              <div>
+                <p className='flex text-sm md:text-base'>
+                  Connect Wallet
+                </p>
+              </div>
+              <div>
+                <IconWallet stroke={1.5} />
+              </div>
+            </button>
+            }
 
         </main>
       </header>
