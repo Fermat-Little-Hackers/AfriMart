@@ -6,6 +6,7 @@ import Link from "next/link";
 import WalletBar from "../WalletBar";
 import Image from "next/image";
 import afri_mart_logo from "../../../public/AfriMart_Logo_small-NO-BG.png";
+import ConnectButtoN from '../../../connectkit';
 
 export const Header = () => {
     return (
@@ -14,7 +15,8 @@ export const Header = () => {
                 <Image src={afri_mart_logo} alt="Afrimart Logo" height={250} width={220} />
             </Link>
             <Link href={"/deliveryportal"}>Delivery Portal</Link>
-            <WalletBar />
+            {/* <WalletBar /> */}
+            <ConnectButtoN />
         </header>
     );
 };

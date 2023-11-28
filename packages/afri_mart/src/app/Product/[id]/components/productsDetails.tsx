@@ -4,14 +4,14 @@ import Stars from '../../../../components/market-place/stars'
 import { useYourContext } from '../../../../context/YourContext';
 import ConfirmPurchasePopUp from '@/components/market-place/confirmPurchasePopUp';
 import { useAccount, useContractRead } from "@starknet-react/core";
-import marketPlaceAbi from '../../../../ABI/marketPlace.json';
 import { MarketPlaceAddr } from '../../../../components/addresses';
 import { useEffect } from 'react';
-
+import marketplaceAbi from '../../../../ABI/marketPlace'
+import { Contract, Provider, constants } from 'starknet'
 
 
 const ProductsDetails = () => {
-    const { account, address, status } = useAccount();
+  const { account, address, status } = useAccount();
     const { sharedState, setSharedState} = useYourContext();
     const handlePurchaseClick = () => {
         // Open the popup when the "CHECK OUT" button is clicked
@@ -20,7 +20,7 @@ const ProductsDetails = () => {
 
     const { data, isLoading, error, refetch } = useContractRead({
         address: MarketPlaceAddr(),
-        abi: marketPlaceAbi,
+        abi: marketplaceAbi,
         functionName: 'getAllProducts',
         watch: true
       })
@@ -28,6 +28,8 @@ const ProductsDetails = () => {
       useEffect(() => {
           console.log(`TEST222: ${data?.toString()}`);
       }, [data])
+
+
 
 
   return (
