@@ -4,6 +4,9 @@ import { Container } from "../Container";
 import clsx from 'clsx';
 import { Logo } from "./Header";
 import { motion } from "framer-motion";
+import afri_mart_logo from "../../../public/AfriMart_Logo_small-NO-BG.png";
+import Link from "next/link";
+import Image from "next/image";
 
 export const SectionII = () => {
     return (
@@ -12,6 +15,11 @@ export const SectionII = () => {
                 <motion.div>
                     <Logo />
                 </motion.div>
+                <div>
+                    <Link href={"/"} className="container mx-auto">
+                        <Image src={afri_mart_logo} alt="Afrimart Logo" height={650} width={620} className='' />
+                    </Link>
+                </div>
             </div>
             <div className={clsx("w-full")}>
                 <h1 className="font-serif text-4xl text-[var(--sand)]">About Us</h1>
