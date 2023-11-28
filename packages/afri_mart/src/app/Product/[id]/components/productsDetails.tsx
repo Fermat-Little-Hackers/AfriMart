@@ -5,10 +5,9 @@ import { useYourContext } from '../../../../context/YourContext';
 import ConfirmPurchasePopUp from '@/components/market-place/confirmPurchasePopUp';
 import { useAccount, useContractRead } from "@starknet-react/core";
 import { MarketPlaceAddr } from '../../../../components/addresses';
+import { useEffect } from 'react';
 import marketplaceAbi from '../../../../ABI/marketPlace'
 import { Contract, Provider, constants } from 'starknet'
-import { useEffect } from 'react';
-import marketPlaceAbi from '../../../../ABI/marketPlace';
 
 
 const ProductsDetails = () => {
@@ -18,7 +17,6 @@ const ProductsDetails = () => {
         // Open the popup when the "CHECK OUT" button is clicked
         setSharedState(true);
     };
-
 
     const { data, isLoading, error, refetch } = useContractRead({
         address: MarketPlaceAddr(),
@@ -30,7 +28,8 @@ const ProductsDetails = () => {
       useEffect(() => {
           console.log(`TEST222: ${data?.toString()}`);
       }, [data])
-    
+
+
 
 
   return (

@@ -8,10 +8,11 @@ import { SupplyChainContextProvider } from '../context/supplyChainContext';
 import './globals.css';
 import { StarknetConfig, InjectedConnector } from '@starknet-react/core'
 import { Chain, goerli, mainnet } from '@starknet-react/chains';
-import { ProviderInterface, RpcProvider } from 'starknet';
+import { ProviderInterface, RpcProvider, provider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
+// import { ConnectkitProvider } from '../../connectkit';
 
 import PagesLayout from './PagesLayout';
 
