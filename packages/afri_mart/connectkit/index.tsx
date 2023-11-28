@@ -27,7 +27,6 @@ function ConnectButtoN() {
       }
 
       if(connection?.chainId !== 'SN_GOERLI') {
-        alert("you need to switch to GOERLI to proceed!")
         try {
           await window?.starknet?.request({
             type: "wallet_switchStarknetChain",
@@ -37,7 +36,7 @@ function ConnectButtoN() {
           });
         }
         catch(error : any) {
-          alert(error.message)
+          console.log(error)
         }
       }
     }
