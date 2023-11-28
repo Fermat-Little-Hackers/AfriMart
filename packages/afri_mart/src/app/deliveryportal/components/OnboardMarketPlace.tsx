@@ -15,7 +15,7 @@ const OnboardMarketPlace = () => {
   const [connection, setConnection] =
     useState<ConnectedStarknetWindowObject | null>();
   const [marketPlaceAddress, setMarketAddress] = useState("");
-  const [account, setAccount] = useState("");
+  const [account, setAccount] = useState();
   const [address, setAddress] = useState("");
 
   useEffect(() => {
@@ -48,6 +48,25 @@ const OnboardMarketPlace = () => {
     connectToStarknet();
   }, []);
 
+  const onboardMarketPlace = async () => {
+    // const provider = new Provider({
+    //   rpc: {
+    //     nodeUrl:
+    //       "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
+    //   },
+    // });
+    try {
+      const contract = new Contract(
+        contractAbi,
+        SupplyChainFactoryAddr(),
+        account
+      );
+      await contract.setMarketPlace(marketPlaceAddress);
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMarketAddress(e.target.value);
   };
@@ -65,6 +84,7 @@ const OnboardMarketPlace = () => {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     // Handle the form submission logic (e.g., send data to server)
     // setSubmittedData(data);
+    onboardMarketPlace();
     console.log("submitted");
     // console.log(previewImage);
     // console.log(name);
