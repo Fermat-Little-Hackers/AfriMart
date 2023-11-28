@@ -3,6 +3,8 @@
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
 import { useState, useEffect } from 'react'
 import { Contract, Provider, constants } from 'starknet'
+import { IconWallet } from "@tabler/icons-react"
+import { FaShoppingCart, FaUser, FaBars, FaTimes, FaGoogleWallet } from 'react-icons/fa';
 
 // import contractAbi from './abis/abi.json'
 // const contractAddress = "0x077e0925380d1529772ee99caefa8cd7a7017a823ec3db7c003e56ad2e85e300"
@@ -54,7 +56,7 @@ function ConnectButtoN() {
   }
 
   const disconnectWallet = async() => {
-    await disconnect()
+    await disconnect({ clearLastWallet: true });
     setConnection(undefined)
     setAccount(undefined)
     setAddress('')
@@ -100,16 +102,33 @@ function ConnectButtoN() {
         <main className="main">
             {
               connection ? 
-                <button className="connect" onClick={disconnectWallet}>Disconnect</button>
+            <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={disconnectWallet}>
+              <div>
+                <p>
+                  Disconnect Wallet
+                </p>
+                <p className="description">
+                {
+                    address ? address : ''
+                }
+                </p>
+              </div>
+              <div>
+                <FaTimes stroke={1.5} />
+              </div>
+            </button>
               :
-                <button className="connect" onClick={connectWallet}>Connect wallet</button>
+            <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={connectWallet}>
+              <div>
+                <p>
+                  Connect Wallet
+                </p>
+              </div>
+              <div>
+                <IconWallet stroke={1.5} />
+              </div>
+            </button>
             }
-
-          <p className="description">
-          {
-            address ? address : ''
-          }
-          </p>
 
         </main>
       </header>

@@ -14,13 +14,11 @@ import { ResourceShop } from "@/components/sections/ResourceShop";
 import { GreatDesign } from "@/components/sections/GreatDesign";
 import { Brands } from "@/components/sections/Brands";
 import { LandingSections } from "@/components/sections/LandingSections";
-import ConnectButtoN from "../../connectkit";
 
 export default function Home() {
   const { account, address, status } = useAccount();
   return (
     <main className="flex flex-col items-center justify-center min-h-screen  bg-[var(--black-2)] bg-grainy-pattern text-white">
-      <ConnectButtoN />
       <HeroSection />
       <SectionII />
       <LandingSections />
