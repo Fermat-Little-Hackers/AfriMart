@@ -31,15 +31,8 @@ function ConnectWallet() {
 
   return (
     <div>
-      {/* <div>
-        <Button onClick={() => setWantToConnect(!wantToConnect)}>Connect Wallet</Button>
-        {wantToConnect && (<WalletsToConnect />)}
-      </div> */}
       <div>
       <Button className="h-10 border-2 rounded-xl flex flex-row gap-3" onClick={() => setWantToConnect(!wantToConnect)}>
-            {/* {
-                address ? limitChars(address, isSmallScreen ? 5 : 10, isSmallScreen ? false : true) : 'Connect'
-            } */}
             <div>
               <p>
                 connect

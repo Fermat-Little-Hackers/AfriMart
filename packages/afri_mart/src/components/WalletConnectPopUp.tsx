@@ -4,6 +4,7 @@ import { useConnect } from '@starknet-react/core';
 import { Button } from './ui/Button';
 import { useYourContext } from '@/context/YourContext';
 import { FaShoppingCart, FaUser, FaBars, FaTimes } from 'react-icons/fa';
+// import {contract} from 'starknet'
 
 
 const WalletsToConnect: React.FC = () => {
