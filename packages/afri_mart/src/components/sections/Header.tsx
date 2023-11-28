@@ -10,7 +10,7 @@ import ConnectButtoN from '../../../connectkit';
 
 export const Header = () => {
     return (
-        <header className="bg-gray-800 text-white m-0 p-4 flex flex-row justify-between items-center gap-8 md:h-[15vh] md:px-20">
+        <header className="bg-grainy-pattern  bg-[var(--black-2)]   text-white m-0 p-4 flex flex-row justify-between items-center gap-8 md:h-[15vh] md:px-20">
             <div>
                 <Link href={"/"} className="container mx-auto">
                     <Image src={afri_mart_logo} alt="Afrimart Logo" height={250} width={220} className='h-[80%] w-[12rem]' />
