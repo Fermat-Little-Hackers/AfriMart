@@ -6,9 +6,10 @@ import { useYourContext } from "../../context/YourContext";
 interface ConfirmPurchasePopUpProps {
   itemName: string;
   price: number;
+  id: any;
 }
 
-function ConfirmPurchasePopUp({ itemName, price }: ConfirmPurchasePopUpProps) {
+function ConfirmPurchasePopUp({ itemName, price, id }: ConfirmPurchasePopUpProps) {
   const { sharedState, setSharedState } = useYourContext();
   const [waitText, setWaitText] = useState(
     `Confirm you intend to make a purchase ${itemName} worth $${price} from AfriMart`

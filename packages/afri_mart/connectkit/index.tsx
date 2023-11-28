@@ -26,8 +26,9 @@ function ConnectButtoN() {
         setAddress(connection.selectedAddress)
       }
       //@ts-ignore
+      console.log(connection.chainId)
+      //@ts-ignore
       if(connection.chainId != 'SN_GOERLI') {
-        console.log(connection?.chainId)
         try {
           await window?.starknet?.request({
             type: "wallet_switchStarknetChain",
@@ -40,7 +41,7 @@ function ConnectButtoN() {
           console.log(error)
         }
       }
-    }
+}
     connectToStarknet()
   }, [])
 
