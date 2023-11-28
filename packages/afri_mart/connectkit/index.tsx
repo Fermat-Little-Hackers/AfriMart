@@ -24,13 +24,13 @@ function ConnectButtoN() {
         setAddress(connection.selectedAddress)
       }
 
-      if(connection?.chainId !== 'SN_MAIN') {
-        alert("you need to switch to mainnet to proceed!")
+      if(connection?.chainId !== 'SN_GOERLI') {
+        alert("you need to switch to GOERLI to proceed!")
         try {
           await window?.starknet?.request({
             type: "wallet_switchStarknetChain",
             params: {
-              chainId: "SN_MAIN"
+              chainId: "SN_GOERLI"
             }
           });
         }
@@ -51,20 +51,6 @@ function ConnectButtoN() {
       setAddress(connection.selectedAddress)
     }
 
-    if(connection?.chainId !== 'SN_MAIN') {
-      alert("you need to switch to mainnet to proceed!")
-      try {
-        await window?.starknet?.request({
-          type: "wallet_switchStarknetChain",
-          params: {
-            chainId: "SN_MAIN"
-          }
-        });
-      }
-      catch(error : any) {
-        alert(error.message)
-      }
-    }
   }
 
   const disconnectWallet = async() => {

@@ -3,15 +3,32 @@ import ProductAmountButton from './productButton'
 import Stars from '../../../../components/market-place/stars'
 import { useYourContext } from '../../../../context/YourContext';
 import ConfirmPurchasePopUp from '@/components/market-place/confirmPurchasePopUp';
+import { useAccount, useContractRead } from "@starknet-react/core";
+import marketPlaceAbi from '../../../../ABI/marketPlace.json';
+import { MarketPlaceAddr } from '../../../../components/addresses';
+import { useEffect } from 'react';
 
 
 
 const ProductsDetails = () => {
+    const { account, address, status } = useAccount();
     const { sharedState, setSharedState} = useYourContext();
     const handlePurchaseClick = () => {
         // Open the popup when the "CHECK OUT" button is clicked
         setSharedState(true);
     };
+
+    const { data, isLoading, error, refetch } = useContractRead({
+        address: MarketPlaceAddr(),
+        abi: marketPlaceAbi,
+        functionName: 'getAllProducts',
+        watch: true
+      })
+
+      useEffect(() => {
+          console.log(`TEST222: ${data?.toString()}`);
+      }, [data])
+
 
   return (
     <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
