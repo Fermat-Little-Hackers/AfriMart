@@ -54,7 +54,7 @@ function ConnectButtoN() {
   }
 
   const disconnectWallet = async() => {
-    await disconnect()
+    await disconnect({ clearLastWallet: true });
     setConnection(undefined)
     setAccount(undefined)
     setAddress('')
