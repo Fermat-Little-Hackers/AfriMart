@@ -34,8 +34,8 @@ const ProductsDetails = () => {
       const getCounter = async() => {  
         const provider = new Provider( {sequencer: { network:constants.NetworkName.SN_MAIN } } )
         try {
-          const contract = new Contract(dummy, '0x02cD6f6D472586d8c1a1a4F9F69e123261212Fc6350aDa9E9d491C631E544175', provider)
-          const itemDetails = await contract.getProductDetails(1)
+          const contract = new Contract(dummy, '0x02cD6f6D472586d8c1a1a4F9F69e123261212Fc6350aDa9E9d491C631E544175', account)
+          const itemDetails = await contract.get_two()
         //   setRetrievedValue(counter.toString())
         console.log(`ItemDetails ${itemDetails}`);
         }
