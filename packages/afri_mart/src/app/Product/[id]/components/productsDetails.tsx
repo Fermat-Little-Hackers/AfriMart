@@ -7,8 +7,8 @@ import { useAccount, useContractRead } from "@starknet-react/core";
 import { MarketPlaceAddr } from '../../../../components/addresses';
 import { useEffect } from 'react';
 import marketplaceAbi from '../../../../ABI/marketPlace'
-import { Contract, Provider, constants } from 'starknet'
-
+import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
+import dummy from '../../../../ABI/dummy.json'
 
 const ProductsDetails = () => {
   const { account, address, status } = useAccount();
@@ -18,18 +18,32 @@ const ProductsDetails = () => {
         setSharedState(true);
     };
 
-    const { data, isLoading, error, refetch } = useContractRead({
-        address: MarketPlaceAddr(),
-        abi: marketplaceAbi,
-        functionName: 'getAllProducts',
-        watch: true
-      })
+    // const { data, isLoading, error, refetch } = useContractRead({
+    //     address: MarketPlaceAddr(),
+    //     abi: marketplaceAbi,
+    //     functionName: 'getProductDetails',
+    //     args: [1],
+    //     watch: true
+    //   })
 
-      useEffect(() => {
-          console.log(`TEST222: ${data?.toString()}`);
-      }, [data])
+    //   useEffect(() => {
+    //       console.log(`TEST222: ${data?.toString()}`);
+    //     }, [data, isLoading])
 
 
+      const getCounter = async() => {  
+        const provider = new Provider( {sequencer: { network:constants.NetworkName.SN_MAIN } } )
+        try {
+          const contract = new Contract(dummy, '0x02cD6f6D472586d8c1a1a4F9F69e123261212Fc6350aDa9E9d491C631E544175', provider)
+          const itemDetails = await contract.getProductDetails(1)
+        //   setRetrievedValue(counter.toString())
+        console.log(`ItemDetails ${itemDetails}`);
+        }
+        catch(error:any) {
+          console.log(error.message)
+        }
+    }
+    getCounter()
 
 
   return (
