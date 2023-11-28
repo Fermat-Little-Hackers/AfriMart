@@ -71,10 +71,6 @@ const OnboardMarketPlace = () => {
     setMarketAddress(e.target.value);
   };
 
-  // const onboardMarketPlace: React.FormEventHandler<HTMLFormElement> = (e) => {
-  //   e.preventDefault();
-  // };
-
   //   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     // setName(event.target.value);
   //     console.log('name changed');
