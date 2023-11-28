@@ -187,6 +187,7 @@ use core::serde::Serde;
         dispatchAdminID: LegacyMap<(u16, ContractAddress), u128>, // auto assigned at setDispatchBranchAdmin
         // takes CompanyID, adminID and new admin Address to confirm admin
         isDispatchAdmin: LegacyMap<(u16, u128, ContractAddress), bool>,
+        confirmHqAdmin: LegacyMap<ContractAddress, bool>,
         // CompanyID and dispatchAdmin ID to store admin details
         dispatchAdmins: LegacyMap<(u16, u128), DispatchAdmin>,
         // takes companyID as an args
@@ -308,6 +309,8 @@ use core::serde::Serde;
     }
 
 
+    
+
     #[constructor]
     fn constructor(ref self: ContractState, branchClassHash: ClassHash, owner_address: ContractAddress) {
         self.ownerID.write(1);
@@ -328,7 +331,6 @@ use core::serde::Serde;
         // setter functions ..
         fn setMarketPlace(ref self: ContractState, marketPlaceAddr: ContractAddress) {
             assert(self.isFactoryAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
-            get_caller_address().print();
             self.marketPlaceAddress.write(marketPlaceAddr);
 
         }
@@ -357,16 +359,18 @@ use core::serde::Serde;
             self.dispatchCompanyID.write(hq_id + 1);
 
             self.emit(CompanyRegistered {by: get_caller_address(), for: companyName, companyID: hq_id, companyAdminAddress: companyRepAddress});
+            self.confirmHqAdmin.write(companyRepAddress, true);
             hq_id
 
         }
 
         fn setDispatchAdmin(ref self: ContractState, adminAddress: ContractAddress) -> u128{
             let companyID = self.returnCompanyIds.read(get_caller_address());
-            assert(self.isDispatchHqAdmin.read((companyID, get_caller_address())) == true, 'Unauthorized Personnel');
+            assert(self.confirmHqAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
+            // assert(self.isDispatchHqAdmin.read((companyID, get_caller_address())) == true, 'Unauthorized Personnel');
             // assert(self.adminToCompanyID.read(adminAddress) == 0, "Registered to a company");
             let mut admin_id_check = self.dispatchAdminID.read((companyID, get_caller_address()));
-            assert(self.isDispatchAdmin.read((companyID, admin_id_check, adminAddress)) == false, 'Admin Exists');
+            // assert(self.isDispatchAdmin.read((companyID, admin_id_check, adminAddress)) == false, 'Admin Exists');
             let admin_id = self.adminIdAssignment.read();
             self.returnAdminIds.write(adminAddress, admin_id);
             self.adminToCompanyID.write(adminAddress, companyID);
