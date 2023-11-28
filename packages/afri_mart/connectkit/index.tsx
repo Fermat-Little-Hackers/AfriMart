@@ -1,105 +1,139 @@
 "use client"
 
-// wagmi but for starknet
+import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
+import { useState, useEffect } from 'react'
+import { Contract, Provider, constants } from 'starknet'
+import { IconWallet } from "@tabler/icons-react"
+import { FaShoppingCart, FaUser, FaBars, FaTimes, FaGoogleWallet } from 'react-icons/fa';
 
-import { useAccount } from "@starknet-react/core";
-import { type ConnectOptions, type DisconnectOptions, connect, disconnect , } from "get-starknet"
-import clsx from "clsx";
-import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useState } from "react";
-import { AccountInterface, ProviderInterface } from "starknet";
-import { ConnectedStarknetWindowObject } from "get-starknet-core";
+// import contractAbi from './abis/abi.json'
+// const contractAddress = "0x077e0925380d1529772ee99caefa8cd7a7017a823ec3db7c003e56ad2e85e300"
 
+function ConnectButtoN() {
+  const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
+  const [account, setAccount] = useState();
+  const [address, setAddress] = useState('');
 
-function handleConnect(options?: ConnectOptions) {
-    return async () => {
-        const res = await connect(options);
+  const [retrievedValue, setRetrievedValue] = useState('')
 
-    };
-}
+  useEffect(() => {
+    const connectToStarknet = async() => {
+      const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
 
-export interface ConnectConfig {
-    provider: ProviderInterface | undefined,
-    setProvider: Dispatch<SetStateAction<ProviderInterface | undefined>> ,
-    account: AccountInterface | undefined,
-    setAccount: Dispatch<SetStateAction<AccountInterface | undefined>>,
-    address: string | undefined,
-    setAddress: Dispatch<SetStateAction<string | undefined>>
-    isConnected: boolean | undefined,
-    setIsConnected: Dispatch<SetStateAction<boolean | undefined>>
-    connection: ConnectedStarknetWindowObject | undefined,
-    setConnection: Dispatch<SetStateAction< ConnectedStarknetWindowObject | undefined>>,
-}
+      if(connection && connection.isConnected) {
+        setConnection(connection)
+        setAccount(connection.account)
+        setAddress(connection.selectedAddress)
+      }
 
-const ConnectkitContext = createContext<ConnectConfig | undefined>(undefined);
-export const ConnectkitProvider = ({children}: {children: ReactNode}) => {
-    const [provider, setProvider] = useState<ProviderInterface>();
-    const [account, setAccount] = useState<AccountInterface>();
-    const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
-    const [isConnected, setIsConnected] = useState<boolean>();
-    const [address, setAddress] = useState<string>();
-    return(
-        <ConnectkitContext.Provider 
-        value={
-            {
-                provider, setProvider, 
-                account, setAccount, 
-                address, setAddress, 
-                isConnected, setIsConnected,
-                connection, setConnection,
+      if(connection?.chainId !== 'SN_GOERLI') {
+        alert("you need to switch to GOERLI to proceed!")
+        try {
+          await window?.starknet?.request({
+            type: "wallet_switchStarknetChain",
+            params: {
+              chainId: "SN_GOERLI"
             }
-            }>
-            {children}
-        </ConnectkitContext.Provider>
-    )
-}
-
-export const ConnectButton = () => {
-    const value = useContext(ConnectkitContext);
-    if (!value) return
-    const { provider, setProvider, account, setAccount, address, setAddress, isConnected, setIsConnected, setConnection, connection } = value;    
-    const handleConnect = async () => {
-            const connection = await connect({ modalMode: "alwaysAsk"});
-            if (connection && connection.isConnected) {
-                setConnection(connection);
-                setAccount(connection.account);
-                setAddress(connection.selectedAddress);
-                setIsConnected(true);
-            }
+          });
         }
-    
+        catch(error : any) {
+          alert(error.message)
+        }
+      }
+    }
+    connectToStarknet()
+  }, [])
 
-    const handleDisconnect = async () => {
-            await disconnect();
-            setConnection(undefined);
-            setAccount(undefined);
-            setAddress(undefined);
-            setIsConnected(false);
-        };
-    
+  const connectWallet = async() => {
+    const connection = await connect({ webWalletUrl: "https://web.argent.xyz" })
+    console.log(connection)
+    if(connection && connection.isConnected) {
+      setConnection(connection)
+      setAccount(connection.account)
+      setAddress(connection.selectedAddress)
+    }
 
-    if (isConnected) {
-        return <ConnectedWalletButton handleDisconnect={handleDisconnect} address={address} />
-    }  else return  <DisconnectedWalletButton handleConnect={handleConnect} />
-    
-}    
-    
-const DisconnectedWalletButton = ({handleConnect}:{handleConnect: Function}) => {
-    return(
-        <button 
-        className={clsx(
-            "rounded-md bg-white text-slate-900 py-2 px-4 h-max"
-        )}
-            onClick={() => handleConnect({ modalMode: "alwaysAsk" })}
-        >Connect Button -&gt;</button>
-    )
+  }
+
+  const disconnectWallet = async() => {
+    await disconnect({ clearLastWallet: true });
+    setConnection(undefined)
+    setAccount(undefined)
+    setAddress('')
+  }
+
+//   const increaseCounter = async() => {
+//     try {
+//       const contract = new Contract(contractAbi, contractAddress, account)
+//       await contract.increment()
+//       alert("you successfully increased the counter")
+//     }
+//     catch(error) {
+//       console.log(error.message)
+//     }
+//   }
+
+//   const decreaseCounter = async() => {
+//     try {
+//       const contract = new Contract(contractAbi, contractAddress, account)
+//       await contract.decrement()
+//       alert("you sucessfully decreased the counter")
+//     }
+//     catch(error) {
+//       console.log(error.message)
+//     }
+//   }
+
+//   const getCounter = async() => {
+//     const provider = new Provider( {sequencer: { network:constants.NetworkName.SN_MAIN } } )
+//     try {
+//       const contract = new Contract(contractAbi, contractAddress, provider)
+//       const counter = await contract.get_current_count()
+//       setRetrievedValue(counter.toString())
+//     }
+//     catch(error) {
+//       console.log(error.message)
+//     }
+//   } 
+
+  return (
+    <div className="App">
+      <header className="App-header">
+        <main className="main">
+            {
+              connection ? 
+            <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={disconnectWallet}>
+              <div>
+                <p>
+                  Disconnect Wallet
+                </p>
+                <p className="description">
+                {
+                    address ? address : ''
+                }
+                </p>
+              </div>
+              <div>
+                <FaTimes stroke={1.5} />
+              </div>
+            </button>
+              :
+            <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={connectWallet}>
+              <div>
+                <p>
+                  Connect Wallet
+                </p>
+              </div>
+              <div>
+                <IconWallet stroke={1.5} />
+              </div>
+            </button>
+            }
+
+        </main>
+      </header>
+    </div>
+  );
 }
 
-const ConnectedWalletButton = ({handleDisconnect, address}: {handleDisconnect: Function, address?: string}) => {
-        return(
-            <button 
-            onClick={() => handleDisconnect()}
-            className={clsx(
-                "rounded-md bg-white text-slate-900 py-2 px-4 h-max"
-            )}>{address }</button>
-    )
-}
+export default ConnectButtoN;

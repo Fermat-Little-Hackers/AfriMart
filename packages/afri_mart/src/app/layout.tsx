@@ -12,7 +12,7 @@ import { ProviderInterface, RpcProvider, provider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
-import { ConnectkitProvider } from '../../connectkit';
+// import { ConnectkitProvider } from '../../connectkit';
 
 import PagesLayout from './PagesLayout';
 

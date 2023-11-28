@@ -1,4 +1,4 @@
-[
+const marketPlaceAbi = [
   {
     "type": "impl",
     "name": "afrimartExternalImpl",
@@ -1169,3 +1169,5 @@
     ]
   }
 ]
+
+export default marketPlaceAbi;
