@@ -19,15 +19,15 @@ function ConnectButtoN() {
   useEffect(() => {
     const connectToStarknet = async() => {
       const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-
+  
       if(connection && connection.isConnected) {
         setConnection(connection)
         setAccount(connection.account)
         setAddress(connection.selectedAddress)
       }
-
-      if(connection?.chainId !== 'SN_GOERLI') {
-        alert("you need to switch to GOERLI to proceed!")
+      //@ts-ignore
+      if(connection.chainId != 'SN_GOERLI') {
+        console.log(connection?.chainId)
         try {
           await window?.starknet?.request({
             type: "wallet_switchStarknetChain",
@@ -37,7 +37,7 @@ function ConnectButtoN() {
           });
         }
         catch(error : any) {
-          alert(error.message)
+          console.log(error)
         }
       }
     }
@@ -102,25 +102,24 @@ function ConnectButtoN() {
         <main className="main">
             {
               connection ? 
-            <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={disconnectWallet}>
-              <div>
-                <p>
-                  Disconnect Wallet
-                </p>
-                <p className="description">
+            <button className="md:h-10 h-10 border-2 rounded-xl flex flex-row gap-2 justify-center items-center md:py-3 md:px-0 p-2" onClick={disconnectWallet}>
+
+              <div className=''>
+                <p className="description text-xs md:text-sm">
                 {
-                    address ? address : ''
+                    address ? `${address.slice(0, 5)}.....${address.slice(-5)}` : ''
                 }
                 </p>
               </div>
-              <div>
-                <FaTimes stroke={1.5} />
-              </div>
+                <div className='border-2 bg-red-700'>
+                    <FaTimes stroke={1.5} />
+                </div>
+              
             </button>
               :
             <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={connectWallet}>
               <div>
-                <p>
+                <p className='flex text-sm md:text-base'>
                   Connect Wallet
                 </p>
               </div>

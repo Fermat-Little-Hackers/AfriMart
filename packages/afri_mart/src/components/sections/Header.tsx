@@ -10,13 +10,21 @@ import ConnectButtoN from '../../../connectkit';
 
 export const Header = () => {
     return (
-        <header className="bg-gray-800 text-white m-0 p-4 flex flex-row items-center gap-8">
-            <Link href={"/"} className="container mx-auto">
-                <Image src={afri_mart_logo} alt="Afrimart Logo" height={250} width={220} />
-            </Link>
-            <Link href={"/deliveryportal"}>Delivery Portal</Link>
+        <header className="bg-gray-800 text-white m-0 p-4 flex flex-row justify-between items-center gap-8 md:h-[15vh] md:px-20">
+            <div>
+                <Link href={"/"} className="container mx-auto">
+                    <Image src={afri_mart_logo} alt="Afrimart Logo" height={250} width={220} className='h-[80%] w-[12rem]' />
+                </Link>
+            </div>
+            <div className='flex flex-row gap-8 items-center'>
+                <div>
+                    <Link href={"/deliveryportal"} className='flex text-sm md:text-lg'>Delivery Portal</Link>
+                </div>
+                <div>
+                    <ConnectButtoN />
+                </div>
+            </div>
             {/* <WalletBar /> */}
-            <ConnectButtoN />
         </header>
     );
 };
