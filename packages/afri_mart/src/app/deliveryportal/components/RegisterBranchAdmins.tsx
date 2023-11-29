@@ -1,56 +1,96 @@
 import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Contract, Provider, constants } from "starknet";
+import {
+  type ConnectedStarknetWindowObject,
+  connect,
+  disconnect,
+} from "@argent/get-starknet";
+
+import contractAbi from "../../../ABI/supplyChainFactory.json";
+import { SupplyChainFactoryAddr } from "@/components/addresses";
 
 const RegisterBranchAdmins = () => {
-  const [marketPlaceAddress, setMarketAddress] = useState("");
+  const [connection, setConnection] =
+    useState<ConnectedStarknetWindowObject | null>();
+  const [account, setAccount] = useState();
+  const [address, setAddress] = useState("");
+  const [adminAddress, setAdminAddress] = useState("");
 
-  const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMarketAddress(e.target.value);
+  useEffect(() => {
+    const connectToStarknet = async () => {
+      const connection = await connect({
+        modalMode: "neverAsk",
+        webWalletUrl: "https://web.argent.xyz",
+      });
+
+      if (connection && connection.isConnected) {
+        setConnection(connection);
+        setAccount(connection.account);
+        setAddress(connection.selectedAddress);
+      }
+
+      if (connection?.chainId !== "SN_GOERLI") {
+        alert("you need to switch to GOERLI to proceed!");
+        try {
+          await window?.starknet?.request({
+            type: "wallet_switchStarknetChain",
+            params: {
+              chainId: "SN_GOERLI",
+            },
+          });
+        } catch (error: any) {
+          alert(error.message);
+        }
+      }
+    };
+    connectToStarknet();
+  }, []);
+
+  const setAdmin = async () => {
+    try {
+      const contract = new Contract(
+        contractAbi,
+        SupplyChainFactoryAddr(),
+        account
+      );
+      await contract.setDispatchAdmin(adminAddress);
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
-
-  const onboardMarketPlace: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-  };
-
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // setName(event.target.value);
-    console.log('name changed');
+  const handleAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAdminAddress(event.target.value);
+    console.log("name changed");
     console.log(event.target.value);
-}
-
-  const handleCompanyId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // setCompanyId(Number(e.target.value));
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     // Handle the form submission logic (e.g., send data to server)
     // setSubmittedData(data);
-    console.log('submitted');
+    setAdmin();
+    console.log("submitted");
     // console.log(previewImage);
     // console.log(name);
   };
 
-  const { register, handleSubmit, setValue, formState: { errors }  } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>();
 
   return (
     <div className="">
-    <h3 className="mb-7 text-xl md:text-2xl">Register New Admins</h3>
-    <div className="justify-start p-5 md:p-10 text-left border-2 border-black">
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-4">
-        <label htmlFor="companyId" className="block text-gray-600 text-sm font-semibold mb-2">
-          Company ID
-        </label>
-        <input
-          type="number"
-          name="companyId"
-          id="companyId"
-          onChange={handleCompanyId}
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-        />
-      </div>
+      <h3 className="mb-7 text-xl md:text-2xl">Register New Admins</h3>
+      <div className="justify-start p-5 md:p-10 text-left border-2 border-black">
+        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Admin Address
             </label>
             <div className="mt-2">
@@ -58,7 +98,7 @@ const RegisterBranchAdmins = () => {
                 id="name"
                 name="name"
                 type="text"
-                onChange={handleNameChange}
+                onChange={handleAddress}
                 autoComplete="name"
                 required
                 className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -66,7 +106,7 @@ const RegisterBranchAdmins = () => {
             </div>
           </div>
 
-          <div className='flex flex-row gap-5 items-center justify-center'>
+          <div className="flex flex-row gap-5 items-center justify-center">
             <button
               type="submit"
               className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -75,7 +115,7 @@ const RegisterBranchAdmins = () => {
             </button>
           </div>
         </form>
-    </div>
+      </div>
     </div>
   );
 };

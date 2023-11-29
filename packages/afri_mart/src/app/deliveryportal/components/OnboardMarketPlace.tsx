@@ -14,9 +14,9 @@ import { SupplyChainFactoryAddr } from "@/components/addresses";
 const OnboardMarketPlace = () => {
   const [connection, setConnection] =
     useState<ConnectedStarknetWindowObject | null>();
-  const [marketPlaceAddress, setMarketAddress] = useState("");
   const [account, setAccount] = useState();
   const [address, setAddress] = useState("");
+  const [marketPlaceAddress, setMarketAddress] = useState("");
 
   useEffect(() => {
     const connectToStarknet = async () => {
