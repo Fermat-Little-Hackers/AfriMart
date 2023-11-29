@@ -13,16 +13,16 @@ use core::zeroable::Zeroable;
 use debug::PrintTrait;
 
 
-// #[test]
-// fn test_deployment_works() {
-//     let supply_factory_address = deploy_supply_factory();
-//     let market_contract_address = deploy_market_contract(supply_factory_address);
-//     let rating_contract_address = deploy_rating_contract(market_contract_address);
-//     // let safe_dispatcher = aftimartTraitSafeDispatcher { contract_address };
-//     assert(!market_contract_address.is_zero(), 'wrong_market');
-//     assert(!supply_factory_address.is_zero(), 'wrong_factory');
-//     assert(!rating_contract_address.is_zero(), 'wrong_rating');
-// }
+#[test]
+fn test_deployment_works() {
+    let supply_factory_address = deploy_supply_factory();
+    let market_contract_address = deploy_market_contract(supply_factory_address);
+    let rating_contract_address = deploy_rating_contract(market_contract_address);
+    // let safe_dispatcher = aftimartTraitSafeDispatcher { contract_address };
+    assert(!market_contract_address.is_zero(), 'wrong_market');
+    assert(!supply_factory_address.is_zero(), 'wrong_factory');
+    assert(!rating_contract_address.is_zero(), 'wrong_rating');
+}
 
 #[test]
 fn test_setmarketplace_works (){
@@ -40,21 +40,19 @@ fn test_setmarketplace_works (){
     let res = factory_dispatcher.getMarketPlace();
 
     let new_admin = contract_address_const::<'admin_address'>();
-    let admin_id = factory_dispatcher.setFactoryAdmin(new_admin);
+    factory_dispatcher.setFactoryAdmin(new_admin);
 
-    let res2 = factory_dispatcher.setDispatchHqAdmin(dispatch_hq_admin,'ucherider', 'Nigeria', 'Lagos', 'ikorodu');
+    factory_dispatcher.setDispatchHqAdmin(dispatch_hq_admin,'ucherider', 'Nigeria', 'Lagos', 'ikorodu');
     
     start_prank(supply_factory_address,dispatch_hq_admin);
-    let dispatch_admin_id = factory_dispatcher.setDispatchAdmin(dispatch_admin);
+    factory_dispatcher.setDispatchAdmin(dispatch_admin);
 
     start_prank(supply_factory_address,dispatch_admin);
-    let (id, child_address) = factory_dispatcher.createBranch('ikorodu', 'Lagos', 'Nigeria');
-
+    let child_address = factory_dispatcher.createBranch('ikorodu', 'Lagos', 'Nigeria');
+    child_address.print();
     assert(!child_address.is_zero(), 'bad_child');
     assert(res == market_contract_address, 'incorrect_market');
-    assert(res2 == 0, 'invalid_hq_admin');
-    assert(admin_id == 2, 'incorrect_admin');
-    assert(dispatch_admin_id == 1, 'invalid_dis');
+     
 
 }
 

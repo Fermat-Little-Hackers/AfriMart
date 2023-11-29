@@ -11,7 +11,6 @@ use super::order_status::OrderStatus;
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct FactoryAdmin {
-    adminNumber: u8,
     address: ContractAddress,
 }
 
@@ -97,8 +96,8 @@ trait IDispatchFactory<TContractState>{
     fn setMarketPlace(ref self: TContractState, marketPlaceAddr: ContractAddress);
     fn getMarketPlace(self : @TContractState) -> ContractAddress;
 
-    fn setFactoryAdmin(ref self: TContractState, factoryAdminAddress: ContractAddress) -> u8; // set factory admin id
-    fn getFactoryAdmin(self: @TContractState, adminID: u8) -> FactoryAdmin;
+    fn setFactoryAdmin(ref self: TContractState, factoryAdminAddress: ContractAddress); // set factory admin id
+    fn getFactoryAdmin(self: @TContractState, admin_address: ContractAddress) -> FactoryAdmin;
 
     // can only be called by factory Admin
     fn setDispatchHqAdmin(ref self: TContractState, companyRepAddress: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252);
@@ -139,6 +138,7 @@ trait IDispatchFactory<TContractState>{
 mod DispatchCompanyFactory {
     use snfoundry::supply_chain_factory::IMarketPlaceDispatcherTrait;
 use core::result::ResultTrait;
+use core::option::OptionTrait;
 use core::serde::Serde;
     use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher, ItemStatus};
     use starknet::{get_caller_address, get_contract_address, syscalls::deploy_syscall};
@@ -152,9 +152,9 @@ use core::serde::Serde;
 
         marketPlaceAddress: ContractAddress,
         ownerID: u8,
-        isOwner: LegacyMap<(u8, ContractAddress), bool>,
+        isOwner: LegacyMap<ContractAddress, bool>,
         isFactoryAdmin: LegacyMap<ContractAddress, bool>,
-        owners: LegacyMap<u8, FactoryAdmin>,
+        owners: LegacyMap<ContractAddress, FactoryAdmin>,
 
         // dispat company admins and admins confirmation storage
         isDispatchHqAdmin: LegacyMap< ContractAddress, bool>,
@@ -204,8 +204,6 @@ use core::serde::Serde;
         by: ContractAddress,
         #[key]
         for: ContractAddress,
-        #[key]
-        ownerID: u8,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -257,14 +255,13 @@ use core::serde::Serde;
 
     #[constructor]
     fn constructor(ref self: ContractState, branchClassHash: ClassHash, owner_address: ContractAddress) {
-        self.ownerID.write(1);
-        let owner_id = self.ownerID.read();
-        self.isOwner.write((owner_id, owner_address), true);
+     
+        self.isOwner.write(owner_address, true);
         self.isFactoryAdmin.write(owner_address, true);
-        let owner_details = FactoryAdmin {adminNumber: owner_id, address: owner_address};
-        self.owners.write(owner_id, owner_details);
+        let owner_details = FactoryAdmin { address: owner_address};
+        self.owners.write(owner_address, owner_details);
         self.branchHash.write(branchClassHash);
-        self.emit(OwnersAdded {by: get_caller_address(), for: get_caller_address(), ownerID: owner_id});
+        self.emit(OwnersAdded {by: get_caller_address(), for: get_caller_address()});
     }
 
     #[external(v0)]
@@ -279,16 +276,13 @@ use core::serde::Serde;
         fn getMarketPlace(self : @ContractState) -> ContractAddress {
             self.marketPlaceAddress.read()
         }
-        fn setFactoryAdmin(ref self: ContractState, factoryAdminAddress: ContractAddress) -> u8{
-            let mut owner_id = self.ownerID.read();
+        fn setFactoryAdmin(ref self: ContractState, factoryAdminAddress: ContractAddress) {
+        
             assert(self.isFactoryAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel!!');
             
-            owner_id = owner_id + 1;
-            self._setFactoryAdmin(factoryAdminAddress, owner_id);
-            self.ownerID.write(owner_id);
-            self.returnOwnerIds.write(factoryAdminAddress, owner_id);
-            self.emit(OwnersAdded {by: get_caller_address(), for: factoryAdminAddress, ownerID: owner_id});
-            owner_id
+            self._setFactoryAdmin(factoryAdminAddress);
+            self.emit(OwnersAdded {by: get_caller_address(), for: factoryAdminAddress});
+           
         }
 
         fn setDispatchHqAdmin(ref self: ContractState, companyRepAddress: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252) {
@@ -322,16 +316,13 @@ use core::serde::Serde;
         fn createBranch(ref self: ContractState, city: felt252, state: felt252, country: felt252) -> ContractAddress {
             assert(self.isDispatchAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
 
-            // constructor arguments
-            let mut constructor_args = ArrayTrait::new();
-            city.serialize(ref constructor_args);
-            state.serialize(ref constructor_args);
-            country.serialize(ref constructor_args);
-            get_caller_address().serialize(ref constructor_args);
-            get_contract_address().serialize(ref constructor_args);
-
+            // constructor arguments   
+            let mut constructor_args = array![city.into(), state.into(), country.into(), get_caller_address().into(), get_contract_address().into()];
+            let classHash = self.branchHash.read();
+            let contract_address_salt : felt252 = 1234;
+            let deploy_from_zero = false;          
             //deploy contract
-            let (deployed_contract_address, _) = deploy_syscall(self.branchHash.read(), 0, constructor_args.span(), false). expect('failed to deploy branch');
+            let (deployed_contract_address, _) = deploy_syscall(classHash, contract_address_salt, constructor_args.span(), deploy_from_zero). expect('failed to deploy branch');
 
 
             self.branchExist.write(deployed_contract_address, true);
@@ -343,13 +334,15 @@ use core::serde::Serde;
             let branch_details = DispatchBranch { branchAddress: deployed_contract_address, location};
             self.addressToBranch.write(deployed_contract_address, branch_details);
 
+            let market_address = self.marketPlaceAddress.read();
 
-            IMarketPlaceDispatcher{contract_address: self.marketPlaceAddress.read()}.registerSupplyChainChild(deployed_contract_address);
+            let market_dispatch =  IMarketPlaceDispatcher{contract_address: market_address};
+            market_dispatch.registerSupplyChainChild(deployed_contract_address);
             
 
             self.emit(BranchCreated{by: get_caller_address(), for: deployed_contract_address, city});
 
-            (deployed_contract_address)
+            deployed_contract_address
 
         }
 
@@ -381,8 +374,8 @@ use core::serde::Serde;
         }
 
         // getter functions .....
-        fn getFactoryAdmin(self: @ContractState, adminID: u8) -> FactoryAdmin{
-            let admin_details = self.owners.read(adminID);
+        fn getFactoryAdmin(self: @ContractState, admin_address: ContractAddress) -> FactoryAdmin{
+            let admin_details = self.owners.read(admin_address);
             admin_details
         } 
 
@@ -461,12 +454,12 @@ use core::serde::Serde;
 
     #[generate_trait]
     impl Private of PrivateTrait {
-        fn _setFactoryAdmin(ref self: ContractState, factoryAdminAddress: ContractAddress, adminId: u8 ) {
-            self.isOwner.write((adminId, factoryAdminAddress), true);
+        fn _setFactoryAdmin(ref self: ContractState, factoryAdminAddress: ContractAddress ) {
+            self.isOwner.write(factoryAdminAddress, true);
             self.isFactoryAdmin.write(factoryAdminAddress, true);
 
-            let owner_details = FactoryAdmin {adminNumber: adminId, address: factoryAdminAddress};
-            self.owners.write(adminId, owner_details);
+            let owner_details = FactoryAdmin { address: factoryAdminAddress};
+            self.owners.write(factoryAdminAddress, owner_details);
         }
 
         fn _setDispatchHqAdmin(ref self: ContractState, hqAdmin: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252) {
