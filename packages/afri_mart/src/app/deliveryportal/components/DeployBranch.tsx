@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Contract, Provider, constants } from "starknet";
+import {
+  type ConnectedStarknetWindowObject,
+  connect,
+  disconnect,
+} from "@argent/get-starknet";
+
+import contractAbi from "../../../ABI/supplyChainFactory.json";
+import { SupplyChainFactoryAddr } from "@/components/addresses";
 
 const DeployBranch = () => {
+  const [connection, setConnection] =
+    useState<ConnectedStarknetWindowObject | null>();
+  const [marketPlaceAddress, setMarketAddress] = useState("");
+  const [account, setAccount] = useState();
+  const [address, setAddress] = useState("");
   const [companyId, setCompanyId] = useState<any>();
   const [adminId, setAdminId] = useState<any>();
   const [city, setCity] = useState("");
