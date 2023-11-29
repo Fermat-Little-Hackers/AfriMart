@@ -103,7 +103,7 @@ function ConnectButtoN() {
         <main className="main">
             {
               connection ? 
-            <button className="md:h-10 h-10 border-2 rounded-xl flex flex-row gap-2 justify-center items-center md:py-3 md:px-0 p-2" onClick={disconnectWallet}>
+              <button className="md:h-10 bg-[var(--terracota)] h-10 border-2 rounded-xl flex flex-row gap-2 justify-center items-center md:py-3 md:px-0 p-2" onClick={disconnectWallet}>
 
               <div className=''>
                 <p className="description text-xs md:text-sm">
@@ -118,7 +118,7 @@ function ConnectButtoN() {
               
             </button>
               :
-            <button className="h-10 border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={connectWallet}>
+              <button className="h-10 bg-[var(--terracota)] border-2 rounded-xl flex flex-row gap-3 justify-center items-center p-3" onClick={connectWallet}>
               <div>
                 <p className='flex text-sm md:text-base'>
                   Connect Wallet
