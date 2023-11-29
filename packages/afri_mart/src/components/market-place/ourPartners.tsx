@@ -1,34 +1,75 @@
+import Image from 'next/image';
 import React from 'react'
+import logoLaravel from '../../../public/image/logos/laravel.svg';
+import logoMirage from '../../../public/image/logos/mirage.svg';
+import logoStatamic from '../../../public/image/logos/statamic.svg';
+import logoStaticKit from '../../../public/image/logos/statickit.svg';
+import logoTransistor from '../../../public/image/logos/transistor.svg';
+import logoTuple from '../../../public/image/logos/tuple.svg'
+import { Container } from '../Container';
 
 const OurPartners = () => {
   return (
-    <div className="border-2 border-black my-10 mx-5 md:my-20 md:mx-20 md:h-fit py-3 px-3 md:py-7 md:px-10 mb-40">
-        <div className="mb-3 md:mb-7">
-            <p>
-                OUR PARTNERS
-            </p>                    
-        </div>
-        <div className="flex flex-col md:flex-row justify-between gap-5 md:gap-3">
-          <div className='flex flex-row w-[100%] gap-3'>
-            <div className="border-2 border-black h-[10vh] md:h-[4rem] w-[50%] md:w-[50%] bg-gray-700">
-            </div>
-            <div className="border-2 border-black h-[10vh] md:h-[4rem] w-[50%] md:w-[50%] bg-gray-700">
-            </div>
-          </div>
-          <div className='flex flex-row w-[100%] gap-3'>
-            <div className="border-2 border-black h-[10vh] md:h-[4rem] w-[50%] md:w-[50%] bg-gray-700">
-            </div>
-            <div className="border-2 border-black h-[10vh] md:h-[4rem] w-[50%] md:w-[50%] bg-gray-700">
-            </div>
-          </div>
-          <div className='flex flex-row w-[100%] gap-3'>
-            <div className="border-2 border-black h-[10vh] md:h-[4rem] w-[50%] md:w-[50%] bg-gray-700">
-            </div>
-            <div className="border-2 border-black h-[10vh] md:h-[4rem] w-[50%] md:w-[50%] bg-gray-700">
-            </div>
-          </div>
-        </div>
-    </div>
+    <Container className="bg-art-bg w-full p-12">
+      <div className="max-w-2xl mx-auto">
+        <p className=" text-center text-[var(--charcoal)] font-serif text-xl font-extrabold">
+          Some of our partners
+        </p>
+        <ul className="mt-8 flex items-center justify-center space-x-8 sm:flex-col sm:space-x-0 sm:space-y-10 xl:flex-row xl:space-y-0 xl:space-x-12">
+          <li>
+            <ul className="flex flex-col items-center space-y-8 sm:flex-row sm:space-y-0 sm:space-x-12">
+              <li className="flex">
+                <Image
+                  src={logoTransistor}
+                  alt="Transistor"
+                  layout="fixed"
+                  unoptimized
+                />
+              </li>
+              <li className="flex">
+                <Image src={logoTuple} alt="Tuple" layout="fixed" unoptimized />
+              </li>
+              <li className="flex">
+                <Image
+                  src={logoStaticKit}
+                  alt="StaticKit"
+                  layout="fixed"
+                  unoptimized
+                />
+              </li>
+            </ul>
+          </li>
+          <li>
+            <ul className="flex flex-col items-center space-y-8 sm:flex-row sm:space-y-0 sm:space-x-12">
+              <li className="flex">
+                <Image
+                  src={logoMirage}
+                  alt="Mirage"
+                  layout="fixed"
+                  unoptimized
+                />
+              </li>
+              <li className="flex">
+                <Image
+                  src={logoLaravel}
+                  alt="Laravel"
+                  layout="fixed"
+                  unoptimized
+                />
+              </li>
+              <li className="flex">
+                <Image
+                  src={logoStatamic}
+                  alt="Statamic"
+                  layout="fixed"
+                  unoptimized
+                />
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </Container>
   )
 }
 
