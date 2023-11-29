@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
-import { Contract, Provider, constants } from 'starknet'
+import { Contract, Provider, constants, ProviderInterface } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 
