@@ -6,9 +6,9 @@ import Link from "next/link";
 
 export default function PagesLayout({children}: any) {
   return (
-    <main className="">
+    <main className="bg-grainy-pattern bg-[var(--sand)]">
       <Header />
-        <div>{children}</div>
+        <div className="p-0 m-0 ">{children}</div>
       <Footer />
     </main>
   );
