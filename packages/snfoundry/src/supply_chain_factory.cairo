@@ -33,40 +33,31 @@ struct ItemStatus {
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct DispatchHq {
     companyName: felt252,
-    companyID: u16,
     hqAdmin: ContractAddress,
     location: Location,
 }
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct DispatchAdmin {
-    companyID: u16,
     branchAdminID: u128,
     branchAdminAddress: ContractAddress,
 }
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct DispatchBranch {
-    companyID: u16,
-    adminID: u128,
-    branchID: u128,
     branchAddress: ContractAddress,
     location: Location,
 }
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct OrderOrigin {
-    companyID: u16,
     branchAddress: ContractAddress,
-    branchID: u128,
     orderID: u256,
 }
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct OrderLocation {
     orderID: u256,
-    companyID: u16,
-    branchID: u128,
     deliveryStatus: OrderStatus,
     previousLocation: felt252,
     currentLocation: felt252,
@@ -76,7 +67,6 @@ struct OrderLocation {
 // analysis structs
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct AdminStats {
-    companyID: u16,
     totalCompanyAdmins: u128,
     OverallTotalAdmin: u128,
 
@@ -84,16 +74,14 @@ struct AdminStats {
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct BranchStats {
-    companyID: u16,
     companyBranchTotal: u128,
     allCompanyBranches: u128,
 }
 
 #[derive(Copy, Drop, starknet::Store, Serde)]
 struct OrdersStats {
-    companyID: u16,
-    companyTotalShipment: u128,
-    overallShipmentTotal: u128,
+    companyTotalShipment: u256,
+    overallShipmentTotal: u256,
 }
 
 #[starknet::interface]
@@ -113,21 +101,21 @@ trait IDispatchFactory<TContractState>{
     fn getFactoryAdmin(self: @TContractState, adminID: u8) -> FactoryAdmin;
 
     // can only be called by factory Admin
-    fn setDispatchHqAdmin(ref self: TContractState, companyRepAddress: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252) -> u16; // set dispatchCompanyHqID
-    fn getDispatchHqAdmin(self: @TContractState, companyID: u16) -> DispatchHq;
+    fn setDispatchHqAdmin(ref self: TContractState, companyRepAddress: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252);
+    fn getDispatchHqAdmin(self: @TContractState) -> DispatchHq;
 
     // this can only be call by the dispatchHq admin
-    fn setDispatchAdmin(ref self: TContractState, adminAddress: ContractAddress) -> u128; // set AdminID
-    fn getDispatchAdmin(self: @TContractState, companyID: u16, adminID: u128) -> DispatchAdmin;
+    fn setDispatchAdmin(ref self: TContractState, adminAddress: ContractAddress); 
+    fn confirmDispatchAdmin(self: @TContractState, address: ContractAddress) -> bool;
 
     // this can only be called by dispatch admins
-    fn createBranch(ref self: TContractState, city: felt252, state: felt252, country: felt252) -> (u128, ContractAddress);
-    fn getBranch(self: @TContractState, companyID: u16, adminID: u128, branchID: u128) -> DispatchBranch;
+    fn createBranch(ref self: TContractState, city: felt252, state: felt252, country: felt252) -> ContractAddress;
+    fn getBranch(self: @TContractState, address: ContractAddress) -> DispatchBranch;
 
 
     // this can be called by either dispatchHq or dispatchBranch Admins
-    fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, nextStop: felt252, deliveryStatus: OrderStatus) ;
-    fn updateTracker(ref self: TContractState, orderID: u256, companyID: u16, nextStop: felt252, deliveryStatus: OrderStatus);
+    fn createTracker(ref self: TContractState, orderID: u256, nextStop: felt252, deliveryStatus: OrderStatus) ;
+    fn updateTracker(ref self: TContractState, orderID: u256, nextStop: felt252, deliveryStatus: OrderStatus);
 
     // to be called by market place contract or Dispatch
     fn trackeItem(self: @TContractState, orderID: u256) -> OrderLocation;
@@ -135,19 +123,14 @@ trait IDispatchFactory<TContractState>{
 
     // get total factory admins
     fn getTotalFactoryAdmin(self: @TContractState, adminID: u8) -> u8;
-    // get total number of unique shipping company on platform
-    fn getNumberOfRegisteredCompany(self: @TContractState) -> u16;
     // get total company admins on platform and total by company
-    fn getAdminStats(self: @TContractState) -> Array::<AdminStats>;
+    fn getAdminStats(self: @TContractState) -> u128;
     // get branch statistics.. can only be called by factory admin...
-    fn getBranchStats(self: @TContractState, adminID: u8) -> Array::<BranchStats>;
-    fn getOrderStats(self: @TContractState, adminID: u8) -> Array::<OrdersStats>;
+    fn getBranchStats(self: @TContractState) -> u128;
+    fn getOrderStats(self: @TContractState, adminID: u8) -> u256;
 
-    fn getCompanyId(self: @TContractState, address: ContractAddress) -> u16;
-    fn getAdminId(self: @TContractState, address: ContractAddress) -> u128;
-    fn getBranchId(self: @TContractState, address: ContractAddress) -> u128;
 
-    fn setStaffBranch(ref self: TContractState, staffAddress: ContractAddress, companyID: u16) -> bool;
+    fn setStaffBranch(ref self: TContractState, staffAddress: ContractAddress) -> bool;
     fn getStaffBranch(self: @TContractState, staffAddress: ContractAddress ) -> ContractAddress;
 }
 
@@ -164,68 +147,41 @@ use core::serde::Serde;
     struct Storage {
         // return Ids
         returnOwnerIds: LegacyMap<ContractAddress, u8>,
-        returnCompanyIds: LegacyMap<ContractAddress, u16>,
-        returnAdminIds: LegacyMap<ContractAddress, u128>,
-        adminToCompanyID: LegacyMap<ContractAddress, u16>,
-        returnBranchIds: LegacyMap<ContractAddress, u128>,
 
+        supplyChainLimit: u8,
 
         marketPlaceAddress: ContractAddress,
-        // factory owners and owners confirmations storage
         ownerID: u8,
         isOwner: LegacyMap<(u8, ContractAddress), bool>,
         isFactoryAdmin: LegacyMap<ContractAddress, bool>,
         owners: LegacyMap<u8, FactoryAdmin>,
 
         // dispat company admins and admins confirmation storage
-        dispatchCompanyID: u16, // auto assigned at setDispatchHqAdmin
-        isDispatchHqAdmin: LegacyMap<(u16, ContractAddress), bool>,
-        dispatchHqs: LegacyMap<u16, DispatchHq>,
+        isDispatchHqAdmin: LegacyMap< ContractAddress, bool>,
+        dispatchHqs: DispatchHq,
 
-        // dispatchAdmin details and their admin confirmation storage
-        // takes CompanyID and hqAdmin address to create adminID
-        dispatchAdminID: LegacyMap<(u16, ContractAddress), u128>, // auto assigned at setDispatchBranchAdmin
-        // takes CompanyID, adminID and new admin Address to confirm admin
-        isDispatchAdmin: LegacyMap<(u16, u128, ContractAddress), bool>,
+        isDispatchAdmin: LegacyMap<ContractAddress, bool>,
         confirmHqAdmin: LegacyMap<ContractAddress, bool>,
-        // CompanyID and dispatchAdmin ID to store admin details
-        dispatchAdmins: LegacyMap<(u16, u128), DispatchAdmin>,
+        // dispatchAdmin ID to store admin details
+        dispatchAdmins: LegacyMap<u128, DispatchAdmin>,
         confirmBranchAdmin: LegacyMap<ContractAddress, bool>,
         // takes companyID as an args
         adminStatistics: LegacyMap<u16, AdminStats>,
         overAllAdminsNumber: u128,
 
-        adminIdAssignment : u128,
-
-        branchIdAssignment : u128,
-
         branchHash: ClassHash,
-
-        addressToBranch: LegacyMap<ContractAddress, DispatchBranch>,
-        // takes CompanyID, admin ID and branch contract address to generated a branch id at child deployment
-        branchID: LegacyMap<(u16, u128, ContractAddress), u128>,
-        // take CompanyID, branch ID and branch contract address to confirm that branch exists
-        branchExist: LegacyMap<(u16, u128, ContractAddress), bool>, // also use this to check update tracker is from thesame company
-        isBranch: LegacyMap<ContractAddress, bool>,
-        // takes CompanyID, admin ID, and branch ID to store branch details
-        dispatchBranch: LegacyMap<(u16, u128, u128), DispatchBranch>,
-        // takes CompanyID, 
-        branchStatistics: LegacyMap<u16, BranchStats>,
         overallBranchTotal: u128,
+        branchExist: LegacyMap<ContractAddress, bool>, 
+        isBranch: LegacyMap<ContractAddress, bool>,
+        addressToBranch: LegacyMap<ContractAddress, DispatchBranch>,
 
-        // takes orderID to reveal shipment origin
+        
+        overallShipmentTotal: u256,
         orderOriginator: LegacyMap<u256, OrderOrigin>,        
-        // takes orderID and conpanyID to confirm shipping company updating tracker is the creator.
-        isDispatchCompnay: LegacyMap<(u256, u16), bool>,
-
-        // takes Order ID to return shipping details
         trackOrderID: LegacyMap<u256, OrderLocation>,// remove restriction.
         
-        overallShipmentTotal: u128,
-        // increments with each recorded orderId
-        trackOrderIdNumber: LegacyMap<u128, u256>,
-        companyShipmentTotal: LegacyMap<(u16, u256), u128>,
-        shipmentStats: LegacyMap<u16, OrdersStats>,
+        trackOrderIdNumber: LegacyMap<u256, u256>,
+        
         stafftobranch: LegacyMap<ContractAddress, ContractAddress>,
 
     }
@@ -259,55 +215,41 @@ use core::serde::Serde;
         #[key]
         for: felt252,
         #[key]
-        companyID: u16,
-        #[key]
         companyAdminAddress: ContractAddress,
     }
 
     #[derive(Drop, starknet::Event)]
     struct BranchAdminCreated {
         #[key]
-        companyID: u16,
+        by: ContractAddress,
         #[key]
-        adminID: u128,
-        #[key]
-        adminAddress: ContractAddress,
+        for: ContractAddress,
     }
 
     #[derive(Drop, starknet::Event)]
     struct BranchCreated {
         #[key]
-        companyID: u16,
+        by: ContractAddress,
         #[key]
-        creatorID: u128,
+        for: ContractAddress,
         #[key]
-        branchID: u128,
-        #[key]
-        branchAddress: ContractAddress,
+        city: felt252,
     }
 
     #[derive(Drop, starknet::Event)]
     struct ShipmentCreated {
         #[key]
-        companyID: u16,
+        orderID: u256,  
         #[key]
-        branchID: u128,
-        #[key]
-        branchAddress: ContractAddress,
-        #[key]
-        orderID: u256,
+        by: ContractAddress,
     }
 
     #[derive(Drop, starknet::Event)]
     struct ShipmentUpdated {
         #[key]
-        companyID: u16,
+        orderID: u256,  
         #[key]
-        branchID: u128,
-        #[key]
-        branchAddress: ContractAddress,
-        #[key]
-        orderID: u256,
+        by: ContractAddress,
     }
 
 
@@ -322,8 +264,6 @@ use core::serde::Serde;
         let owner_details = FactoryAdmin {adminNumber: owner_id, address: owner_address};
         self.owners.write(owner_id, owner_details);
         self.branchHash.write(branchClassHash);
-        self.adminIdAssignment.write(1);
-        self.branchIdAssignment.write(1);
         self.emit(OwnersAdded {by: get_caller_address(), for: get_caller_address(), ownerID: owner_id});
     }
 
@@ -351,54 +291,39 @@ use core::serde::Serde;
             owner_id
         }
 
-        fn setDispatchHqAdmin(ref self: ContractState, companyRepAddress: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252) -> u16 {
+        fn setDispatchHqAdmin(ref self: ContractState, companyRepAddress: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252) {
+            assert(self.supplyChainLimit.read() == 0, 'Limit Reached');
             assert(self.isFactoryAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel!!');
-            let mut hq_id = self.dispatchCompanyID.read();
-            assert(self.isDispatchHqAdmin.read((hq_id, companyRepAddress)) == false, 'Admin Exists!!');
+            assert(self.isDispatchHqAdmin.read(companyRepAddress) == false, 'Admin Exists!!');
 
-            self._setDispatchHqAdmin(hq_id, companyRepAddress, companyName, country, state, city);
-            self.returnCompanyIds.write(companyRepAddress, hq_id);
-            self.dispatchCompanyID.write(hq_id + 1);
+            self._setDispatchHqAdmin(companyRepAddress, companyName, country, state, city);
 
-            self.emit(CompanyRegistered {by: get_caller_address(), for: companyName, companyID: hq_id, companyAdminAddress: companyRepAddress});
             self.confirmHqAdmin.write(companyRepAddress, true);
-            hq_id
+            self.supplyChainLimit.write(self.supplyChainLimit.read() + 1);
+            self.emit(CompanyRegistered {by: get_caller_address(), for: companyName,companyAdminAddress: companyRepAddress});
 
         }
 
-        fn setDispatchAdmin(ref self: ContractState, adminAddress: ContractAddress) -> u128{
-            let companyID = self.returnCompanyIds.read(get_caller_address());
+        fn setDispatchAdmin(ref self: ContractState, adminAddress: ContractAddress){
             assert(self.confirmHqAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
-            // assert(self.isDispatchHqAdmin.read((companyID, get_caller_address())) == true, 'Unauthorized Personnel');
-            // assert(self.adminToCompanyID.read(adminAddress) == 0, "Registered to a company");
-            let mut admin_id_check = self.dispatchAdminID.read((companyID, get_caller_address()));
-            // assert(self.isDispatchAdmin.read((companyID, admin_id_check, adminAddress)) == false, 'Admin Exists');
-            let admin_id = self.adminIdAssignment.read();
-            self.returnAdminIds.write(adminAddress, admin_id);
-            self.adminToCompanyID.write(adminAddress, companyID);
-            self._setDispatchAdmin(companyID, admin_id, adminAddress);
-            self.dispatchAdminID.write((companyID, get_caller_address()), admin_id);
+            assert(self.isDispatchAdmin.read(adminAddress) == false, 'Admin Exist');
+            
+        
+            
             self.overAllAdminsNumber.write((self.overAllAdminsNumber.read() + 1));
-            let OverallTotalAdmin = self.overAllAdminsNumber.read();
-            let admin_stats = AdminStats {companyID, totalCompanyAdmins: admin_id, OverallTotalAdmin};
-            self.adminStatistics.write(companyID, admin_stats);
-            self.adminIdAssignment.write(admin_id + 1);
+
+
             self.confirmBranchAdmin.write(adminAddress, true);
-            self.emit(BranchAdminCreated{companyID, adminID: admin_id, adminAddress});
-            admin_id
+            self.isDispatchAdmin.write(adminAddress, true);
+            self.emit(BranchAdminCreated{by: get_caller_address(), for: adminAddress});
         }
 
 
-        fn createBranch(ref self: ContractState, city: felt252, state: felt252, country: felt252) -> (u128, ContractAddress) {
-            let adminID = self.returnAdminIds.read(get_caller_address());
-            let companyID = self.adminToCompanyID.read(get_caller_address());
-            // assert(self.isDispatchAdmin.read((companyID, adminID, get_caller_address())) == true, 'Unauthorized Personnel');
-            assert(self.confirmBranchAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
+        fn createBranch(ref self: ContractState, city: felt252, state: felt252, country: felt252) -> ContractAddress {
+            assert(self.isDispatchAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
 
             // constructor arguments
             let mut constructor_args = ArrayTrait::new();
-            companyID.serialize(ref constructor_args);
-            adminID.serialize(ref constructor_args);
             city.serialize(ref constructor_args);
             state.serialize(ref constructor_args);
             country.serialize(ref constructor_args);
@@ -408,71 +333,51 @@ use core::serde::Serde;
             //deploy contract
             let (deployed_contract_address, _) = deploy_syscall(self.branchHash.read(), 0, constructor_args.span(), false). expect('failed to deploy branch');
 
-            //get previous branch id, increase by 1 to set current branch id..
-            let branch_id = self.branchIdAssignment.read();
-            self.returnBranchIds.write(deployed_contract_address, branch_id);
-            // assert(self.branchExist.read((companyID, branch_id, deployed_contract_address)) == false, 'Branch Exist!!');
-            self.branchID.write((companyID, adminID, deployed_contract_address), branch_id);
-            self.branchExist.write((companyID, branch_id, deployed_contract_address), true);
+
+            self.branchExist.write(deployed_contract_address, true);
             self.overallBranchTotal.write(self.overallBranchTotal.read() + 1);
             self.isBranch.write(deployed_contract_address, true);
 
             // set branch location and branch details
             let location = Location {country, state, city};
-            let branch_details = DispatchBranch {companyID, adminID, branchID: branch_id, branchAddress: deployed_contract_address, location};
-            let branch_total = self.overallBranchTotal.read();
-            let branch_stats = BranchStats {companyID, companyBranchTotal: branch_id, allCompanyBranches: branch_total};
-            
-            self.dispatchBranch.write((companyID, adminID, branch_id), branch_details);
-            self.branchStatistics.write(companyID, branch_stats);
+            let branch_details = DispatchBranch { branchAddress: deployed_contract_address, location};
+            self.addressToBranch.write(deployed_contract_address, branch_details);
 
-            
 
             IMarketPlaceDispatcher{contract_address: self.marketPlaceAddress.read()}.registerSupplyChainChild(deployed_contract_address);
-            self.addressToBranch.write(deployed_contract_address, branch_details);
-            self.branchIdAssignment.write(self.branchIdAssignment.read() + 1);
-            self.emit(BranchCreated{companyID, creatorID: adminID, branchID: branch_id, branchAddress: deployed_contract_address});
+            
 
-            (branch_id, deployed_contract_address)
+            self.emit(BranchCreated{by: get_caller_address(), for: deployed_contract_address, city});
+
+            (deployed_contract_address)
 
         }
 
-        fn createTracker(ref self: ContractState, orderID: u256, companyID: u16, nextStop: felt252, deliveryStatus: OrderStatus) {
-            let branchID = self.returnBranchIds.read(get_caller_address());
+        fn createTracker(ref self: ContractState, orderID: u256, nextStop: felt252, deliveryStatus: OrderStatus) {
             assert(self.isBranch.read(get_caller_address()) == true, 'Unauthorized Personnel');
-            // assert(self.branchExist.read((companyID, branchID, get_caller_address())) == true, 'Unauthorized Entity');
             let branch_location = self.addressToBranch.read(get_caller_address()).location.city;
 
-            self._createTracker(orderID, companyID, branchID, branch_location, nextStop, deliveryStatus);
-            let order_originator = OrderOrigin {companyID, branchAddress: get_caller_address(), branchID, orderID};
+            self._createTracker(orderID, branch_location, nextStop, deliveryStatus);
+            let order_originator = OrderOrigin { branchAddress: get_caller_address(), orderID};
 
 
-            
             self.orderOriginator.write(orderID, order_originator);
             self.overallShipmentTotal.write(self.overallShipmentTotal.read() + 1);
-            let new_total_shipment  = self.overallShipmentTotal.read();
-            let company_total_shipment = self.companyShipmentTotal.read((companyID, orderID)) + 1;
-            let shipment_stats = OrdersStats {companyID, companyTotalShipment: company_total_shipment, overallShipmentTotal: new_total_shipment};
-            self.trackOrderIdNumber.write(new_total_shipment, orderID);
-
-            self.emit(ShipmentCreated{companyID, branchID, branchAddress: get_caller_address(), orderID});
+            let number_tracker = self.overallShipmentTotal.read();
+            self.trackOrderIdNumber.write(number_tracker, orderID);
+    
+            self.emit(ShipmentCreated{orderID, by: get_caller_address()});
 
         }
 
-        fn updateTracker(ref self: ContractState, orderID: u256, companyID: u16, nextStop: felt252, deliveryStatus: OrderStatus) {
-            let branchID = self.returnBranchIds.read(get_caller_address());
-            
-            // assert(self.isDispatchCompnay.read((orderID, companyID)) == true, 'Unauthorized Entity');
-            // assert(self.branchExist.read((companyID, branchID, get_caller_address())) == true, 'Unauthorized Entity');
+        fn updateTracker(ref self: ContractState, orderID: u256, nextStop: felt252, deliveryStatus: OrderStatus) {
             assert(self.isBranch.read(get_caller_address()) == true, 'Unauthorized Personnel');
             let current_location = self.addressToBranch.read(get_caller_address()).location.city;
 
 
+            self._updateTracker(orderID, current_location, nextStop, deliveryStatus);
 
-
-            self._updateTracker(orderID, companyID, branchID, current_location, nextStop, deliveryStatus);
-
-            self.emit(ShipmentUpdated{companyID, branchID, branchAddress: get_caller_address(), orderID});
+            self.emit(ShipmentUpdated{orderID, by: get_caller_address()});
         }
 
         // getter functions .....
@@ -482,19 +387,18 @@ use core::serde::Serde;
         } 
 
 
-        fn getDispatchHqAdmin(self: @ContractState, companyID: u16) -> DispatchHq {
-            let company_details = self.dispatchHqs.read(companyID);
+        fn getDispatchHqAdmin(self: @ContractState) -> DispatchHq {
+            let company_details = self.dispatchHqs.read();
             company_details
         }
 
 
-        fn getDispatchAdmin(self: @ContractState, companyID: u16, adminID: u128) -> DispatchAdmin {
-            let admin_details = self.dispatchAdmins.read((companyID, adminID));
-            admin_details
+        fn confirmDispatchAdmin(self: @ContractState, address: ContractAddress) -> bool {
+            self.isDispatchAdmin.read(address)
         }
 
-        fn getBranch(self: @ContractState, companyID: u16, adminID: u128, branchID: u128) -> DispatchBranch {
-                let branch_details = self.dispatchBranch.read((companyID, adminID, branchID));
+        fn getBranch(self: @ContractState, address: ContractAddress) -> DispatchBranch {
+                let branch_details = self.addressToBranch.read(address);
                 branch_details
         }
 
@@ -506,7 +410,7 @@ use core::serde::Serde;
 
         fn trackAllItems(self: @ContractState) -> Array::<ItemStatus> {
             let all_orders = self.overallShipmentTotal.read();
-            let mut i: u128 = 1;
+            let mut i: u256 = 1;
             let mut all_status = ArrayTrait::new();
             
 
@@ -530,76 +434,22 @@ use core::serde::Serde;
             self.ownerID.read()
         }
 
-        fn getNumberOfRegisteredCompany(self: @ContractState) -> u16 {
-            self.dispatchCompanyID.read()
+
+        fn getAdminStats(self: @ContractState) -> u128 {
+            self.overAllAdminsNumber.read()
         }
 
-        fn getAdminStats(self: @ContractState) -> Array::<AdminStats> {
-            let number_of_companies = self.dispatchCompanyID.read();
-            let mut all_admin_stats = ArrayTrait::new();
-            let mut i: u16 = 1;
-            loop {
-                if i <= number_of_companies {
-                    all_admin_stats.append(self.adminStatistics.read(i))
-                } else {
-                    break;
-                }
-                i = i + 1;
-                
-            };
-            return all_admin_stats;
-        }
-
-        fn getBranchStats(self: @ContractState, adminID: u8) -> Array::<BranchStats> {
-            assert(self.isOwner.read((adminID, get_caller_address())) == true, 'Unauthorized Entity!!');
-            let total_companies = self.dispatchCompanyID.read();
-            let mut all_branch_status = ArrayTrait::new();
-            let mut i: u16 = 1;
-            loop {
-                if i <= total_companies {
-                    all_branch_status.append(self.branchStatistics.read(i))
-                } else{
-                    break;
-                }
-                i = i + 1;
-            };
-            
-            return all_branch_status;
+        fn getBranchStats(self: @ContractState) -> u128{
+            self.overallBranchTotal.read()
 
         }
 
-        fn getOrderStats(self: @ContractState, adminID: u8) -> Array::<OrdersStats> {
-            assert(self.isOwner.read((adminID, get_caller_address())) == true, 'Unauthorized Entity!!');
-            let total_companies = self.dispatchCompanyID.read();
-            let mut all_shipment_stats = ArrayTrait::new();
-            let mut i: u16 = 1;
-            loop {
-                if i <= total_companies {
-                    all_shipment_stats.append(self.shipmentStats.read(i))
-                } else {
-                    break;
-                }
-                i = i + 1;
-            };
-
-            return all_shipment_stats;
+        fn getOrderStats(self: @ContractState, adminID: u8) -> u256 {
+            self.overallShipmentTotal.read()
         }
 
-        fn getCompanyId(self: @ContractState, address: ContractAddress) -> u16{
-            self.returnCompanyIds.read(address)
-        }
-
-        fn getAdminId(self: @ContractState, address: ContractAddress) -> u128 {
-            self.returnAdminIds.read(address)
-        }
-
-        fn getBranchId(self: @ContractState, address: ContractAddress) -> u128 {
-            self.returnBranchIds.read(address)
-        }
-
-        fn setStaffBranch(ref self: ContractState, staffAddress: ContractAddress, companyID: u16 ) -> bool {
-            let branchID = self.returnBranchIds.read(get_caller_address());
-            assert(self.branchExist.read((companyID, branchID, get_caller_address())) == true, 'Unauthorized Entity');
+        fn setStaffBranch(ref self: ContractState, staffAddress: ContractAddress) -> bool {
+            assert(self.isBranch.read(get_caller_address()) == true, 'Unauthorized Personnel');
             self.stafftobranch.write(staffAddress, get_caller_address());
             true
         }
@@ -619,31 +469,23 @@ use core::serde::Serde;
             self.owners.write(adminId, owner_details);
         }
 
-        fn _setDispatchHqAdmin(ref self: ContractState, companyID: u16, hqAdmin: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252) {
-            self.isDispatchHqAdmin.write((companyID, hqAdmin), true);
+        fn _setDispatchHqAdmin(ref self: ContractState, hqAdmin: ContractAddress, companyName: felt252, country: felt252, state: felt252, city: felt252) {
+            self.isDispatchHqAdmin.write(hqAdmin, true);
             let location = Location {country, state, city};
 
-            let hq_details = DispatchHq {companyName, companyID, hqAdmin, location};
-            self.dispatchHqs.write(companyID, hq_details);
+            let hq_details = DispatchHq {companyName, hqAdmin, location};
+            self.dispatchHqs.write(hq_details);
 
    
         }
 
-        fn _setDispatchAdmin(ref self: ContractState, companyID: u16, branchAdminID: u128, branchAdminAddress: ContractAddress) {
-            self.isDispatchAdmin.write((companyID, branchAdminID, branchAdminAddress), true);
-            let admin_details = DispatchAdmin {companyID, branchAdminID, branchAdminAddress};
-
-            self.dispatchAdmins.write((companyID, branchAdminID), admin_details);
-        }
-
-        fn _createTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
-            let item_location = OrderLocation {orderID, companyID, branchID, deliveryStatus, previousLocation: 'market Place', currentLocation, nextStop};
+        fn _createTracker(ref self: ContractState, orderID: u256, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
+            let item_location = OrderLocation {orderID, deliveryStatus, previousLocation: 'market Place', currentLocation, nextStop};
             self.trackOrderID.write(orderID, item_location);
-            self.isDispatchCompnay.write((orderID, companyID), true);
+
         }
 
-        fn _updateTracker(ref self: ContractState, orderID: u256, companyID: u16, branchID: u128, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
-            // let new_item_location = OrderLocation {orderID, companyID, branchID, deliveryStatus, previousLocation, currentLocation, nextStop};
+        fn _updateTracker(ref self: ContractState, orderID: u256, currentLocation: felt252, nextStop: felt252, deliveryStatus: OrderStatus) {
             let mut new_item_location = self.trackOrderID.read(orderID);
             new_item_location.previousLocation = new_item_location.currentLocation;
             new_item_location.currentLocation = currentLocation;
@@ -652,4 +494,5 @@ use core::serde::Serde;
             self.trackOrderID.write(orderID, new_item_location);
         }
     }
+
 }

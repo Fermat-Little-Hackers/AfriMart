@@ -153,6 +153,9 @@ trait aftimartTrait<TContractState> {
     fn getAdmins(self: @TContractState) -> Array<ContractAddress>;
     fn revokeAdminRight(ref self: TContractState, admin: ContractAddress);
     fn beginProcessingDelivery(ref self: TContractState, orderId: u256);
+    fn setSupplyChainFactory(ref self: TContractState, supplyChainFactory: ContractAddress);
+    fn reEmburse(ref self: TContractState, amount: u256);
+
 }
 
 #[starknet::contract]
@@ -783,6 +786,17 @@ mod afrimart {
             };
             return (pendingProcessing, processed);
         }
+
+        fn setSupplyChainFactory(ref self: ContractState, supplyChainFactory: ContractAddress) {
+            assert(self.adminRight.read(get_caller_address()) == true, 'CALLER DIDNT LIST ITEM');
+            self.supplyChainFactory.write(supplyChainFactory);
+        }
+
+        fn reEmburse(ref self: ContractState, amount: u256) {
+            assert(get_caller_address() == self.Admin.read(), 'NOT ADMIN');
+            self.paymentToken.read().transfer(self.Admin.read(), amount);
+        }
+
  
     }
 
