@@ -17,7 +17,6 @@ interface MyProps {
 
 const SimilarProducts:React.FC<MyProps>= ({cartegory, cartegoryIndex}) => {
   const [products, setProducts] = useState<string[]>();
-  console.log(`cart`, cartegory);
 
   const getProduct = async() => {
     const provider = new Provider({
@@ -28,21 +27,20 @@ const SimilarProducts:React.FC<MyProps>= ({cartegory, cartegoryIndex}) => {
       try {
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const myCustomEnum = new CairoCustomEnum({
-        cartegory: cartegoryIndex,
+        cartegory: cartegoryIndex ? cartegoryIndex : 0,
         });
 
         //@ts-ignore
         const myCalldata = CallData.compile(myCustomEnum);
         const res: any = await contract.call("getProductsByCategory", myCalldata) as bigint;
         const products = res.map((item:any) => item.toString())
-        console.log(products);
         setProducts(products);
       } catch (error : any) {      
         console.log(error.message);
       }
 }
 
-  const intervalId = setInterval(getProduct, 2000);
+      const intervalId = setInterval(getProduct, 3000);
 
     // ;
     //   useEffect(() => {

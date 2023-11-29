@@ -88,7 +88,8 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
             console.log(error.message);
           }
     }
-        getProduct();
+
+    const intervalId = setInterval(getProduct, 2000);
       
       function hexToReadableText(hexString : any) {
         const bytes = Buffer.from(hexString, 'hex'); 
