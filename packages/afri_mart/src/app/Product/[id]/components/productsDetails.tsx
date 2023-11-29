@@ -13,6 +13,16 @@ import marketplaceAbi from '../../../../ABI/marketPlace'
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
 import dummy from '../../../../ABI/dummy.json'
 import Image from 'next/image';
+import { CairoOption, CairoCustomEnum, CairoEnumRaw } from "starknet";
+
+type cartegory = {
+  Agriculture: any,
+  TextileAndClothings: any,
+  Accesories: any,
+  ToolsAndEquipments: any,
+  DigitalArts: any,
+  PhysicalArtsNDSculptures: any,
+}
 
 interface MyProps {
     itemId: number;
@@ -46,10 +56,10 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
           try {
             const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
             const details = await contract.getUserProfile(user);
-            let eth = 1000000000000000000;
-            console.log(details);
+            // let eth = 1000000000000000000;
+            // console.log(details);
             setSellerName(hexToReadableText(details.name.toString(16)));
-            console.log(`checksss: ${hexToReadableText(details.name.toString(16))}`);
+            // console.log(`checksss: ${hexToReadableText(details.name.toString(16))}`);
 
           } catch(error: any) {
             console.log(error.message);
@@ -69,17 +79,21 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
           let eth = 1000000000000000000;
           // console.log('0x' + (user.name.toString(16)).toString())
             // const res = hexToReadableText(user.name.toString(16))
-            console.log(details)
-            console.log(hexToReadableText(details.name.toString(16)))
+            // console.log(details)
+            // console.log(hexToReadableText(details.name.toString(16)))
             setName(hexToReadableText(details.name.toString(16)))
+            let cart:CairoEnumRaw = details.cartegory;
+            // console.log(`checksss ${cart}`);
+            // console.log(details.cartegory.toString(16));
+            // console.log(`wowwwww....${details.cartegory.activeVariant()}`)
             // console.log(hexToReadableText(details.seller.toString(16)))
-            console.log(Number(BigInt(details.price)) / eth);
+            // console.log(Number(BigInt(details.price)) / eth);
             setPrice(Number(BigInt(details.price)) / eth);
-            console.log(details.imageUri.toString(16));
+            // console.log(details.imageUri.toString(16));
             setImgUri(details.imageUri.toString(16));
-            console.log(`0x${details.seller.toString(16)}`);
+            // console.log(`0x${details.seller.toString(16)}`);
             setSeller(`0x${details.seller.toString(16)}`);
-            console.log(hexToReadableText(details.description.toString(16)));
+            // console.log(hexToReadableText(details.description.toString(16)));
             setDescription(hexToReadableText(details.description.toString(16)));
 
             getUserProfile(`0x${details.seller.toString(16)}`);
@@ -87,7 +101,6 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
             console.log(error.message);
           }
     }
-
         getProduct();
       
       function hexToReadableText(hexString : any) {
@@ -169,7 +182,7 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
         setAddingCart(true);
     setTimeout(() => {
         setAddingCart(false);
-        console.log('check222');
+        // console.log('check222');
       }, 7000);
     }
       

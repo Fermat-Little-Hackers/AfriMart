@@ -7,20 +7,60 @@ import ProductsReviews from './components/productsReviews'
 import SimilarProducts from './components/similarProducts'
 import { useAccount } from "@starknet-react/core";
 import OurPartners from "../../../components/market-place/ourPartners"
+import marketplaceAbi from '../../../ABI/marketPlace'
+import { MarketPlaceAddr } from '../../../components/addresses';
+import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
+import { useState } from "react";
 
 export default function Home() {
     const { account, address, status } = useAccount();
+    const [cartegory, setCartegory] = useState<String>();
+    const [cartegory2, setCartegory2] = useState<Number>();
 
     const id = useParams()
 
     console.log(`testinggg ${id.id}`);
+
+    function findCategoryIndex(categoryName: string): number {
+        const categories = [
+          'Agriculture',
+          'TextileAndClothings',
+          'Accesories',
+          'ToolsAndEquipments',
+          'DigitalArts',
+          'PhysicalArtsNDSculptures',
+        ];
+      
+        const index = categories.indexOf(categoryName);
+        return index;
+      }
+
+
+    const getProduct = async() => {
+        const provider = new Provider({
+          rpc: {
+            nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+          }
+        })
+          try {
+          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
+          const details = await contract.getProductDetails(id.id);
+            // console.log(`woNewww....${details.cartegory.activeVariant()}`)
+            setCartegory2(findCategoryIndex(details.cartegory.activeVariant()))
+            setCartegory(details.cartegory.activeVariant());
+            // console.log(`chokomillo ${findCategoryIndex(details.cartegory.activeVariant())}`);
+          } catch (error : any) {      
+            console.log(error.message);
+          }
+    }
+        getProduct();
 
     return(
         <div>
             <Search />
             <ProductsDetails itemId={Number(id.id)} />
             <ProductsReviews />
-            <SimilarProducts />
+            <SimilarProducts cartegory={cartegory}/>
             <OurPartners />
         </div>
     )

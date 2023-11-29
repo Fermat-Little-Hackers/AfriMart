@@ -69,7 +69,7 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount }: ConfirmPurchasePo
     const Eth = 1000000000000000000;
     const defAmount = 100000000000000;
     let Tfee = amount == 1 && Eth * price < defAmount ? defAmount : (Eth * price) * amount;
-    console.log(`amount....${Tfee}`)
+    // console.log(`amount....${Tfee}`)
     const CONTRACT_ADDRESS = MarketPlaceAddr();
     const ERC20contract = new Contract(erc20abi.erc20abi, ERC_ADDRESS, account)
     const erc20Call = ERC20contract.populate('approve', [CONTRACT_ADDRESS, Tfee])
@@ -93,7 +93,7 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount }: ConfirmPurchasePo
             }
         ]
     )
-    console.log("Multicall: ", multiCall)
+    // console.log("Multicall: ", multiCall)
     //@ts-ignore
     account?.provider.waitForTransaction(multiCall.transaction_hash).then(() => {
     }).catch((e: any) => {
