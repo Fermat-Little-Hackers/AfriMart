@@ -783,6 +783,7 @@ mod afrimart {
                 } else {
                     processed.append(orderId);
                 }
+                i = i + 1;
             };
             return (pendingProcessing, processed);
         }
