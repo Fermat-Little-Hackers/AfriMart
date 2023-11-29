@@ -42,10 +42,13 @@ const SimilarProducts:React.FC<MyProps>= ({cartegory, cartegoryIndex}) => {
       }
 }
 
-      useEffect(() => {
-        getProduct();
+  const intervalId = setInterval(getProduct, 2000);
 
-      }, [cartegory, cartegoryIndex])
+    // ;
+    //   useEffect(() => {
+    //     getProduct();
+
+    //   }, [cartegory, cartegoryIndex])
 
 
 
