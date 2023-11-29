@@ -2,7 +2,7 @@ import React from 'react'
 import {useState} from 'react'
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
 
-import ProductAmountButton from './productButton'
+// import ProductAmountButton from './productButton'
 import Stars from '../../../../components/market-place/stars'
 import { useYourContext } from '../../../../context/YourContext';
 import ConfirmPurchasePopUp from '@/components/market-place/confirmPurchasePopUp';
@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import marketplaceAbi from '../../../../ABI/marketPlace'
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
 import dummy from '../../../../ABI/dummy.json'
+import Image from 'next/image';
 
 interface MyProps {
     itemId: number;
@@ -22,13 +23,14 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
     const [account, setAccount] = useState();
     const [address, setAddress] = useState('');
-
+    const [count, setCount] = useState(1);
     const [name, setName] = useState<any>();
     const [seller, setSeller] = useState<any>();
     const [sellerName, setSellerName] = useState<any>();
     const [description, setDescription] = useState<any>();
     const [price, setPrice] = useState<any>();
     const [imgUri, setImgUri] = useState<any>();
+    const [addingCart, setAddingCart] = useState<boolean>(false);
 
 
     const handlePurchaseClick = () => {
@@ -106,6 +108,72 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
         connectToStarknet()
       }, [itemId])  
 
+
+    const ProductAmountButton = () => {
+      
+        const increaseCount = () => {
+          setCount(count + 1);
+        };
+      
+        const reduceCount = () => {
+          if (count > 1) {
+            setCount(count - 1);
+          }
+        };
+      
+        return (
+          <div className="flex items-center">
+            {/* Reduce button */}
+            <button
+              className="bg-gray-200 px-3 py-1 rounded-l cursor-pointer"
+              onClick={reduceCount}
+            >
+              -
+            </button>
+      
+            {/* Count display */}
+            <div className="bg-gray-100 px-3 py-1">
+              {count}
+            </div>
+      
+            {/* Increase button */}
+            <button
+              className="bg-gray-200 px-3 py-1 rounded-r cursor-pointer"
+              onClick={increaseCount}
+            >
+              +
+            </button>
+          </div>
+        );
+      };
+
+
+      const addToCart = async() => {
+        const provider = new Provider({
+          rpc: {
+            nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+          }
+        })
+          try{
+          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
+          const myCall = contract.populate("addItemToCart", [itemId, count]);
+          const res = await contract.addItemToCart(myCall.calldata);
+          deception();
+          await provider.waitForTransaction(res.transaction_hash);
+          } catch (error : any) {      
+            console.log(error.message);
+          }
+    }
+
+    const deception = () => {
+        setAddingCart(true);
+    setTimeout(() => {
+        setAddingCart(false);
+        console.log('check222');
+      }, 7000);
+    }
+      
+
   return (
     <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
         <div className="flex flex-col md:w-[40%] gap-2">
@@ -115,7 +183,6 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
                     <Stars amount={2.5}/>
                 </div>
                 <p> Seller: {sellerName ? sellerName : 'loading....'}</p>
-                {/* <p> Seller Address: 0x0h7y34.....7ys98s</p> */}
             </div>
         </div>
 
@@ -124,20 +191,30 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
                 <p>{name ? name : "loading..."}</p>
                 <p>{price ? price : '0.00'} Eth</p>
                 <ProductAmountButton />
-                <div className="flex flex-row gap-10">
-                    <button
+                <div className="flex flex-row gap-5 md:gap-10">
+                    {addingCart ? 
+                      <button
                         type="button"
-                        className='bg-blue-500 text-white px-4 py-2 rounded-3xl'
-                        onClick={handlePurchaseClick}
+                        className='bg-blue-500 text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem] justify-center items-center flex'
+                      >
+                       <Image src={'/image/loading.svg'} alt="Example Image" className="w-[1.5rem] md:w-[1.5rem]" width={1} height={1} />
+                      </button>
+                      :
+                      <button
+                      type="button"
+                      className='bg-blue-500 text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem] justify-center items-center flex'
+                      onClick={addToCart}
+                      disabled={addingCart}
                     >
-                        ADD TO CART
+                    <p className='text-sm'>ADD TO CART</p>
                     </button>
+                    }
                     <button
                         type="button"
-                        className=' bg-blue-500 text-white px-4 py-2 rounded-3xl'
+                        className=' bg-blue-500 text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem]'
                         onClick={handlePurchaseClick}
                     >
-                        BUY NOW
+                        <p className='text-sm'>BUY NOW</p>
                     </button>
                 </div>
             </div>
@@ -152,7 +229,7 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
         </div>
         {/* Popup */}
         {sharedState && (
-            <ConfirmPurchasePopUp itemName={` of ${name}`} price={price} id={itemId} />
+            <ConfirmPurchasePopUp itemName={` of ${name}`} price={price} id={itemId} amount={count} />
         )}
     </div>
   )

@@ -42,7 +42,7 @@ const CartPrice = () => {
 
         {/* Popup */}
         {sharedState && (
-            <ConfirmPurchasePopUp itemName=' ' price={650} />
+            <ConfirmPurchasePopUp itemName=' ' price={650} id={1} amount={100} />
         )}
         </div>
 
