@@ -21,10 +21,10 @@ export default function Home() {
     <main className="flex flex-col items-center justify-center min-h-screen  bg-[var(--black-2)] bg-grainy-pattern text-white">
       <HeroSection />
       <SectionII />
+      <Brands />
       <LandingSections />
       <GreatDesign />
       <ResourceShop />
-      <Brands />
       <GreatArt />
       <SectionIII />
     </main>
