@@ -77,25 +77,12 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
           const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
           const details = await contract.getProductDetails(itemId);
           let eth = 1000000000000000000;
-          // console.log('0x' + (user.name.toString(16)).toString())
-            // const res = hexToReadableText(user.name.toString(16))
-            // console.log(details)
-            // console.log(hexToReadableText(details.name.toString(16)))
             setName(hexToReadableText(details.name.toString(16)))
-            let cart:CairoEnumRaw = details.cartegory;
-            // console.log(`checksss ${cart}`);
-            // console.log(details.cartegory.toString(16));
-            // console.log(`wowwwww....${details.cartegory.activeVariant()}`)
-            // console.log(hexToReadableText(details.seller.toString(16)))
-            // console.log(Number(BigInt(details.price)) / eth);
-            setPrice(Number(BigInt(details.price)) / eth);
-            // console.log(details.imageUri.toString(16));
             setImgUri(details.imageUri.toString(16));
-            // console.log(`0x${details.seller.toString(16)}`);
+            setPrice(Number(BigInt(details.price)) / eth);
+            let cart:CairoEnumRaw = details.cartegory;
             setSeller(`0x${details.seller.toString(16)}`);
-            // console.log(hexToReadableText(details.description.toString(16)));
             setDescription(hexToReadableText(details.description.toString(16)));
-
             getUserProfile(`0x${details.seller.toString(16)}`);
           } catch (error : any) {      
             console.log(error.message);

@@ -64,38 +64,8 @@ const ContributeBtn = (props: IContributeBtn) => {
     // }
 
     const interactWithBothERC20_and_CONTRACT = async () => {
-        {
-            const ERC_ADDRESS = "0x49D36570D4e46f48e99674bd3fcc84644DdD6b96F7C741B1562B82f9e004dC7"
-            const CONTRACT_ADDRESS = MarketPlaceAddr();
-            const ERC20contract = new Contract(erc20abi, ERC_ADDRESS, account)
-            const erc20Call = ERC20contract.populate('approve', [CONTRACT_ADDRESS, 1000000000000000000])
+        
 
-            const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
-            const collective_inputs = [1, 2];
-            const myCall = contract.populate('purchaseProduct', collective_inputs)
-
-            const multiCall = await account.execute(
-                [
-                    {
-                        contractAddress: ERC_ADDRESS,
-                        entrypoint: "approve",
-                        calldata: erc20Call.calldata
-                    },
-                    {
-                        contractAddress: CONTRACT_ADDRESS,
-                        entrypoint: "purchaseProduct",
-                        calldata: myCall.calldata
-                    }
-                ]
-            )
-            console.log("Multicall: ", multiCall)
-            account?.provider.waitForTransaction(multiCall.transaction_hash).then(() => {
-            }).catch((e: any) => {
-                console.log("Error: ", e)
-            }).finally(() => {
-                setLoading(false)
-            })
-        }
     }
 }
 

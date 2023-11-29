@@ -7,10 +7,11 @@ import { MarketPlaceAddr } from '../../../../components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface, CairoCustomEnum, CallData } from 'starknet'
 import { useState } from "react";
 import {useContractRead} from '@starknet-react/core'
+import { IconTeapot } from '@tabler/icons-react';
 
 
-const SimilarProducts = ({cartegory}) => {
-
+const SimilarProducts= ({cartegory}) => {
+  const [products, setProducts] = useState<string[]>();
   console.log(cartegory);
 
   const getProduct = async() => {
@@ -20,43 +21,23 @@ const SimilarProducts = ({cartegory}) => {
       }
     })
       try {
-      // const myCustomEnum = new CairoCustomEnum({cartegory});
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
-      // const res14 = await contract.call("getProductsByCategory", [myCustomEnum]) as bigint;
-      // const res14 = await contract.call("getProductsByCategory", [new CairoCustomEnum({ cartegory: {} })]) as bigint;
-      console.log(`detailllllls`);
-      // console.log(`detailllllls ${res14}`);
-
-    const myCustomEnum = new CairoCustomEnum({
-        Agriculture: {},
-        TextileAndClothings: undefined,
-        Accesories: undefined,
-        ToolsAndEquipments: undefined,
-        DigitalArts: undefined,
-        PhysicalArtsNDSculptures: undefined,
+      const myCustomEnum = new CairoCustomEnum({
+        cartegory: 0,
         });
 
-      // const myCalldata = CallData.compile(myCustomEnum);
-      // const res = await contract.call("test2a", myCalldata) as bigint;
-
+        //@ts-ignore
+        const myCalldata = CallData.compile(myCustomEnum);
+        const res: any = await contract.call("getProductsByCategory", myCalldata) as bigint;
+        console.log(`getProductsByCategory`, res);
+        const products = res.map((item:any) => item.toString())
+        console.log(products);
+        setProducts(products);
       } catch (error : any) {      
         console.log(error.message);
       }
 }
     getProduct();
-
-
-    const { data, isLoading, error, refetch } = useContractRead({
-      address: MarketPlaceAddr(),
-      abi: marketplaceAbi,
-      functionName: 'getProductsByCategory',
-      args: [0],
-      watch: true
-    })
-
-    console.log(`Testing:... ${error}`)
-
-
 
   return (
     <div className="md:border-2 md:border-black mx-5 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-5 md:gap-7 mt-10 md:mt-20">
@@ -65,25 +46,13 @@ const SimilarProducts = ({cartegory}) => {
                 SIMILAR PRODUCTS 
             </p>                    
         </div>
-        <div className="flex flex-col md:flex-row justify-between gap-3 md:gap-16">
-          <div className='flex flex-row w-[100%] md:w-[50%] gap-3 md:gap-16'>
-            <div className='w-[50%]'>
-              <ProductCard name='Ashoki material' price={100} />
-            </div>
-            <div className='w-[50%]'>
-              <ProductCard name='Ashoki material' price={100} />
-            </div>
+          <div className='grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4 md:gap-7 xl:gap-16'>
+            {products?.map((product, index) => (
+              <div key={index}>
+                <ProductCard productId={Number(product)} />
+              </div>
+            ))}    
           </div>
-
-          <div className='flex flex-row w-[100%] md:w-[50%] gap-3 md:gap-16'>
-            <div className='w-[50%]'>
-              <ProductCard name='Ashoki material' price={100} />
-            </div>
-            <div className='w-[50%]'>
-              <ProductCard name='Ashoki material' price={100} />
-            </div>
-          </div>
-        </div>
     </div>
   )
 }

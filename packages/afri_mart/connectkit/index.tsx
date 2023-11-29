@@ -26,7 +26,7 @@ function ConnectButtoN() {
         setAddress(connection.selectedAddress)
       }
       //@ts-ignore
-      console.log(connection.chainId)
+      // console.log(connection.chainId)
       //@ts-ignore
       if(connection.chainId != 'SN_GOERLI') {
         try {

@@ -45,10 +45,8 @@ export default function Home() {
           try {
           const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
           const details = await contract.getProductDetails(id.id);
-            // console.log(`woNewww....${details.cartegory.activeVariant()}`)
             setCartegory2(findCategoryIndex(details.cartegory.activeVariant()))
             setCartegory(details.cartegory.activeVariant());
-            // console.log(`chokomillo ${findCategoryIndex(details.cartegory.activeVariant())}`);
           } catch (error : any) {      
             console.log(error.message);
           }
