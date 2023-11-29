@@ -13,9 +13,9 @@ trait ISupplyChain<TContractState> {
 
 #[starknet::interface]
 trait IFactory<TContractState> {
-	fn createTracker(ref self: TContractState, orderID: u256, companyID: u16, nextStop: felt252, deliveryStatus: OrderStatus) ;
-    fn updateTracker(ref self: TContractState, orderID: u256, companyID: u16, nextStop: felt252, deliveryStatus: OrderStatus);
-	fn setStaffBranch(ref self: TContractState, staffAddress: ContractAddress, companyID: u16) -> bool;
+	fn createTracker(ref self: TContractState, orderID: u256, nextStop: felt252, deliveryStatus: OrderStatus) ;
+    fn updateTracker(ref self: TContractState, orderID: u256, nextStop: felt252, deliveryStatus: OrderStatus);
+	fn setStaffBranch(ref self: TContractState, staffAddress: ContractAddress) -> bool;
     fn getStaffBranch(self: @TContractState, staffAddress: ContractAddress ) -> ContractAddress;
 }
 
@@ -78,15 +78,12 @@ use super::ISupplyChain;
 	#[constructor]
 	fn constructor(
 		ref self: ContractState,
-		company_id: u16,
-		dispatch_id: u16,
 		city: felt252,
 		state: felt252,
 		country: felt252,
     msg_sender: ContractAddress,
 		factoryy_address : ContractAddress,
 	){
-		self.company_id.write(dispatch_id);
 		self.city.write(city);
 		self.state.write(state);
 		self.country.write(country);
@@ -102,7 +99,7 @@ use super::ISupplyChain;
 			self.is_whitelisted.write(address, true);
 			let address_factory = self.factory_address.read();
 			let factory_dispatcher = IFactoryDispatcher {contract_address : address_factory };
-			factory_dispatcher.setStaffBranch(address, self.company_id.read());
+			factory_dispatcher.setStaffBranch(address);
 			self.emit(AccountWhitelisted { account: address });
 		}
 
@@ -128,7 +125,6 @@ use super::ISupplyChain;
 			let result = IFactoryDispatcher { contract_address: self.factory_address.read() };
 			result.createTracker(
 				order_id,
-				self.company_id.read(),
 				address,
 				OrderStatus::Processing
 			);
@@ -145,7 +141,6 @@ use super::ISupplyChain;
 			let result = IFactoryDispatcher { contract_address: self.factory_address.read() };
 			result.updateTracker(
 				order_id,
-				self.company_id.read(),
 				next_location,
 				new_status
 			);

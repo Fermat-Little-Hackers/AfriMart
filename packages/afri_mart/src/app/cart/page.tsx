@@ -3,14 +3,18 @@ import OurPartners from '../../components/market-place/ourPartners'
 import TrendingProducts from './components/trendingProducts'
 import CartContent from './components/cartContent'
 import React from 'react'
+import { Brands } from '@/components/sections/Brands';
 
 export default function Home() {
     return (
-        <div>
+        <div
+            className=''
+        >
             <Search />
             <CartContent />
             <TrendingProducts />
-            <OurPartners />
+            {/* <OurPartners /> */}
+            <Brands />
         </div>
     )
 }
