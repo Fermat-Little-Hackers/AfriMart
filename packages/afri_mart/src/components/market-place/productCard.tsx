@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import Stars from "./stars";
 import marketplaceAbi from '../../ABI/marketPlace';
@@ -8,7 +9,6 @@ import { Account, Contract, Provider, constants, AccountInterface } from 'starkn
 
 
 interface MyProps {
-  name: string;
   productId: number;
 }
 
@@ -41,6 +41,8 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
       console.log(error.message);
     }
   };
+
+
 
   useEffect(() => {
     getProductDetails();

@@ -46,11 +46,15 @@ export default function Home() {
           const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
           const details = await contract.getProductDetails(id.id);
             setCartegory2(findCategoryIndex(details.cartegory.activeVariant()))
+            console.log(`cart index:`, findCategoryIndex(details.cartegory.activeVariant()))
             setCartegory(details.cartegory.activeVariant());
+            console.log(`checking....`, cartegory)
           } catch (error : any) {      
             console.log(error.message);
           }
     }
+
+    
         getProduct();
 
     return(
@@ -58,7 +62,7 @@ export default function Home() {
             <Search />
             <ProductsDetails itemId={Number(id.id)} />
             <ProductsReviews />
-            <SimilarProducts cartegory={cartegory}/>
+            <SimilarProducts cartegory={cartegory as string} cartegoryIndex={cartegory2 as number} />
             <OurPartners />
         </div>
     )
