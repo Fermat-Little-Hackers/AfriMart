@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
-import { Contract, Provider, constants } from 'starknet'
+import { Contract, Provider, constants, ProviderInterface } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 
@@ -27,7 +27,7 @@ const UserDetails = () => {
       const user = await contract.getUserProfile(address.toString());
       // console.log('0x' + (user.name.toString(16)).toString())
         const res = hexToReadableText(user.name.toString(16))
-        console.log(res)
+        // console.log(res)
       } catch (error : any) {
   
         console.log(error.message)

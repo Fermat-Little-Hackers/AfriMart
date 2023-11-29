@@ -1,13 +1,14 @@
-Marketplace class Hash = 0x0254c2737311538ae80b206cdce3664422e69e07cb973d38228a5185e8c90b41;
-Supply chain factory class hash= 0x044b93e419807e0924eca7e28b9f5d134a731e82f2c7a177e43497c7b2e69412;
+Marketplace class Hash = 0x07a7e73f3dd61721317279dfe1560786afb4682b2188091636dc88c36b361ee4;
+Supply chain factory class hash= 0x00b253f5aa984a27a509f00ae0a1b9beae5a15763b4a4a56a076c55e2b8ecb3e;
 Ratting contract class hash = 0x00248dbb2d8924f40f95804bda033f1c38cd486c2433da0712bd824409d01066;
-supply chain class hash = 0x01dd33c9a52c0e3afe5856556833fde600e1f1cf12761b3b092ef845aeeeed5a;
+supply chain class hash = 0x04be442e0fb6afda7d0dde0e8ebe604490747dc9fbbdf0825c010e14313f6f85;
 Eth contract = 0x049D36570D4e46f48e99674bd3fcc84644DdD6b96F7C741B1562B82f9e004dC7;
 
-SupplyChainFactoryAddr = 0x06ac2a46651be803133e1cb44f7c8b7f01f19ff266c4856f98addbb562ff96b5;
-MarketPlaceAddr = 0x02116bfe76e0e53af2be9b189994545a6bf13db7e3ed65ee9bdf29e93407b95e;
-RattingAddr = 0x05b586a4f92b7083548246ad0483e1b516e94f16e5fd2d039e510f086f48910f;
+SupplyChainFactoryAddr = 0x06dc8701bf6349e558c7f6f8660cb19275cf40d4b46411143e603d639a711693;
+MarketPlaceAddr = 0x03c234358182b2c1097cf6421dac72f5a1454eb432304b8779b57f5d3e7ed1d6;
+RattingAddr = 0x038dd191ee37db66836001ea07f34320ba2da320ff3e1e040a206098412fbb4a;
 
 
 starkli deploy 0x03336ab1ef3d4eb2943a6c0b1f64dbb8c6cb3d6567ff7a17e9f16939d2ad1017 0x055b1ffF983ef22E0A1962691e8E3462eEeBdDf56e34411b829a6A7eab002923 0x049D36570D4e46f48e99674bd3fcc84644DdD6b96F7C741B1562B82f9e004dC7 --rpc https://starknet-goerli.infura.io/v3/571aaed99608415397cb4eb46ca740c4 --account ~/.starkli-wallets/deployer/mainnet_account.json --keystore ~/.starkli-wallets/deployer/mainnet_keystore.json
+starkli declare target/dev/snfoundry_DispatchCompanyFactory.contract_class.json   --rpc https://starknet-goerli.infura.io/v3/571aaed99608415397cb4eb46ca740c4 --account ~/.starkli-wallets/deployer/mainnet_account.json --keystore ~/.starkli-wallets/deployer/mainnet_keystore.json
 starkli deploy 0x044b93e419807e0924eca7e28b9f5d134a731e82f2c7a177e43497c7b2e69412 0x01dd33c9a52c0e3afe5856556833fde600e1f1cf12761b3b092ef845aeeeed5a 0x03418b542780ef24b6a60189bf464db46690d690d360408c153b6da8fdf91148 --rpc https://starknet-goerli.infura.io/v3/571aaed99608415397cb4eb46ca740c4 --account ~/.starkli-wallets/deployer/mainnet_account.json --keystore ~/.starkli-wallets/deployer/mainnet_keystore.json
