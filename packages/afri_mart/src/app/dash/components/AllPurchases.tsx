@@ -60,7 +60,7 @@ const AllPurchases = ()  => {
     }
     if(orderArray){
       const resolve = async () => {
-        let result : { orderArray: number[] } = await orderArray;
+        let result  = await orderArray;
         console.log(result)
         // setneworderArray(result)
       }

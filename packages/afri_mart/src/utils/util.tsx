@@ -40,7 +40,7 @@ export const useGetAllUserPurchase = () => {
 
 
 export const useGetOrder = async (args : any[]) =>{
-    const [orderArray, setOrderArray] = useState<number[]>([])
+    const [orderArray, setOrderArray] = useState<any[]>([])
     const [isloading, setLoading] = useState(true);
     const [iserror, setError] = useState(null);
     
