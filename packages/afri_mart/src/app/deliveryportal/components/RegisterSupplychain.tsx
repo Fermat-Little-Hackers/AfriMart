@@ -36,10 +36,10 @@ const RegisterSupplychain = () => {
   return (
     <div className="">
       <h3 className="mb-7 text-xl md:text-2xl">Register Supply Chain</h3>
-      <div className="justify-start text-left border-2 border-black">
+      <div className="justify-start text-left ">
         <form
           onSubmit={registerSupplychain}
-          className="p-5 md:p-20 bg-white rounded shadow-md"
+          className="w-3/4 rounded "
         >
           <div className="mb-4">
             <label
@@ -54,7 +54,7 @@ const RegisterSupplychain = () => {
             id="repAddress"
             value={companyRepAddr}
             onChange={handleAddress}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -70,7 +70,7 @@ const RegisterSupplychain = () => {
             id="companyName"
             value={companyName}
             onChange={handleCompanyName}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -86,7 +86,7 @@ const RegisterSupplychain = () => {
             id="city"
             value={city}
             onChange={handleCity}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -102,7 +102,7 @@ const RegisterSupplychain = () => {
               id="state"
               value={state}
               onChange={handleState}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -118,7 +118,7 @@ const RegisterSupplychain = () => {
               id="country"
               value={country}
               onChange={handleCountry}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div>

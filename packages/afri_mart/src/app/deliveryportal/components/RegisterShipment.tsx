@@ -58,15 +58,15 @@ const DeployBranch = () => {
   return (
     <div className="">
       <h3 className="mb-5 md:mb-7 text-xl md:text-2xl">Register Shipment</h3>
-      <div className="justify-start text-left border-2 border-black">
+      <div className="justify-start text-left ">
         <form
           onSubmit={handleSubmit(createBranch)}
-          className="p-5 md:p-20 bg-white rounded shadow-md"
+          className="w-3/4 "
         >
           <div className="mb-4">
             <label
               htmlFor="OrderId"
-              className="block text-gray-600 text-sm font-semibold mb-2"
+              className="block  text-gray-600 text-sm font-semibold mb-2"
             >
               Order ID
             </label>
@@ -76,7 +76,7 @@ const DeployBranch = () => {
               id="OrderId"
               value={OrderId}
               onChange={handleOrderId}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -92,7 +92,7 @@ const DeployBranch = () => {
               id="Name"
               value={Name}
               onChange={handleName}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className='flex flex-col md:flex-row'>
@@ -114,7 +114,7 @@ const DeployBranch = () => {
                       type="file"
                       onChange={handleImageChange}
                       required
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
                       />
                   </div>
               </div>
@@ -131,7 +131,7 @@ const DeployBranch = () => {
               id="Address"
               value={Address}
               onChange={handleAddress}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -147,7 +147,7 @@ const DeployBranch = () => {
               id="trackMode"
               value={trackMode}
               onChange={handletrackMode}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div>
@@ -155,7 +155,7 @@ const DeployBranch = () => {
               type="submit"
               className="bg-blue-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-blue-700"
             >
-              Update Shipment
+              Register Shipment
             </button>
           </div>
         </form>

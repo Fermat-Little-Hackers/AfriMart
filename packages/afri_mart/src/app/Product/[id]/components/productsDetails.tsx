@@ -176,9 +176,9 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
       
 
   return (
-    <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
-        <div className="flex flex-col md:w-[40%] gap-2">
-            <div className="border-2 border-black bg-gray-700 md:w-[20rem] h-[20rem]"></div>
+    <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] md:p-0">
+        <div className="flex flex-col md:w-[40%] gap-4">
+            <div className=" bg-[var(--afroroasters-brown)] md:w-[20rem] h-[20rem]"></div>
             <div className='flex flex-col gap-2'>
                 <div>
                     <Stars amount={2.5}/>
@@ -187,9 +187,14 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
             </div>
         </div>
 
-        <div className="border-2 border-black h-fit w-[100%] md:p-10 flex flex-col justify-between mt-5 md:mt-0">
-            <div className='flex flex-col gap-3 p-5 md:p-0'>
-                <p>{name ? name : "loading..."}</p>
+        <div className=" h-fit w-[100%] flex flex-col justify-between mt-5 md:mt-0 gap-4">
+            <div className='flex flex-col gap-4 md:p-0'>
+                <h1 className='text-3xl font-semibold'>{name ? name : "loading..."}</h1>
+            <div className="mr-10 w-[100%] h-fit md:h-[45%]  md:mt-5">
+            <p>
+              {description ? description : 'loading description....'}
+            </p>
+            </div>
                 <p>{price ? price : '0.00'} Eth</p>
                 <ProductAmountButton />
                 <div className="flex flex-row gap-5 md:gap-10">
@@ -219,14 +224,7 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
                     </button>
                 </div>
             </div>
-            <div className="border-2 border-black mr-10 w-[100%] h-fit md:h-[45%] p-4 md:mt-5">
-                <p className='mb-3'>
-                    DESCRIPTION
-                </p>
-                <p>
-                    {description ? description : 'loading description....'} 
-                </p>
-            </div>
+            
         </div>
         {/* Popup */}
         {sharedState && (
