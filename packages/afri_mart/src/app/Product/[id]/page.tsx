@@ -17,9 +17,7 @@ export default function Home() {
     const [cartegory, setCartegory] = useState<String>();
     const [cartegory2, setCartegory2] = useState<Number>();
 
-    const id = useParams()
-
-    console.log(`testinggg ${id.id}`);
+    const id = useParams();
 
     function findCategoryIndex(categoryName: string): number {
         const categories = [
@@ -45,22 +43,22 @@ export default function Home() {
           try {
           const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
           const details = await contract.getProductDetails(id.id);
-            // console.log(`woNewww....${details.cartegory.activeVariant()}`)
             setCartegory2(findCategoryIndex(details.cartegory.activeVariant()))
             setCartegory(details.cartegory.activeVariant());
-            // console.log(`chokomillo ${findCategoryIndex(details.cartegory.activeVariant())}`);
           } catch (error : any) {      
             console.log(error.message);
           }
     }
-        getProduct();
+
+  const intervalId = setInterval(getProduct, 3000);
+
 
     return(
         <div>
             <Search />
             <ProductsDetails itemId={Number(id.id)} />
             <ProductsReviews />
-            <SimilarProducts cartegory={cartegory}/>
+            <SimilarProducts cartegory={cartegory as string} cartegoryIndex={cartegory2 as number} />
             <OurPartners />
         </div>
     )

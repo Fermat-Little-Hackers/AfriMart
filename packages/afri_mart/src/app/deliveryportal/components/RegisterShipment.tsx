@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Image from 'next/image';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import Image from "next/image";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 interface FormData {
   profilePicture: FileList | null;
@@ -9,14 +9,35 @@ interface FormData {
   // country: string;
 }
 
-const DeployBranch = () => {
+const ResgisterShipment = () => {
   const [OrderId, setOrderId] = useState<any>();
   const [Name, setName] = useState<any>();
   const [Address, setAddress] = useState("");
   const [trackMode, settrackMode] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const { register, handleSubmit, setValue, formState: { errors }  } = useForm<FormData>();
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>();
+  // const getStaffBranch = async () => {
+  //   const provider = new Provider({
+  //     rpc: {
+  //       nodeUrl:
+  //         "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
+  //     },
+  //   });
+
+  //   try {
+  //     const contract = new Contract(contractAbi, SupplyChainFactoryAddr(), provider)
+  //     const branch = await contract.
+  //   }
+  //   catch(error){
+
+  //   }
+  // };
 
   const handleOrderId = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOrderId(e.target.value);
@@ -34,26 +55,25 @@ const DeployBranch = () => {
     settrackMode(e.target.value);
   };
 
-
   const createBranch: SubmitHandler<FormData> = () => {
-   console.log('submitted......')
+    console.log("submitted......");
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
     if (file) {
-    // Set the preview image
-    const reader = new FileReader();
-    reader.onloadend = () => {
+      // Set the preview image
+      const reader = new FileReader();
+      reader.onloadend = () => {
         setPreviewImage(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+      };
+      reader.readAsDataURL(file);
 
-    // Update form value for validation
-    setValue('profilePicture', event.target.files);
+      // Update form value for validation
+      setValue("profilePicture", event.target.files);
     }
-};
+  };
 
   return (
     <div className="">
@@ -95,29 +115,29 @@ const DeployBranch = () => {
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
             />
           </div>
-          <div className='flex flex-col md:flex-row'>
-                  <div>
-                      {previewImage && (
-                          <Image
-                          src={previewImage}
-                          alt="Preview"
-                          width={2}
-                          height={2}
-                          className="mt-2 w-16 h-16 object-cover md:mr-5 rounded-full border border-gray-300"
-                          />
-                      )}
-                  </div>
-                  <div className="flex items-center justify-center">
-                      <input
-                      id="profilePicture"
-                      name="profilePicture"
-                      type="file"
-                      onChange={handleImageChange}
-                      required
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                      />
-                  </div>
-              </div>
+          <div className="flex flex-col md:flex-row">
+            <div>
+              {previewImage && (
+                <Image
+                  src={previewImage}
+                  alt="Preview"
+                  width={2}
+                  height={2}
+                  className="mt-2 w-16 h-16 object-cover md:mr-5 rounded-full border border-gray-300"
+                />
+              )}
+            </div>
+            <div className="flex items-center justify-center">
+              <input
+                id="profilePicture"
+                name="profilePicture"
+                type="file"
+                onChange={handleImageChange}
+                required
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
           <div className="mb-4">
             <label
               htmlFor="Address"
@@ -164,4 +184,4 @@ const DeployBranch = () => {
   );
 };
 
-export default DeployBranch;
+export default ResgisterShipment;
