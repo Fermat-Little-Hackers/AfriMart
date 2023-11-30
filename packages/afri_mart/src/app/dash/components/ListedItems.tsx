@@ -11,6 +11,7 @@ const ListedItems = () => {
 
 
 
+
   const getAllListing = async () => {
     const provider = new Provider({
       rpc: {
@@ -75,9 +76,9 @@ useEffect(() => {
   
 
   return    ( <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">   
-      {allProductArray.map((item,index) => {             
+      {allProductArray?.length == 0 ? <div className="text-center">No item Listed</div> : allProductArray.map((item,index) => {             
        let productname =  hexToReadableText(item.name.toString(16)) 
-       let productprice = Number(item.price)
+       let productprice = Number(item.price)/1e18
        let available = Number(item.amountAvailable)
       return <div key={index} className="w-[20%] space-y-10">
        <Listcard title={productname} amount={productprice} quantity={available} />

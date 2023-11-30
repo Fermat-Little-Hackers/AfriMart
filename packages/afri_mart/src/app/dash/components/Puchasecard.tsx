@@ -17,7 +17,7 @@ const Puchasecard : React.FC<purchaseProps> = ({ title, amount, quantity})  => {
                     <p>+</p>
                 </div>
             </div>
-            <p className="h-[50px] mt-2 text-center text-2xl smx:text-[15px]">${amount}</p>
+            <p className="h-[50px] mt-2 text-center text-2xl smx:text-[15px]">{amount} ETH</p>
             <div className="h-[30px] smx:h-[20px] mt-2 w-[100px] border border-black rounded-2xl text-center smx:text-[10px] items-center">REVIEW</div>
     </div>
   )

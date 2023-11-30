@@ -9,6 +9,7 @@ const AllPurchases =  ()  => {
 const [allPurchase, setAllPurchase] = useState<any[]>([])
 const [allProductArray, setAllproductArray] = useState<any[]>([]);
 
+
   const getAllpurchase = async () => {
     const provider = new Provider({
       rpc: {
@@ -93,9 +94,11 @@ useEffect(() => {
   
   return    ( <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">   
       
-      {allProductArray?.map( (item:any,index : number) => {  
+      {allProductArray?.length == 0 ? <div className="text-center">No item purchased</div> : allProductArray?.map( (item:any,index : number) => {  
+          let eth = 1000000000000000000;
           let productname =  hexToReadableText(item.name.toString(16)) 
-          let productprice = Number(item.price)/1e18
+          let productprice = Number(BigInt(item.price)) / eth
+          
          return ( <div key={index} className="w-[20%] space-y-10">          
          <Puchasecard title={productname} amount={productprice} quantity={0} />
        </div> )             
