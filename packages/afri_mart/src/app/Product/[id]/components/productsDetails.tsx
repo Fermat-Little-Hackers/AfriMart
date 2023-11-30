@@ -33,9 +33,9 @@ const ProductsDetails = () => {
 
 
   return (
-    <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
-        <div className="flex flex-col md:w-[40%] gap-2">
-            <div className="border-2 border-black bg-gray-700 md:w-[20rem] h-[20rem]"></div>
+    <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] md:p-0">
+        <div className="flex flex-col md:w-[40%] gap-4">
+            <div className=" bg-[var(--afroroasters-brown)] md:w-[20rem] h-[20rem]"></div>
             <div className='flex flex-col gap-2'>
                 <div>
                     <Stars amount={2.5}/>
@@ -45,9 +45,14 @@ const ProductsDetails = () => {
             </div>
         </div>
 
-        <div className="border-2 border-black h-fit w-[100%] md:p-10 flex flex-col justify-between mt-5 md:mt-0">
-            <div className='flex flex-col gap-3 p-5 md:p-0'>
-                <p>DANSHIKI MARTERIAL</p>
+        <div className=" h-fit w-[100%] flex flex-col justify-between mt-5 md:mt-0 gap-4">
+            <div className='flex flex-col gap-4 md:p-0'>
+                <h1 className='text-3xl font-semibold'>DANSHIKI MARTERIAL</h1>
+            <div className="mr-10 w-[100%] h-fit md:h-[45%]  md:mt-5">
+                <p>
+                    Anim ipsum adipisicing irure dolor pariatur veniam culpa quis labore deserunt nulla amet proident. Exercitation consectetur deserunt velit velit laboris ad. Ullamco labore veniam laborum mollit occaecat consequat ullamco consectetur. 
+                </p>
+            </div>
                 <p>$50</p>
                 <ProductAmountButton />
                 <div className="flex flex-row gap-10">
@@ -66,14 +71,6 @@ const ProductsDetails = () => {
                         BUY NOW
                     </button>
                 </div>
-            </div>
-            <div className="border-2 border-black mr-10 w-[100%] h-fit md:h-[45%] p-4 md:mt-5">
-                <p className='mb-3'>
-                    DESCRIPTION
-                </p>
-                <p>
-                    Anim ipsum adipisicing irure dolor pariatur veniam culpa quis labore deserunt nulla amet proident. Exercitation consectetur deserunt velit velit laboris ad. Ullamco labore veniam laborum mollit occaecat consequat ullamco consectetur. 
-                </p>
             </div>
         </div>
         {/* Popup */}
