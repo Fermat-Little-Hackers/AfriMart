@@ -30,7 +30,7 @@ const Trendingbar = () => {
                 <section className="flex gap-10 smx:flex-col-2 flex-wrap mt-[20px] justify-center">    
                 {items.map((item,index) => (             
                  <div key={index} className="w-[20%] smx:w-[40%]">
-                 <ProductCard name={item.name} price={item.price} />
+                 <ProductCard productId={index} />
                </div>                
                   ))}
                   </section>

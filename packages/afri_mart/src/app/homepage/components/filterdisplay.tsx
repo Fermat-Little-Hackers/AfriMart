@@ -34,7 +34,7 @@ const Filterdisplay : React.FC<filterProps> = ({ title})  => {
                 <section className="flex gap-10 flex-wrap smx:flex-col-2 mt-[20px] justify-center">    
                 {items.map((item,index) => (             
                  <div key={index} className="w-[20%] smx:w-[40%]">
-                 <ProductCard name={item.name} price={item.price} />
+                 <ProductCard productId={index} />
                </div>                
                   ))}
                   </section>

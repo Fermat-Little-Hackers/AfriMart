@@ -1,20 +1,33 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useYourContext } from "../../context/YourContext";
+import marketplaceAbi from '../../ABI/marketPlace'
+import { Account, Contract, Provider, constants, AccountInterface, ProviderInterface } from 'starknet'
+import { MarketPlaceAddr } from '../../components/addresses';
+import {type ConnectedStarknetWindowObject, connect, disconnect, } from '@argent/get-starknet'
+import {EthAddr} from '../../components/addresses';
+import erc20abi from '../../ABI/erc20.json'
 
 interface ConfirmPurchasePopUpProps {
   itemName: string;
   price: number;
+  id: any;
+  amount: any;
 }
 
-function ConfirmPurchasePopUp({ itemName, price }: ConfirmPurchasePopUpProps) {
+function ConfirmPurchasePopUp({ itemName, price, id, amount }: ConfirmPurchasePopUpProps) {
   const { sharedState, setSharedState } = useYourContext();
   const [waitText, setWaitText] = useState(
-    `Confirm you intend to make a purchase ${itemName} worth $${price} from AfriMart`
+    `Confirm you intend to make a purchase ${itemName} worth ${price * amount} Eth from AfriMart`
   );
   const [imageSrc, setImageSrc] = useState("/image/wait.svg");
   const [isDisabled, setIsDisabled] = useState(false);
+  // const [connection, setConnection] = useState('');
+  const [account, setAccount] = useState<ProviderInterface | AccountInterface | undefined>();
+  const [address, setAddress] = useState('');
+  const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
+  const [paid, setPaid] = useState<boolean>(false);
 
   const handleProcessPayment = () => {
     setIsDisabled(true);
@@ -22,18 +35,91 @@ function ConfirmPurchasePopUp({ itemName, price }: ConfirmPurchasePopUpProps) {
       prevSrc === "/image/wait.svg" ? "/image/loading.svg" : "/image/wait.svg"
     );
     setWaitText("Processing transaction, please wait");
+    purchaseProduct();
   };
+
+  const handlePaymentCompleted = () => {
+    setIsDisabled(false);
+    setImageSrc((prevSrc) =>
+      prevSrc === "/image/loading.svg" ? "/image/check-circle.svg" : "/image/wait.svg"
+    );
+    setWaitText(
+      "Paymet successful please click on the Continue button to proceed"
+    );
+    setPaid(true);
+    // setSharedState(false);
+  }
 
   const handleCancelPayment = () => {
     setIsDisabled(false);
     setImageSrc((prevSrc) =>
-      prevSrc === "/image/wait.svg" ? "/image/loading.svg" : "/image/wait.svg"
+      prevSrc === "/image/wait.svg" || prevSrc === "/image/check-circle.svg" ? "/image/loading.svg" : "/image/wait.svg"
     );
     setWaitText(
       "Confirm you intend to make a purchase wort $650 from AfriMart"
     );
     setSharedState(false);
   };
+
+
+
+
+  const purchaseProduct = async() => {
+    const ERC_ADDRESS = EthAddr();
+    const Eth = 1000000000000000000;
+    const defAmount = 100000000000000;
+    let Tfee = amount == 1 && Eth * price < defAmount ? defAmount : (Eth * price) * amount;
+    // console.log(`amount....${Tfee}`)
+    const CONTRACT_ADDRESS = MarketPlaceAddr();
+    const ERC20contract = new Contract(erc20abi.erc20abi, ERC_ADDRESS, account)
+    const erc20Call = ERC20contract.populate('approve', [CONTRACT_ADDRESS, Tfee])
+
+    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
+    const collective_inputs = [1, 2];
+    const myCall = contract.populate('purchaseProduct', collective_inputs)
+
+    //@ts-ignore
+    const multiCall = await account.execute(
+        [
+            {
+                contractAddress: ERC_ADDRESS,
+                entrypoint: "approve",
+                calldata: erc20Call.calldata
+            },
+            {
+                contractAddress: CONTRACT_ADDRESS,
+                entrypoint: "purchaseProduct",
+                calldata: myCall.calldata
+            }
+        ]
+    )
+    // console.log("Multicall: ", multiCall)
+    //@ts-ignore
+    account?.provider.waitForTransaction(multiCall.transaction_hash).then(() => {
+    }).catch((e: any) => {
+        console.log("Error: ", e)
+    }).finally(() => {
+      handlePaymentCompleted();
+    })
+
+}
+
+
+
+
+useEffect(() => {
+  const connectToStarknet = async() => {
+    const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+    if(connection && connection.isConnected) {
+      setConnection(connection)
+      setAccount(connection.account)
+      setAddress(connection.selectedAddress)
+    }
+  }
+  connectToStarknet()
+}, []) 
+
+
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-70">
@@ -50,14 +136,22 @@ function ConfirmPurchasePopUp({ itemName, price }: ConfirmPurchasePopUpProps) {
           </div>
         </div>
         <p className="text-base md:text-xl mb-5 md:mb-7">{waitText}</p>
-        <button
-          type="button"
-          className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 md:mr-5 text-sm md:text-lg"
-          onClick={handleProcessPayment}
-          disabled={isDisabled}
-        >
-          Confirm
-        </button>
+        {!paid ?  <button
+            type="button"
+            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 md:mr-5 text-sm md:text-lg"
+            onClick={handleProcessPayment}
+            disabled={isDisabled}
+          >
+            Confirm
+          </button>
+          :
+          <button
+            type="button"
+            className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2 md:mr-5 text-sm md:text-lg"
+            onClick={handleCancelPayment}
+          >
+            Continue
+          </button>}
         <button
           type="button"
           className="bg-gray-500 text-white px-4 py-2 rounded-md text-sm md:text-lg"
@@ -68,6 +162,7 @@ function ConfirmPurchasePopUp({ itemName, price }: ConfirmPurchasePopUpProps) {
       </div>
     </div>
   );
+
 }
 
 export default ConfirmPurchasePopUp;

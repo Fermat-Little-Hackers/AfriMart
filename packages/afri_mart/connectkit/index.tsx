@@ -19,15 +19,16 @@ function ConnectButtoN() {
   useEffect(() => {
     const connectToStarknet = async() => {
       const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-
+  
       if(connection && connection.isConnected) {
         setConnection(connection)
         setAccount(connection.account)
         setAddress(connection.selectedAddress)
       }
-
-      if(connection?.chainId !== 'SN_GOERLI') {
-        alert("you need to switch to GOERLI to proceed!")
+      //@ts-ignore
+      // console.log(connection.chainId)
+      //@ts-ignore
+      if(connection.chainId != 'SN_GOERLI') {
         try {
           await window?.starknet?.request({
             type: "wallet_switchStarknetChain",
@@ -37,10 +38,10 @@ function ConnectButtoN() {
           });
         }
         catch(error : any) {
-          alert(error.message)
+          console.log(error)
         }
       }
-    }
+}
     connectToStarknet()
   }, [])
 
