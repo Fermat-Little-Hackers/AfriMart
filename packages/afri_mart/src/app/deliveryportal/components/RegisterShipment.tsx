@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
+import contractAbi from "../../../ABI/supplyChainContract.json";
+import {connect} from "@argent/get-starknet";
+import { ConnectedStarknetWindowObject } from "get-starknet-core";
+import { Contract } from "starknet";
+import { SupplyChainContractAddr } from "@/components/addresses";
 
 interface FormData {
   profilePicture: FileList | null;
@@ -12,9 +17,13 @@ interface FormData {
 const ResgisterShipment = () => {
   const [OrderId, setOrderId] = useState<any>();
   const [Name, setName] = useState<any>();
-  const [Address, setAddress] = useState("");
+  const [shipmentAddress, setShipmentAddress] = useState("");
   const [trackMode, settrackMode] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
+  const [account, setAccount] = useState();
+  const [address, setAddress] = useState('');
+
 
   const {
     register,
@@ -22,6 +31,7 @@ const ResgisterShipment = () => {
     setValue,
     formState: { errors },
   } = useForm<FormData>();
+
   // const getStaffBranch = async () => {
   //   const provider = new Provider({
   //     rpc: {
@@ -48,16 +58,61 @@ const ResgisterShipment = () => {
   };
 
   const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAddress(e.target.value);
+    setShipmentAddress(e.target.value);
   };
 
   const handletrackMode = (e: React.ChangeEvent<HTMLInputElement>) => {
     settrackMode(e.target.value);
   };
 
-  const createBranch: SubmitHandler<FormData> = () => {
-    console.log("submitted......");
+
+  useEffect(() => {
+    const connectToStarknet = async () => {
+      const connection = await connect({
+        modalMode: "neverAsk",
+        webWalletUrl: "https://web.argent.xyz",
+      });
+
+      if (connection && connection.isConnected) {
+        setConnection(connection);
+        setAccount(connection.account);
+        setAddress(connection.selectedAddress);
+      }
+
+      if (connection?.chainId !== "SN_GOERLI") {
+        alert("you need to switch to GOERLI to proceed!");
+        try {
+          await window?.starknet?.request({
+            type: "wallet_switchStarknetChain",
+            params: {
+              chainId: "SN_GOERLI",
+            },
+          });
+        } catch (error: any) {
+          alert(error.message);
+        }
+      }
+    };
+    connectToStarknet();
+  }, []);
+
+
+  const registerShipment: SubmitHandler<FormData> = async () => {
+    console.log("Registering Shipment......");
+    try {
+      const contract = new Contract(
+        contractAbi,
+        SupplyChainContractAddr(),
+        account
+      );
+      await contract.create_shipment(OrderId, Name, previewImage, shipmentAddress, trackMode);
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
+
+
+
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -80,7 +135,7 @@ const ResgisterShipment = () => {
       <h3 className="mb-5 md:mb-7 text-xl md:text-2xl">Register Shipment</h3>
       <div className="justify-start text-left border-2 border-black">
         <form
-          onSubmit={handleSubmit(createBranch)}
+          onSubmit={handleSubmit(registerShipment)}
           className="p-5 md:p-20 bg-white rounded shadow-md"
         >
           <div className="mb-4">
@@ -149,7 +204,7 @@ const ResgisterShipment = () => {
               type="text"
               name="Address"
               id="Address"
-              value={Address}
+              value={shipmentAddress}
               onChange={handleAddress}
               className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
             />
@@ -175,7 +230,7 @@ const ResgisterShipment = () => {
               type="submit"
               className="bg-blue-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-blue-700"
             >
-              Update Shipment
+              Register Shipment
             </button>
           </div>
         </form>
