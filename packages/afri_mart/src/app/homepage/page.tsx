@@ -10,18 +10,20 @@ import TrendingProducts from "../cart/components/trendingProducts";
 
 const Homepage = () => {
   const [productTitle, setProductTitle] = useState("AGRICULTURE");
-  const handleFilterClick = (message: string) => {
+  const [enumOption, setEnumOption] = useState(1);
+  const handleFilterClick = (message: string, option: number) => {
     setProductTitle(message);
+    setEnumOption(option)
   };
 
   return (
     <div>
         <HomeSearch />
+        <SelectOption onClickAction={handleFilterClick} />
         <div className='flex space-x-24 xlg:space-x-0 mmx:gap-[30px] smx:space-x-0 lmx:space-x-0 justify-center md:px-10 lg:px-20'>
         <Sidefilter onClickAction={handleFilterClick} />
-        <Filterdisplay title={productTitle} />
+        <Filterdisplay title={productTitle} enumoption={enumOption} />
       </div>
-      <SelectOption onClickAction={handleFilterClick} />
         <TrendingProducts />
       <OurPartners />
     </div>

@@ -1,9 +1,9 @@
 import { useState } from "react";
 interface ClickProps {
-    onClickAction: (message: string) => void;
+    onClickAction: (message: string, enumOption : number) => void;
   }
 
-const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
+const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
     const [isAgric, setIsAgric] = useState(true);
     const [isCraft, setIsCraft] = useState(false);
     const [isFashion, setIsFashion] = useState(false);
@@ -15,7 +15,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const clickedElementId = (event.target as HTMLDivElement).id;
     if(clickedElementId == "Agric"){
-        onClickAction('AGRICULTURE')
+        onClickAction('AGRICULTURE', 1)
         setIsAgric(true)
         setIsCraft(false)
         setIsFashion(false)
@@ -25,7 +25,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "craft"){
-        onClickAction('CRAFT AND ART')
+        onClickAction('CRAFT AND ART', 4)
         setIsCraft(true)
         setIsAgric(false)
         setIsFashion(false)
@@ -35,7 +35,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "fashion"){
-        onClickAction('FASHION')
+        onClickAction('FASHION', 3)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(true)
@@ -44,18 +44,8 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
         setIsDigital(false)
         setIsPhysical(false)
     }
-    if(clickedElementId == "artifacts"){
-        onClickAction('ARTIFACTS')
-        setIsCraft(false)
-        setIsAgric(false)
-        setIsFashion(false)
-        setIsArtifacts(true)
-        setIsTextile(false)
-        setIsDigital(false)
-        setIsPhysical(false)
-    }
     if(clickedElementId == "textiles"){
-        onClickAction('TEXTILES AND FABRICS')
+        onClickAction('TEXTILES AND FABRICS', 2)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
@@ -65,7 +55,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "digital"){
-        onClickAction('DIGITAL ARTS')
+        onClickAction('DIGITAL ARTS', 5)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
@@ -75,7 +65,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "physical"){
-        onClickAction('PHYSICAL ARTS')
+        onClickAction('PHYSICAL ARTS', 6)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
@@ -91,7 +81,6 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction }) => {
         <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div>
         <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>CRAFT AND ART</div>
         <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="fashion" onClick={handleClick} style={{color: isFashion ? 'grey' : 'black'}}>FASHION</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="artifacts" onClick={handleClick} style={{color: isArtifacts ? 'grey' : 'black'}}>ARTIFACTS</div>
         <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>TEXTILES AND FABRICS</div>
         <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="digital" onClick={handleClick} style={{color: isDigital ? 'grey' : 'black'}}>DIGITAL ARTS</div>
         <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="physical" onClick={handleClick} style={{color: isPhysical ? 'grey' : 'black'}}>PHYSICAL ARTS</div>
