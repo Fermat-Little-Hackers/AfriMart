@@ -5,7 +5,7 @@ use super::order_status::OrderStatus;
 trait ISupplyChain<TContractState> {
 	fn whitelist_account(ref self: TContractState, address: ContractAddress);
 	fn is_whitelisted(self: @TContractState, address: ContractAddress) -> bool;
-	fn create_shipment(ref self: TContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252);
+	fn create_shipment(ref self: TContractState, order_id: u256, _name: felt252, cid1: felt252, cid2: felt252, address: felt252, trackingMode: felt252);
 	fn update_shipment(ref self: TContractState, order_id: u256, next_location: felt252, new_status: OrderStatus);
 	fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
 
@@ -47,6 +47,8 @@ use super::ISupplyChain;
 	struct ShipmentDetails {
 		order_id: u256,
 		name: felt252,
+		cid1: felt252,
+		cid2: felt252,
 		address: felt252,
 		status: OrderStatus,
 		created_by: ContractAddress,
@@ -95,7 +97,7 @@ use super::ISupplyChain;
 	impl ISupplyChainImpl of ISupplyChain<ContractState>{
 		fn whitelist_account(ref self: ContractState, address: ContractAddress) {
       let caller = get_caller_address();
-			assert(self.is_admin(caller) == true, 'NOT ADMIN');
+			assert(self.is_Admin.read(caller) == true, 'NOT ADMIN');
 			self.is_whitelisted.write(address, true);
 			let address_factory = self.factory_address.read();
 			let factory_dispatcher = IFactoryDispatcher {contract_address : address_factory };
@@ -111,12 +113,14 @@ use super::ISupplyChain;
 			self.is_Admin.read(address) 
 		}
 
-		fn create_shipment(ref self: ContractState, order_id: u256, _name: felt252, picture: felt252, address: felt252, trackingMode: felt252){
-      let caller = get_caller_address();
-			assert(self.is_whitelisted(caller), 'Caller not whitelisted');
+		fn create_shipment(ref self: ContractState, order_id: u256, _name: felt252, cid1: felt252, cid2:felt252, address: felt252, trackingMode: felt252){
+      		let caller = get_caller_address();
+			assert(self.is_whitelisted.read(caller), 'Caller not whitelisted');
 			let newShipment = ShipmentDetails {
         		order_id,
 				name: _name,
+				cid1,
+				cid2,
 				address,
 				status: OrderStatus::Processing,
         		created_by: caller,
@@ -134,7 +138,7 @@ use super::ISupplyChain;
 
 		fn update_shipment(ref self: ContractState, order_id: u256, next_location: felt252, new_status: OrderStatus) {
 			let caller = get_caller_address();
-			assert(self.is_whitelisted(caller), 'Caller not a STAFF');
+			assert(self.is_whitelisted.read(caller), 'Caller not a STAFF');
 			let mut this_shipment = self.order_log.read(order_id);
 			let address = this_shipment.address;
 			this_shipment.status = new_status;

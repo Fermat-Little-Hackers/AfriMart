@@ -19,16 +19,6 @@ const TrackShipment = () => {
   const [curLocation, setCurrentLocation] = useState("");
   const [next, setNext] = useState("");
 
-  const onboardDirector: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-  };
-
-  // function hexToReadableText(hexString : any) {
-  //   const bytes = Buffer.from(hexString, 'hex');
-  //   const text = new TextDecoder('utf-8').decode(bytes);
-  //   return text;
-  // }
-
   function hexToReadableText(hexString: any): string {
     const bytes = Buffer.from(hexString, "hex");
     const text = new TextDecoder("utf-8").decode(bytes);
