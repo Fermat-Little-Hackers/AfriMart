@@ -103,7 +103,7 @@ trait IRating <TContractState>{
 
     fn review_user(ref self: TContractState, order_id: u256, rating: u32, review: felt252, extra_info_url: felt252);
 
-    fn get_product_review(self: @TContractState, product_id: u256) -> Array<felt252>;
+    fn get_product_review(self: @TContractState, product_id: u256) -> felt252;
 
     fn get_user_review(self: @TContractState, user_address: ContractAddress) -> Array<felt252>;
     
@@ -113,15 +113,15 @@ trait IRating <TContractState>{
 
     fn get_user_comments(self: @TContractState, user_address: ContractAddress) -> Array<felt252> ;
 
-    fn get_product_comments(self: @TContractState, product_id: u256) -> Array<felt252> ;
+    fn get_product_comments(self: @TContractState, product_id: u256) -> felt252 ;
 
     fn get_user_reviewers(self: @TContractState, user_address: ContractAddress) -> Array<ContractAddress>;
 
-    fn get_product_reviewers(self: @TContractState, product_id: u256) -> Array<ContractAddress>;
+    fn get_product_reviewers(self: @TContractState, product_id: u256) -> ContractAddress;
 
     fn get_user_extra_info_url(self: @TContractState, user_address: ContractAddress) -> Array<felt252>;
 
-    fn get_product_extra_info_url(self: @TContractState, product_id: u256) -> Array<felt252> ;
+    fn get_product_extra_info_url(self: @TContractState, product_id: u256) -> felt252 ;
 
 }
 
@@ -192,8 +192,18 @@ mod Rating {
     #[storage]
     struct Storage {
         marketplace_contract: ContractAddress,
-        product_review: LegacyMap<u256, ProductReview>,
-        user_review: LegacyMap<ContractAddress, UserReview>,
+
+        product_rating: LegacyMap<u256, u32>,
+        product_review: LegacyMap<u256, felt252>,
+        product_comments: LegacyMap<u256, felt252>,
+        product_extra_info_url: LegacyMap<u256, felt252>,
+        product_reviewer: LegacyMap<u256, ContractAddress>,
+        
+        user_total_rating: LegacyMap<ContractAddress, u32>,
+        user_reviews: LegacyMap<ContractAddress, List<felt252>>,
+        user_comments: LegacyMap<ContractAddress, List<felt252>>,
+        user_extra_info_url: LegacyMap<ContractAddress, List<felt252>>,
+        user_reviewers: LegacyMap<ContractAddress, List<ContractAddress>>,
     }
 
     #[constructor]
@@ -206,13 +216,13 @@ mod Rating {
     impl RatingImpl of IRating<ContractState> {
 
         fn get_user_rating(self: @ContractState, user_address: ContractAddress) -> u32 {
-            let user_review = self.user_review.read(user_address);
-            user_review.total_rating / user_review.reviewers.len()
+            let user_reviewers_len = self.user_reviewers.read(user_address).len();
+            let user_total_rating = self.user_total_rating.read(user_address);
+            user_total_rating / user_reviewers_len
         }
 
         fn get_product_rating(self: @ContractState, product_id: u256) -> u32 {
-            let product_review = self.product_review.read(product_id);
-            product_review.total_rating / product_review.reviewers.len()
+            self.product_rating.read(product_id)
         }
         
         fn review_product(ref self: ContractState, order_id: u256, rating: u32, review: felt252, extra_info_url: felt252) {
@@ -221,11 +231,10 @@ mod Rating {
             let market_place_contract = self.marketplace_contract.read();
             let order = IAftimartDispatcher { contract_address: market_place_contract }.getOrderDetails(order_id);
             assert(order.buyer == caller_address, 'Not a valid buyer');
-            let mut product = self.product_review.read(order.itemID);
-            product.total_rating = product.total_rating + rating;
-            product.review.append(review);
-            product.extra_info_url.append(extra_info_url);
-            product.reviewers.append(caller_address);
+            self.product_rating.write(order.itemID, rating);
+            self.product_review.write(order.itemID, review);
+            self.product_extra_info_url.write(order.itemID, extra_info_url);
+            self.product_reviewer.write(order.itemID, caller_address);
             self.emit(ProductReviewed {
                 product_id: order.itemID, 
                 reviewed_by: caller_address, 
@@ -242,11 +251,13 @@ mod Rating {
             let order = IAftimartDispatcher { contract_address: market_place_contract }.getOrderDetails(order_id);
             let item = IAftimartDispatcher { contract_address: market_place_contract }.getProductDetails(order.itemID);
             assert(order.buyer == caller_address, 'Not a valid buyer');
-            let mut user = self.user_review.read(item.seller);
-            user.total_rating =  user.total_rating + rating;
-            user.review.append(review);
-            user.extra_info_url.append(extra_info_url);
-            user.reviewers.append(caller_address);
+            self.user_total_rating.write(item.seller, self.user_total_rating.read(item.seller) + rating);
+            let mut rev = self.user_reviews.read(item.seller);
+            rev.append(review);
+            let mut xtrainfo = self.user_extra_info_url.read(item.seller);
+            xtrainfo.append(extra_info_url);
+            let mut revrs = self.user_reviewers.read(item.seller);
+            revrs.append(caller_address);
             self.emit(UserReviewed {
                 user_address: item.seller, 
                 reviewed_by: caller_address, 
@@ -256,12 +267,12 @@ mod Rating {
             });
         }
 
-        fn get_product_review(self: @ContractState, product_id: u256) -> Array<felt252> {
-            self.product_review.read(product_id).review.array()
+        fn get_product_review(self: @ContractState, product_id: u256) -> felt252 {
+            self.product_review.read(product_id)
         }
 
         fn get_user_review(self: @ContractState, user_address: ContractAddress) -> Array<felt252> {
-            self.user_review.read(user_address).review.array()
+            self.user_reviews.read(user_address).array()
         }
         
         fn comment_on_product(ref self: ContractState, order_id: u256, comment: felt252) {
@@ -269,8 +280,7 @@ mod Rating {
             let market_place_contract = self.marketplace_contract.read();
             let order = IAftimartDispatcher { contract_address: market_place_contract }.getOrderDetails(order_id);
             assert(order.buyer == caller_address, 'Not a valid buyer');
-            let mut product = self.product_review.read(order.itemID);
-            product.comments.append(comment);
+            self.product_comments.write(order.itemID, comment);
         }
 
         fn comment_on_user(ref self: ContractState, order_id: u256, comment: felt252) {
@@ -279,32 +289,32 @@ mod Rating {
             let order = IAftimartDispatcher { contract_address: market_place_contract }.getOrderDetails(order_id);
             let item = IAftimartDispatcher { contract_address: market_place_contract }.getProductDetails(order.itemID);
             assert(order.buyer == caller_address, 'Not a valid buyer');
-            let mut user = self.user_review.read(item.seller);
-            user.comments.append(comment);
+            let mut user_comments = self.user_comments.read(item.seller);
+            user_comments.append(comment);
         }
 
         fn get_user_comments(self: @ContractState, user_address: ContractAddress) -> Array<felt252> {
-            self.user_review.read(user_address).comments.array()
+            self.user_comments.read(user_address).array()
         }
 
-        fn get_product_comments(self: @ContractState, product_id: u256) -> Array<felt252> {
-            self.product_review.read(product_id).comments.array()
+        fn get_product_comments(self: @ContractState, product_id: u256) -> felt252 {
+            self.product_comments.read(product_id)
         }
 
         fn get_user_reviewers(self: @ContractState, user_address: ContractAddress) -> Array<ContractAddress> {
-            self.user_review.read(user_address).reviewers.array()
+            self.user_reviewers.read(user_address).array()
         }
 
-        fn get_product_reviewers(self: @ContractState, product_id: u256) -> Array<ContractAddress> {
-            self.product_review.read(product_id).reviewers.array()
+        fn get_product_reviewers(self: @ContractState, product_id: u256) -> ContractAddress {
+            self.product_reviewer.read(product_id)
         }
 
         fn get_user_extra_info_url(self: @ContractState, user_address: ContractAddress) -> Array<felt252> {
-            self.user_review.read(user_address).extra_info_url.array()
+            self.user_extra_info_url.read(user_address).array()
         }
 
-        fn get_product_extra_info_url(self: @ContractState, product_id: u256) -> Array<felt252> {
-            self.product_review.read(product_id).extra_info_url.array()
+        fn get_product_extra_info_url(self: @ContractState, product_id: u256) -> felt252 {
+            self.product_extra_info_url.read(product_id)
         }
 
     }
