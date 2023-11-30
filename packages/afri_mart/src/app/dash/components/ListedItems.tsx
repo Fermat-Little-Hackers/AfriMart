@@ -75,7 +75,8 @@ useEffect(() => {
   
   
 
-  return    ( <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">   
+  return    ( <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">  
+        {/* <div>OMOHHH NOW OO</div>  */}
       {allProductArray?.length == 0 ? <div className="text-center">No item Listed</div> : allProductArray.map((item,index) => {             
        let productname =  hexToReadableText(item.name.toString(16)) 
        let productprice = Number(item.price)/1e18

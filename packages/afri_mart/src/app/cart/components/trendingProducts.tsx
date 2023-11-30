@@ -16,7 +16,8 @@ const TrendingProducts = () => {
   const getProduct = async() => {
     const provider = new Provider({
       rpc: {
-        nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+        // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+        nodeUrl: "https://rpc.starknet-testnet.lava.build"
       }
     })
       try {
