@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
 import { useRegisteredContext } from '../../context/registeredContext';
+import main from '../../../utils/upload.mjs'
 
 interface FormData {
     profilePicture: FileList | null;
@@ -31,9 +32,6 @@ const ProfileForm: React.FC = () => {
 }
 
 
-
-
-
 const FormField = () => {
     const [submittedData, setSubmittedData] = useState<FormData | null>(null);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -42,6 +40,7 @@ const FormField = () => {
     // const [waitText, setWaitText] = useState(`Confirm you intend to make a purchase ${itemName} worth $${price} from AfriMart`);
     const [imageSrc, setImageSrc] = useState('/image/wait.svg');
     const [isDisabled, setIsDisabled] = useState(false);
+    const [imageblob, setImageBlob] = useState<File | undefined >()
 
     const { register, handleSubmit, setValue, formState: { errors }  } = useForm<FormData>();
 
@@ -58,12 +57,11 @@ const FormField = () => {
         // setWaitText( 'Confirm you intend to make a purchase wort $650 from AfriMart');
     }
 
-    const onSubmit: SubmitHandler<FormData> = (data) => {
+    const onSubmit: SubmitHandler<FormData> = async (data) => {
         // Handle the form submission logic (e.g., send data to server)
-        setSubmittedData(data);
-        console.log('submitted');
-        console.log(previewImage);
-        console.log(name);
+        // setSubmittedData(data);
+        let ipfsDetails = await main(imageblob,name,name)
+        console.log('Returned ipfs hash after upload',ipfsDetails);
     };
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,9 +74,7 @@ const FormField = () => {
             setPreviewImage(reader.result as string);
         };
         reader.readAsDataURL(file);
-
-        // Update form value for validation
-        setValue('profilePicture', event.target.files);
+        setImageBlob(file)
         }
     };
 
