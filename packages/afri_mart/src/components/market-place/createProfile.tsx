@@ -4,6 +4,10 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import Image from 'next/image';
 import { useRegisteredContext } from '../../context/registeredContext';
 import main from '../../../utils/upload.mjs'
+import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
+import { Contract, Provider, constants } from 'starknet'
+import { MarketPlaceAddr } from '../addresses';
+import marketplaceAbi from "@/ABI/marketPlace";
 
 interface FormData {
     profilePicture: FileList | null;
@@ -36,6 +40,10 @@ const FormField = () => {
     const [submittedData, setSubmittedData] = useState<FormData | null>(null);
     const [previewImage, setPreviewImage] = useState<string | null>(null);
     const [name, setName] = useState<string | null>(null);
+    const [region, setRegion] = useState<string | null>(null);
+    const [country, setCountry] = useState<string | null>(null);
+    const [firstIpfshash, setFirstipfshash] = useState<string | null>(null);
+    const [secondIpfshash, setSecondipfshash] = useState<string | null>(null);
     const { sharedState, setSharedState } = useRegisteredContext();
     // const [waitText, setWaitText] = useState(`Confirm you intend to make a purchase ${itemName} worth $${price} from AfriMart`);
     const [imageSrc, setImageSrc] = useState('/image/wait.svg');
@@ -57,11 +65,21 @@ const FormField = () => {
         // setWaitText( 'Confirm you intend to make a purchase wort $650 from AfriMart');
     }
 
-    const onSubmit: SubmitHandler<FormData> = async (data) => {
+    const handleSubmission = async (e: { preventDefault: () => void; }) => {
+      e.preventDefault()
         // Handle the form submission logic (e.g., send data to server)
         // setSubmittedData(data);
         let ipfsDetails = await main(imageblob,name,name)
-        console.log('Returned ipfs hash after upload',ipfsDetails);
+        let length = (ipfsDetails?.ipnft).length; 
+        let halfLength = Math.floor(length / 2)
+        
+        let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
+        let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
+        // setFirstipfshash(firstHalf)
+        // setSecondipfshash(secondhalf)
+        console.log('FIRST HALF', firstHalf);
+        console.log('second HALF', secondhalf);
+        create(firstHalf,secondhalf);
     };
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,9 +102,31 @@ const FormField = () => {
         console.log(event.target.value);
     }
 
+    const handleCountryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setCountry(event.target.value);
+      // console.log('name changed');
+      console.log(event.target.value);
+  }
+  const handleRegionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRegion(event.target.value);
+    console.log(event.target.value);
+}
+    const create = async (firsthalf : string, secondHalf : string) => {
+      try {
+      const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
+      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), connection?.account);
+      await contract.createProfile(name,country,region,firsthalf,secondHalf);
+      alert("Profile created")
+      setSharedState(false);
+      setIsDisabled(false);
+      } catch (error : any) {
+        console.log(error.message)
+      }
+  }
+
     return (
         <div className="mt-5 md:mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-4">
           <div>
             <label htmlFor="profilePicture" className="block text-sm font-medium leading-6 text-gray-900">
               Profile Picture
@@ -132,11 +172,44 @@ const FormField = () => {
               />
             </div>
           </div>
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+              Region
+            </label>
+            <div className="mt-2">
+              <input
+                id="region"
+                name="region"
+                type="text"
+                onChange={handleRegionChange}
+                autoComplete="region"
+                required
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+              Country
+            </label>
+            <div className="mt-2">
+              <input
+                id="country"
+                name="country"
+                type="text"
+                onChange={handleCountryChange}
+                autoComplete="name"
+                required
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
 
           <div className='flex flex-row gap-5 items-center justify-center'>
             <button
               type="submit"
               className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={handleSubmission}
             >
               Create Profile
             </button>

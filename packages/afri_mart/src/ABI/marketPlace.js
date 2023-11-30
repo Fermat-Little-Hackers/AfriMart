@@ -79,7 +79,11 @@ const marketPlaceAbi = [
         "type": "core::felt252"
       },
       {
-        "name": "imageUri",
+        "name": "imageUri1",
+        "type": "core::felt252"
+      },
+      {
+        "name": "imageUri2",
         "type": "core::felt252"
       },
       {
@@ -133,7 +137,11 @@ const marketPlaceAbi = [
         "type": "core::felt252"
       },
       {
-        "name": "profileImg",
+        "name": "profileImg1",
+        "type": "core::felt252"
+      },
+      {
+        "name": "profileImg2",
         "type": "core::felt252"
       },
       {
@@ -307,7 +315,11 @@ const marketPlaceAbi = [
             "type": "core::felt252"
           },
           {
-            "name": "profileImg",
+            "name": "profileImg1",
+            "type": "core::felt252"
+          },
+          {
+            "name": "profileImg2",
             "type": "core::felt252"
           }
         ],
@@ -327,7 +339,11 @@ const marketPlaceAbi = [
             "type": "core::felt252"
           },
           {
-            "name": "imageUri",
+            "name": "imageUri1",
+            "type": "core::felt252"
+          },
+          {
+            "name": "imageUri2",
             "type": "core::felt252"
           },
           {
@@ -363,7 +379,11 @@ const marketPlaceAbi = [
             "type": "core::felt252"
           },
           {
-            "name": "imageUri",
+            "name": "imageUri1",
+            "type": "core::felt252"
+          },
+          {
+            "name": "imageUri2",
             "type": "core::felt252"
           },
           {
@@ -736,23 +756,7 @@ const marketPlaceAbi = [
         ],
         "outputs": [
           {
-            "type": "core::array::Array::<core::integer::u256>"
-          }
-        ],
-        "state_mutability": "view"
-      },
-      {
-        "type": "function",
-        "name": "getPendingDelivery",
-        "inputs": [
-          {
-            "name": "user",
-            "type": "core::starknet::contract_address::ContractAddress"
-          }
-        ],
-        "outputs": [
-          {
-            "type": "core::array::Array::<core::integer::u256>"
+            "type": "(core::array::Array::<core::integer::u256>, core::array::Array::<core::integer::u256>)"
           }
         ],
         "state_mutability": "view"
