@@ -33,16 +33,16 @@ const DeployBranch = () => {
 
   return (
     <div className="">
-      <h3 className="mb-5 md:mb-7 text-xl md:text-2xl">Create new branch</h3>
-      <div className="justify-start text-left border-2 border-black">
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl ">Create a new branch</h3>
+      <div className="justify-start text-left ">
         <form
           onSubmit={createBranch}
-          className="p-5 md:p-20 bg-white rounded shadow-md"
+          className=""
         >
           <div className="mb-4">
             <label
               htmlFor="companyId"
-              className="block text-gray-600 text-sm font-semibold mb-2"
+              className="block text-black text-sm font-semibold mb-2"
             >
               Company ID
             </label>
@@ -52,13 +52,13 @@ const DeployBranch = () => {
               id="companyId"
               value={companyId}
               onChange={handleCompanyId}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent rounded-md ring-1 ring-[var(--terracota)] focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
             <label
               htmlFor="adminId"
-              className="block text-gray-600 text-sm font-semibold mb-2"
+              className="block text-black text-sm font-semibold mb-2"
             >
               Admin ID
             </label>
@@ -68,13 +68,13 @@ const DeployBranch = () => {
               id="adminId"
               value={adminId}
               onChange={handleAdminId}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent rounded-md ring-1 ring-[var(--terracota)] focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
             <label
               htmlFor="city"
-              className="block text-gray-600 text-sm font-semibold mb-2"
+              className="block text-black text-sm font-semibold mb-2"
             >
               City
             </label>
@@ -84,13 +84,13 @@ const DeployBranch = () => {
               id="city"
               value={city}
               onChange={handleCity}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent rounded-md ring-1 ring-[var(--terracota)] focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
             <label
               htmlFor="state"
-              className="block text-gray-600 text-sm font-semibold mb-2"
+              className="block text-black bg-transparent text-sm font-semibold mb-2"
             >
               State
             </label>
@@ -100,13 +100,13 @@ const DeployBranch = () => {
               id="state"
               value={state}
               onChange={handleState}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent rounded-md ring-1 ring-[var(--terracota)] focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
             <label
               htmlFor="country"
-              className="block text-gray-600 text-sm font-semibold mb-2"
+              className="block text-black text-sm font-semibold mb-2"
             >
               Country
             </label>
@@ -116,7 +116,7 @@ const DeployBranch = () => {
               id="country"
               value={country}
               onChange={handleCountry}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent rounded-md ring-1 ring-[var(--terracota)] focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { set } from "react-hook-form";
+import clsx from 'clsx';
 
 interface ClickProps {
   onClickAction: (massage: string) => void;
@@ -46,11 +47,13 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
     }
   };
 
+  const commonstyle = "w-[200px] cursor-pointer h-full p-2 bg-[var(--sand)] rounded-lg smx:hidden lmx:hidden ";
+
   return (
-    <div className="border-2 border-black w-[300px] mt-6 smx:hidden lmx:hidden ">
-      <div>
+    <div className="mt-12">
+    <div>
         <div
-          className="my-[41px] mx-auto w-[150px] hover:cursor-pointer"
+          className={clsx(commonstyle,)}
           id="allPurchases"
           onClick={handleClick}
           style={{ color: isAllPurchases ? "grey" : "black" }}
@@ -58,8 +61,9 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
           All Purchases
         </div>
 
-        <div
-          className="my-[41px] mx-auto w-[150px] hover:cursor-pointer"
+        
+    <div 
+          className={clsx(commonstyle)}
           id="listedItems"
           onClick={handleClick}
           style={{ color: isListedItem ? "grey" : "black" }}
@@ -68,7 +72,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
         </div>
 
         <div
-          className="my-[41px] mx-auto w-[150px] hover:cursor-pointer"
+          className={clsx(commonstyle)}
           id="pendingDelivery"
           onClick={handleClick}
           style={{ color: isPendingDelivery ? "grey" : "black" }}
@@ -77,7 +81,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
         </div>
 
         <div
-          className="my-[41px] mx-auto w-[150px] hover:cursor-pointer"
+          className={clsx(commonstyle)}
           id="soldItems"
           onClick={handleClick}
           style={{ color: isSoldItem ? "grey" : "black" }}

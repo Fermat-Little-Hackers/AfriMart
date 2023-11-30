@@ -53,11 +53,11 @@ const UserDetails = () => {
     connectToStarknet()
   }, [])  
   return (
-    <div className="flex mt-20 smx:mt-10 border-2 border-black w-[300px] smx:w-[100%] smx:mx-auto p-4">
-      <div className="rounded-full w-20  h-20 border-solid border-2 border-black mr-4"></div>
+    <div className="flex shadow-lg rounded-lg ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 gap-4">
+      <div className="rounded-full ring-1 ring-red-300 w-12 h-12 border-solid bg-white"></div>
       <div className=" float-right">
-        <div>Kehinde Paul</div>
-        <div>0x684864bhfg747449jtk</div>
+        <div className="font-bold text-lg">Kehinde Paul</div>
+        <div>0x684864bhfg747449jk</div>
       </div>
     </div>
   );
