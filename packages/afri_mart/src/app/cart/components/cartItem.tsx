@@ -11,9 +11,11 @@ interface MyProps {
 }
 
 const CartItem: React.FC<MyProps> =  ({ProductId, amount}) => {
-  const [price, setPrice] = useState<any>();
+  const [price, setPrice] = useState<Number>();
   const [imgUri, setImgUri] = useState<any>();
   const [name, setName] = useState<any>();
+
+  console.log(`amounttt::`, amount)
 
   const getProduct = async() => {
     const provider = new Provider({
@@ -27,7 +29,7 @@ const CartItem: React.FC<MyProps> =  ({ProductId, amount}) => {
       let eth = 1000000000000000000;
         setName(hexToReadableText(details.name.toString(16)))
         setImgUri(details.imageUri.toString(16));
-        setPrice(Number(BigInt(details.price)) / eth);
+        setPrice(Number(details.price) / eth);
       } catch (error : any) {      
         console.log(error.message);
       }
@@ -44,6 +46,17 @@ useEffect(() => {
 }, [ProductId])
 
 
+function formatDecimalTo5Places(inputNumber: any) {
+  // Convert the input number to a fixed string with 5 decimal places
+  const formattedNumber = Number(inputNumber).toFixed(5);
+
+  // Convert the formatted string back to a number if needed
+  const result = Number(formattedNumber);
+
+  return result;
+}
+
+
   return (
       <div className='flex flex-row bg-[var(--charcoal)] rounded-xl text-[var(--sand)] justify-between w-[100%] border-2 border-black p-4 gap-2 md:gap-0'>
         <div className='border-2 bg-[var(--sand)] border-black w-[4.5rem] md:h-[5rem]'>
@@ -51,10 +64,10 @@ useEffect(() => {
         </div>
         <div className='flex flex-col w-[35%] md:w-[50%] gap-1'>
             <div><p className="md:text-xl text-sm font-bold">{name ? name : " loading.... "}</p></div>
-            <div> <p className='text-sm'>Qty: {amount}</p> </div>
+            <div> <p className='text-sm'>Qty: {amount ? Number(amount) : '0'}</p> </div>
         </div>
         <div className="flex items-center justify-center">
-            <p className="md:text-xl text-sm">$150</p>
+            <p className="md:text-xl text-sm">{price ? formatDecimalTo5Places((Number(price)) * Number(amount)) : '0.00'} Eth</p>
         </div>
 
         <div className="flex items-center justify-center">

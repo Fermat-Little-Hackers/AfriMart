@@ -645,7 +645,7 @@ mod afrimart {
         }
 
         fn getCartValue(self: @ContractState, user: ContractAddress) -> u256 {
-            self.cartTotalPrice.read(user)
+            return self.cartTotalPrice.read(user);
         }
 
         fn listNft(ref self: ContractState, nftContract: ContractAddress, tokenId: u256, data: Span<felt252>, price: u256) {

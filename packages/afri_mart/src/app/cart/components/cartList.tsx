@@ -58,7 +58,7 @@ useEffect(() => {
     <div className='bg-white-200 shadow-lg ring-1 ring-orange-400 bg-art-bg rounded-lg h-fit md:w-[65%] flex flex-col gap-3 md:gap-5 md:p-10 p-3'>
       {cartDetails?.map((cart, index) => (
         <Link href={`/Product/${cart.itemID}`} key={index}>
-          <CartItem ProductId={1} amount={1} />
+          <CartItem ProductId={cart.itemID} amount={cart.amount} />
         </Link>
       ))}
   </div>

@@ -233,7 +233,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
         </div>
         {/* Popup */}
         {sharedState && (
-            <ConfirmPurchasePopUp itemName={` of ${name}`} price={price} id={itemId} amount={count} />
+            <ConfirmPurchasePopUp itemName={` of ${name}`} price={price} id={itemId} amount={count} isCart={false} />
         )}
     </div>
   )
