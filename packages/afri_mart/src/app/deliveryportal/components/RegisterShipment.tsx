@@ -133,7 +133,7 @@ const ResgisterShipment = () => {
   return (
     <div className="">
       <h3 className="mb-5 md:mb-7 text-xl md:text-2xl">Register Shipment</h3>
-      <div className="justify-start text-left border-2 border-black">
+      <div className="justify-start text-left ">
         <form
           onSubmit={handleSubmit(registerShipment)}
           className="p-5 md:p-20 bg-white rounded shadow-md"
@@ -141,7 +141,7 @@ const ResgisterShipment = () => {
           <div className="mb-4">
             <label
               htmlFor="OrderId"
-              className="block text-gray-600 text-sm font-semibold mb-2"
+              className="block  text-gray-600 text-sm font-semibold mb-2"
             >
               Order ID
             </label>
@@ -151,7 +151,7 @@ const ResgisterShipment = () => {
               id="OrderId"
               value={OrderId}
               onChange={handleOrderId}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -167,7 +167,7 @@ const ResgisterShipment = () => {
               id="Name"
               value={Name}
               onChange={handleName}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="flex flex-col md:flex-row">
@@ -206,7 +206,7 @@ const ResgisterShipment = () => {
               id="Address"
               value={shipmentAddress}
               onChange={handleAddress}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -222,7 +222,7 @@ const ResgisterShipment = () => {
               id="trackMode"
               value={trackMode}
               onChange={handletrackMode}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div>

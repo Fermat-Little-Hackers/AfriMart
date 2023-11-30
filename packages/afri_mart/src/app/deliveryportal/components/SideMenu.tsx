@@ -34,9 +34,10 @@ const SideMenu  = () => {
     }
 
     return (
-    <div className={`${textVisible ? 'border-2 border-black' : 'border-0'} md:border-2 md:border-black`}>
+        //TODO:: The style pattern here needs to be simplified
+    <div className={`${textVisible ? ' ' : 'border-0'} `}>
         <div
-            className={`border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center md:hidden cursor-pointer`}
+            className={`border-solid  h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center md:hidden cursor-pointer`}
             onClick={toggleTextVisibility}
         > 
             {textVisible ? <FaTimes /> : <FaBars />}

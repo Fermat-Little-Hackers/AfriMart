@@ -5,11 +5,9 @@ interface PopupProps {
     orderid : number;
     quantity : number;
     amount : number;
-    state : string;
-    country : string;
   }
 
-const Pop : React.FC<PopupProps> = ({ isOpen, onClose, name, orderid, quantity, amount, state, country }) => {
+const Pop : React.FC<PopupProps> = ({ isOpen, onClose, name, orderid, quantity, amount}) => {
     return (
         <>
           {isOpen && (
@@ -26,9 +24,8 @@ const Pop : React.FC<PopupProps> = ({ isOpen, onClose, name, orderid, quantity, 
                         <p>Product Name : {name} </p>
                         <p>Order ID : {orderid} </p> 
                         <p>Quantity : {quantity} </p>
-                        <p>Amount : {amount} </p>
-                        <p>State : {state} </p>
-                        <p>Country : {country} </p>
+                        <p>Amount : {amount}ETH </p>
+                        <button className="border-2 border-black p-2 rounded-md">Confirm Delivery</button>
                         </div>
                 </div>
               </div>

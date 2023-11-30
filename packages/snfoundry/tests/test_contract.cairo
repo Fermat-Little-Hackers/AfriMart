@@ -53,7 +53,6 @@ fn test_setmarketplace_works (){
     assert(!child_address.is_zero(), 'bad_child');
     assert(res == market_contract_address, 'incorrect_market');
      
-
 }
 
 // *************************************************************************

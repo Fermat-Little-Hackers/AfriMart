@@ -8,7 +8,7 @@ interface prop {
 const Content  : React.FC<prop> = ({ title}) => {
   return (
     <div className="border-2 border-black h-[80%] mt-20 smx:mt-4">
-          <div className="w-full smx:w-[100%] mx-auto text-2xl mt-2 ml-36 smx:ml-2">
+          <div className="w-[80%] smx:w-[100%] mx-auto text-2xl mt-2 ml-2 smx:ml-2">
                 <p>
                 {title}
                 </p>                    
