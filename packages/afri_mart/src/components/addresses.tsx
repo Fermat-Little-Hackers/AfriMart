@@ -7,7 +7,7 @@ export const SupplyChainFactoryAddr = () => {
 }
 export const MarketPlaceAddr = () => {
   return (
-    '0x02116bfe76e0e53af2be9b189994545a6bf13db7e3ed65ee9bdf29e93407b95e'
+    '0x05fbdf9a462a6d18c19ffcaf8b16cf46418102bd213906a58628c04719e357c1'
   )
 }
 export const RattingAddr = () => {
