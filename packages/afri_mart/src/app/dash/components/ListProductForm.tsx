@@ -70,19 +70,23 @@ const FormField = () => {
           }
         })
           try {
-        //   const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), account)
-        //   const details = await contract.listProduct(name, description, imageUri1, imageUri2, price, amount, resolveCartegory(findCategoryIndex(selectedOption as string)) );
-            console.log(name)
-            console.log(description)
-            console.log(imageUri1)
-            console.log(imageUri2)
-            console.log(price)
-            console.log(amount)
-            console.log(resolveCartegory(findCategoryIndex(selectedOption as string)))
-          } catch (error : any) {      
-            console.log(error.message);
-          }
-    }
+            let ipfsDetails = await main(imageblob,name,name)
+            let length = (ipfsDetails?.ipnft).length; 
+            let halfLength = Math.floor(length / 2)
+            
+            let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
+            let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
+            console.log('FIRST HALF', firstHalf);
+            console.log('second HALF', secondhalf);
+
+          const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), account)
+          const details = await contract.listProduct(name, description, firstHalf, secondhalf, price, amount, resolveCartegory(findCategoryIndex(selectedOption as string)) );
+            alert("Item Listed Successfully");
+            setSharedState(false);
+        } catch (error : any) {      
+                    console.log(error.message);
+                }
+        }
 
 //   const intervalId = setInterval(getProduct, 3000);
 
