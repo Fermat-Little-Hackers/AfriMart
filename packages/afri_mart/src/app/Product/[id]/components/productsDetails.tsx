@@ -191,9 +191,9 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
             <div className='flex flex-col gap-4 md:p-0'>
                 <h1 className='text-3xl font-semibold'>{name ? name : "loading..."}</h1>
             <div className="mr-10 w-[100%] h-fit md:h-[45%]  md:mt-5">
-                <p>
-                    Anim ipsum adipisicing irure dolor pariatur veniam culpa quis labore deserunt nulla amet proident. Exercitation consectetur deserunt velit velit laboris ad. Ullamco labore veniam laborum mollit occaecat consequat ullamco consectetur. 
-                </p>
+            <p>
+              {description ? description : 'loading description....'}
+            </p>
             </div>
                 <p>{price ? price : '0.00'} Eth</p>
                 <ProductAmountButton />
@@ -224,14 +224,7 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
                     </button>
                 </div>
             </div>
-            <div className="border-2 border-black mr-10 w-[100%] h-fit md:h-[45%] p-4 md:mt-5">
-                <p className='mb-3'>
-                    DESCRIPTION
-                </p>
-                <p>
-                    {description ? description : 'loading description....'} 
-                </p>
-            </div>
+            
         </div>
         {/* Popup */}
         {sharedState && (
