@@ -49,23 +49,6 @@ const DeployBranch = () => {
     connectToStarknet();
   }, []);
 
-  // const getStaffBranch = async () => {
-  //   const provider = new Provider({
-  //     rpc: {
-  //       nodeUrl:
-  //         "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
-  //     },
-  //   });
-
-  //   try {
-  //     const contract = new Contract(contractAbi, SupplyChainFactoryAddr(), provider)
-  //     const branch = await contract.
-  //   }
-  //   catch(error){
-
-  //   }
-  // };
-
   const deployBranch = async () => {
     try {
       const contract = new Contract(
@@ -89,10 +72,6 @@ const DeployBranch = () => {
 
   const handleCountry = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCountry(e.target.value);
-  };
-
-  const createBranch: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
   };
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
