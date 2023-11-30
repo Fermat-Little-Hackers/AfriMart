@@ -28,19 +28,19 @@ function ConnectButtoN() {
       //@ts-ignore
       // console.log(connection.chainId)
       //@ts-ignore
-      if(connection.chainId != 'SN_GOERLI') {
-        try {
-          await window?.starknet?.request({
-            type: "wallet_switchStarknetChain",
-            params: {
-              chainId: "SN_GOERLI"
-            }
-          });
-        }
-        catch(error : any) {
-          console.log(error)
-        }
-      }
+      // if(connection.chainId != 'SN_GOERLI') {
+      //   try {
+      //     await window?.starknet?.request({
+      //       type: "wallet_switchStarknetChain",
+      //       params: {
+      //         chainId: "SN_GOERLI"
+      //       }
+      //     });
+      //   }
+      //   catch(error : any) {
+      //     console.log(error)
+      //   }
+      // }
 }
     connectToStarknet()
   }, [])
