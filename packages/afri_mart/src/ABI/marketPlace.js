@@ -736,7 +736,23 @@ const marketPlaceAbi = [
         ],
         "outputs": [
           {
-            "type": "(core::array::Array::<core::integer::u256>, core::array::Array::<core::integer::u256>)"
+            "type": "core::array::Array::<core::integer::u256>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "getPendingDelivery",
+        "inputs": [
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::array::Array::<core::integer::u256>"
           }
         ],
         "state_mutability": "view"
@@ -782,6 +798,30 @@ const marketPlaceAbi = [
         "inputs": [
           {
             "name": "orderId",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "setSupplyChainFactory",
+        "inputs": [
+          {
+            "name": "supplyChainFactory",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "reEmburse",
+        "inputs": [
+          {
+            "name": "amount",
             "type": "core::integer::u256"
           }
         ],
@@ -1169,5 +1209,4 @@ const marketPlaceAbi = [
     ]
   }
 ]
-
 export default marketPlaceAbi;
