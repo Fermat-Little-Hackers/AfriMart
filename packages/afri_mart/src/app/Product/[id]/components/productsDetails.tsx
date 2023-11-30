@@ -28,7 +28,7 @@ interface MyProps {
     itemId: number;
   }
 
-const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
+const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const { sharedState, setSharedState} = useYourContext();
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
     const [account, setAccount] = useState();
@@ -88,6 +88,11 @@ const ProductsDetails : React.FC<MyProps> = ({ itemId }) => {
             console.log(error.message);
           }
     }
+
+    useEffect(() => {
+      getProduct();
+    }, [itemId])
+    
 
     const intervalId = setInterval(getProduct, 2000);
       

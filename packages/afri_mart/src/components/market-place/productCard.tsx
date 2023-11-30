@@ -36,7 +36,7 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
       setImgUri(details.imageUri.toString(16));
       setPrice(Number(BigInt(details.price)) / eth);
       
-      console.log(`item details`,details);
+      // console.log(`item details`,details);
     } catch (error: any) {
       console.log(error.message);
     }
