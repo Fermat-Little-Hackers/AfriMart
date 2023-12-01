@@ -3,6 +3,7 @@ import { MarketPlaceAddr } from '@/components/addresses';
 import React, { useEffect, useState } from 'react'
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
 import marketplaceAbi from '@/ABI/marketPlace';
+import CartPhoto from './cartPhoto';
 
 
 interface MyProps {
@@ -12,8 +13,7 @@ interface MyProps {
 
 const CartItem: React.FC<MyProps> =  ({ProductId, amount}) => {
   const [price, setPrice] = useState<Number>();
-  const [imgUri1, setImgUri1] = useState<any>();
-  const [imgUri2, setImgUri2] = useState<any>();
+  const [imgUri, setImgUri] = useState<any>();
   const [name, setName] = useState<any>();
 
 
@@ -28,8 +28,7 @@ const CartItem: React.FC<MyProps> =  ({ProductId, amount}) => {
       const details = await contract.getProductDetails(ProductId);
       let eth = 1000000000000000000;
         setName(hexToReadableText(details.name.toString(16)))
-        setImgUri1(details.imageUri1.toString(16));
-        setImgUri2(details.imageUri2.toString(16));
+        setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));
         setPrice(Number(details.price) / eth);
       } catch (error : any) {      
         console.log(error.message);
@@ -60,9 +59,10 @@ function formatDecimalTo5Places(inputNumber: any) {
 
   return (
       <div className='flex flex-row bg-[var(--charcoal)] rounded-xl text-[var(--sand)] justify-between w-[100%] border-2 border-black p-4 gap-2 md:gap-0'>
-        <div className='border-2 bg-[var(--sand)] border-black w-[4.5rem] md:h-[5rem]'>
+        {/* <div className='border-2 bg-[var(--sand)] border-black w-[4.5rem] md:h-[5rem]'>
 
-        </div>
+        </div> */}
+        <CartPhoto uri={imgUri}/>
         <div className='flex flex-col w-[35%] md:w-[50%] gap-1'>
             <div><p className="md:text-xl text-sm font-bold">{name ? name : " loading.... "}</p></div>
             <div> <p className='text-sm'>Qty: {amount ? Number(amount) : '0'}</p> </div>

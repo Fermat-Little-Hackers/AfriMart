@@ -37,7 +37,7 @@ const Dashboard = () => {
           <SideFilter onClickAction={props} />
         </div>
         <SelectCat onClickAction={props} />
-        <div className="w-[100%]">
+        <div className="w-[100%] h-[100%]">
           <Content title={title} />
         </div>
       </div>
