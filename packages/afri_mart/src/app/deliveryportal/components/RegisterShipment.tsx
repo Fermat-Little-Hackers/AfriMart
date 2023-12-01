@@ -121,7 +121,7 @@ const ResgisterShipment = () => {
         SupplyChainContractAddr(),
         account
       );
-      await contract.create_shipment(OrderId, Name, imageHash, shipmentAddress, trackMode);
+      await contract.create_shipment(OrderId, Name, firstHalf, secondhalf, shipmentAddress, trackMode);
     } catch (error: any) {
       console.log(error.message);
     }
