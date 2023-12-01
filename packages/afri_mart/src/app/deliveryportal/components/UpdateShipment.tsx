@@ -179,11 +179,11 @@ const UpdateShipment = () => {
 
   return (
     <div className="">
-      <h3 className="mb-5 md:mb-7 text-xl md:text-2xl">Update Shipment</h3>
-      <div className="justify-start text-left  ">
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Update Shipment</h3>
+      <div className="justify-start text-left">
         <form
           onSubmit={updateShipment}
-          className="  rounded  "
+          className="p-5 md:p-20 rounded w-full"
         >
           <div className="mb-4">
             <label
