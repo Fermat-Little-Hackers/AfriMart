@@ -96,18 +96,24 @@ const TrackAllItem = () => {
   return (
     <div className="">
       <h3 className="mb-7 text-xl md:text-2xl"> Pending Deliveries</h3>
-      <div className="flex items-center border-2 border-black">
+      <table>
+        <thead>
+          <th>Order Id</th>
+          <th>Status</th>
+        </thead>
+      {/* <div className="flex flex-col items-center border-2 border-black"> */}
         {/* <div>{orderId}</div>
         <div>{status}</div> */}
         {allItems?.map((item, index) => {
           return (
-            <div key={index}>
-              <div>{item.OrderID.toString()}</div>
-              {/* <div>{item.status}</div> */}
-            </div>
+            <tr key={index}>
+              <td>{item.OrderID.toString()}</td>
+              <td>{item.status.activeVariant()}</td>
+            </tr>
           );
         })}
-      </div>
+      {/* </div> */}
+      </table>
     </div>
   );
 };
