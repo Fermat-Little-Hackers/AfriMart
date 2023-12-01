@@ -76,14 +76,14 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
     }
   }
     return (
-    <div className="  w-[300px] mmx:w-[200px] mt-20 smx:hidden lmx:hidden">
-       <div className="">
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>CRAFT AND ART</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="fashion" onClick={handleClick} style={{color: isFashion ? 'grey' : 'black'}}>FASHION</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>TEXTILES AND FABRICS</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="digital" onClick={handleClick} style={{color: isDigital ? 'grey' : 'black'}}>DIGITAL ARTS</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="physical" onClick={handleClick} style={{color: isPhysical ? 'grey' : 'black'}}>PHYSICAL ARTS</div>
+    <div className="smx:hidden mt-10 flex shadow-lg rounded-lg cursor-pointer ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 gap-4">
+       <div className="flex flex-col gap-4">
+        <div  id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>Agriculture</div>
+        <div id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>Craft And Arts</div>
+        <div id="fashion" onClick={handleClick} style={{color: isFashion ? 'grey' : 'black'}}>Fashion</div>
+        <div id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>Textiles & Fabrica</div>
+        <div id="digital" onClick={handleClick} style={{color: isDigital ? 'grey' : 'black'}}>Digital Arts</div>
+        <div id="physical" onClick={handleClick} style={{color: isPhysical ? 'grey' : 'black'}}>Physical Arts</div>
        </div>
     </div>
   )

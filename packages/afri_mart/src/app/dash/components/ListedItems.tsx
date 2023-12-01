@@ -80,7 +80,7 @@ useEffect(() => {
 
   
 
-  return    ( <div className="overflow-y-auto scrollbar-thin smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">   
+  return    ( <div className="h-64 overflow-y-auto scrollbar scrollbar-thin smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">   
       {allProductArray?.length == 0 ? <div className="text-center">No item Listed</div> : allProductArray.map((item,index) => {             
        let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
        let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 

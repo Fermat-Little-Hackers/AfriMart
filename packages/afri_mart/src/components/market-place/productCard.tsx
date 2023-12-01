@@ -80,10 +80,10 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
   }
 
   return (
-    <div className="border-2 border-red-100 rounded-lg w-[100%] h-fit md:h-60 p-2 md:p-3">
+    <div className="shadow-lg rounded-lg ring-1 ring-red-100 w-[100%] h-fit md:h-60 ">
       <TrendingPhoto uri={imgUri} />
-      <div className="mt-2 flex flex-col gap-1">
-        <p className=" font-bold">{name? name : 'loading...'}</p>
+      <div className="flex flex-col gap-1 p-4 ">
+        <p className=" font-bold text-[15px] ">{name? (name.length > 12 ? `${name.slice(0, 10)}...` : name) : 'loading...'}</p>
         <p>{price ? price : '0.00'} ETH</p>
         <Stars amount={rating ? rating : 0} />
       </div>
