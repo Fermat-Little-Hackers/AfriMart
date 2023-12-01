@@ -12,6 +12,7 @@ import { ProviderInterface, RpcProvider, provider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
+import { ListProductContextProvider } from '../context/listProductContext';
 // import { ConnectkitProvider } from '../../connectkit';
 
 import PagesLayout from './PagesLayout';
@@ -26,6 +27,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body className={clsx("", inter.className)}>
+        <ListProductContextProvider>
         <SupplyChainContextProvider>
           <RegisteredContextProvider>
             <YourContextProvider>
@@ -35,6 +37,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </YourContextProvider>
           </RegisteredContextProvider>
         </SupplyChainContextProvider>
+        </ListProductContextProvider>
       </body>
     </html>
   );
