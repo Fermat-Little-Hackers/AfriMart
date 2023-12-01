@@ -4,10 +4,14 @@ import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/
 import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
+import { useConnectionContext } from "@/context/connectionContext";
+
 
 const AllPurchases =  ()  => {  
 const [allPurchase, setAllPurchase] = useState<any[]>([])
 const [allProductArray, setAllproductArray] = useState<any[]>([]);
+const [address, setAddress] = useState<string | undefined>('');
+const {ShareAddress, setShareAddress} = useConnectionContext()
 
 
   const getAllpurchase = async () => {
@@ -19,10 +23,11 @@ const [allProductArray, setAllproductArray] = useState<any[]>([]);
 
     try {
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
+      setAddress(connection?.selectedAddress)
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allPurchaseData = await contract.getProductsBoughtByUser(
-        connection?.selectedAddress?.toString(),
-        connection?.selectedAddress?.toString()
+        ShareAddress?.toString(),
+        ShareAddress?.toString()
       );
       setAllPurchase([...allPurchaseData]);
     } catch (error : any) {
@@ -82,7 +87,7 @@ useEffect(() => {
       GetOrder(allPurchase).then((orderidsArray)=>{
         // console.log('order id array collected', orderidsArray)
         GetItem(orderidsArray).then((products)=>{
-          // console.log('products obtained array',products)
+          console.log('products obtained array',products)
           //@ts-ignore
           setAllproductArray(products)
         })
@@ -98,9 +103,11 @@ useEffect(() => {
           let eth = 1000000000000000000;
           let productname =  hexToReadableText(item.name.toString(16)) 
           let productprice = Number(BigInt(item.price)) / eth
-          
+          let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
+          let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
+           let cid = `${firstHash + secondHash}`
          return ( <div key={index} className="w-[20%] space-y-10">          
-         <Puchasecard title={productname} amount={productprice} quantity={0} />
+         <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} />
        </div> )             
     })}
 </div>)

@@ -1,14 +1,20 @@
+import useFetchURI from '../../../../hooks/useFetchURI'
 
 interface purchaseProps {
     title : string,
     amount : number,
     quantity : number
+    uri : string
 }
 
-const Puchasecard : React.FC<purchaseProps> = ({ title, amount, quantity})  => {
+const Puchasecard : React.FC<purchaseProps> = ({ title, amount, quantity, uri})  => {
+  const {data} = useFetchURI(uri)
+  const trimmedUri = data?.image?.substring(7);
   return (
     <div className="w-[500px] mb-8 smx:w-[500%] flex justify-between smx:space-x-2 border-b border-black">
-            <div className="h-[80px] p-4 smx:h-[100%] w-[20%] smx:w-[30%] bg-gray-700"></div>
+            <div className="h-[80px] p-4 smx:h-[100%] w-[20%] smx:w-[30%] ">
+            <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt=""/>
+            </div>
             <div>
                 <p className="smx:text-[15px]">{title}</p>
                 <div className=" smx:text-[12px] flex h-[30px] smx:h-[20px] smx:mb-2 w-[100px] smx:w-[80px] border justify-between items-center px-[10px] smx:p-[5px] border-black rounded-2xl">
