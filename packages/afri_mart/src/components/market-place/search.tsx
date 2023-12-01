@@ -5,27 +5,71 @@ import { useState, useEffect, useCallback } from 'react';
 import {useRegisteredContext} from '../../context/registeredContext'
 import ProfileForm from './createProfile'
 import React from 'react';
+import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
+import marketPlaceAbi from '@/ABI/marketPlace';
+import { MarketPlaceAddr } from '../addresses';
+import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
+//import { useRouter } from 'next/router';
+import { useRouter} from 'next/navigation'
+
 
 const startSearch = () => {
-    
+  
 }
 
 
 
 const Search = () => {
-
+  const router = useRouter();
   const [isRegistered, setIsRegistered] = useState(false);
   const { sharedState, setSharedState } = useRegisteredContext();
+  const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
+  const [account, setAccount] = useState();
+  const [address, setAddress] = useState('');
+  const [isCreated, setIsCreated] = useState<boolean>(false);
+
+  const getUserProfile = async( ) => {
+    const provider = new Provider({
+        rpc: {
+          nodeUrl: "https://rpc.starknet-testnet.lava.build"
+        }
+      })
+      try {
+        const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), provider)
+        const details = await contract.getUserProfile(address);
+        // let eth = 1000000000000000000;
+        console.log(`user`, details.isCreated);
+        setIsCreated(details.isCreated);
+      } catch(error: any) {
+        console.log(error.message);
+      }
+  }
+
+  getUserProfile();
+
+useEffect(() => {
+  const connectToStarknet = async() => {
+    const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+    if(connection && connection.isConnected) {
+      setConnection(connection)
+      setAccount(connection.account)
+      setAddress(connection.selectedAddress)
+    }
+  }
+  connectToStarknet()
+}, [])  
+
+
 
   const handleProfileCheck = () => {
-    !isRegistered ? setSharedState(true) : setSharedState(false);
+
+    !isCreated ? setSharedState(true) : router.push('/dash');
+
   }
 
   const handleStateChange = useCallback(() => {
-
     // logic to handle the state change goes here
     console.log('State changed:', sharedState);
-
     // ROUTE TO THE USER PROFILE PAGE
   }, [sharedState]);
 
