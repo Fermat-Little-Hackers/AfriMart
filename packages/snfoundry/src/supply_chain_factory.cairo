@@ -131,15 +131,18 @@ trait IDispatchFactory<TContractState>{
 
     fn setStaffBranch(ref self: TContractState, staffAddress: ContractAddress) -> bool;
     fn getStaffBranch(self: @TContractState, staffAddress: ContractAddress ) -> ContractAddress;
-}
 
+    fn confirmOwners(self: @TContractState, ownerAddress: ContractAddress) -> bool;
+    fn confirmCompany(self: @TContractState, companyAddress: ContractAddress) -> bool;
+    fn confirmBranchAdmins(self: @TContractState, branchAdminAddress: ContractAddress) -> bool;
+}
 
 #[starknet::contract]
 mod DispatchCompanyFactory {
     use snfoundry::supply_chain_factory::IMarketPlaceDispatcherTrait;
-use core::result::ResultTrait;
-use core::option::OptionTrait;
-use core::serde::Serde;
+    use core::result::ResultTrait;
+    use core::option::OptionTrait;
+    use core::serde::Serde;
     use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher, ItemStatus};
     use starknet::{get_caller_address, get_contract_address, syscalls::deploy_syscall};
     use debug::PrintTrait;
@@ -448,6 +451,16 @@ use core::serde::Serde;
         }
         fn getStaffBranch(self: @ContractState, staffAddress: ContractAddress ) -> ContractAddress {
             self.stafftobranch.read(staffAddress)
+        }
+
+        fn confirmOwners(self: @ContractState, ownerAddress: ContractAddress) -> bool{
+            self.isOwner.read(ownerAddress)
+        }
+        fn confirmCompany(self: @ContractState, companyAddress: ContractAddress) -> bool{
+            self.isDispatchAdmin.read(companyAddress)
+        }
+        fn confirmBranchAdmins(self: @ContractState, branchAdminAddress: ContractAddress) -> bool{
+            self.confirmBranchAdmin.read(branchAdminAddress)
         }
     }
 

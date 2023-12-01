@@ -1,18 +1,65 @@
 import React, { useState, useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Contract, Provider, constants } from "starknet";
+import {
+  type ConnectedStarknetWindowObject,
+  connect,
+  disconnect,
+} from "@argent/get-starknet";
+
+import contractAbi from "../../../ABI/supplyChainFactory.json";
+import { SupplyChainFactoryAddr } from "@/components/addresses";
 
 const DeployBranch = () => {
-  const [companyId, setCompanyId] = useState<any>();
-  const [adminId, setAdminId] = useState<any>();
+  const [connection, setConnection] =
+    useState<ConnectedStarknetWindowObject | null>();
+  const [account, setAccount] = useState();
+  const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
 
-  const handleCompanyId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCompanyId(e.target.value);
-  };
+  useEffect(() => {
+    const connectToStarknet = async () => {
+      const connection = await connect({
+        modalMode: "neverAsk",
+        webWalletUrl: "https://web.argent.xyz",
+      });
 
-  const handleAdminId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAdminId(e.target.value);
+      if (connection && connection.isConnected) {
+        setConnection(connection);
+        setAccount(connection.account);
+        setAddress(connection.selectedAddress);
+      }
+
+      // if (connection?.chainId !== "SN_GOERLI") {
+      //   alert("you need to switch to GOERLI to proceed!");
+      //   try {
+      //     await window?.starknet?.request({
+      //       type: "wallet_switchStarknetChain",
+      //       params: {
+      //         chainId: "SN_GOERLI",
+      //       },
+      //     });
+      //   } catch (error: any) {
+      //     alert(error.message);
+      //   }
+      // }
+    };
+    connectToStarknet();
+  }, []);
+
+  const deployBranch = async () => {
+    try {
+      const contract = new Contract(
+        contractAbi,
+        SupplyChainFactoryAddr(),
+        account
+      );
+      await contract.createBranch(city, state, country);
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
 
   const handleCity = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,50 +74,30 @@ const DeployBranch = () => {
     setCountry(e.target.value);
   };
 
-  const createBranch: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    // Handle the form submission logic (e.g., send data to server)
+    // setSubmittedData(data);
+    deployBranch();
+    console.log("submitted");
+    // console.log(previewImage);
+    // console.log(name);
   };
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>();
 
   return (
     <div className="">
       <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl ">Create a new branch</h3>
       <div className="justify-start text-left ">
         <form
-          onSubmit={createBranch}
-          className=""
+          onSubmit={handleSubmit(onSubmit)}
+          className="p-5 md:p-20 rounded"
         >
-          <div className="mb-4">
-            <label
-              htmlFor="companyId"
-              className="block text-black text-sm font-semibold mb-2"
-            >
-              Company ID
-            </label>
-            <input
-              type="number"
-              name="companyId"
-              id="companyId"
-              value={companyId}
-              onChange={handleCompanyId}
-              className="w-full p-2 bg-transparent rounded-md ring-1 ring-[var(--terracota)] focus:outline-none focus:ring-blue-500"
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="adminId"
-              className="block text-black text-sm font-semibold mb-2"
-            >
-              Admin ID
-            </label>
-            <input
-              type="number"
-              name="adminId"
-              id="adminId"
-              value={adminId}
-              onChange={handleAdminId}
-              className="w-full p-2 bg-transparent rounded-md ring-1 ring-[var(--terracota)] focus:outline-none focus:ring-blue-500"
-            />
-          </div>
           <div className="mb-4">
             <label
               htmlFor="city"

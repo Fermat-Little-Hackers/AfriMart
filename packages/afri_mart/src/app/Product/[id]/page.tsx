@@ -58,7 +58,7 @@ export default function Home() {
         <div>
             <Search />
             <ProductsDetails itemId={Number(id.id)} />
-            <ProductsReviews />
+            <ProductsReviews itemId={Number(id.id)}/>
             <SimilarProducts cartegory={cartegory as string} cartegoryIndex={cartegory2 as number} />
             <OurPartners />
         </div>

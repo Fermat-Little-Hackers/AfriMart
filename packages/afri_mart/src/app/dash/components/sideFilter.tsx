@@ -50,10 +50,11 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
   const commonstyle = "w-[200px] cursor-pointer h-full p-2 bg-[var(--sand)] rounded-lg smx:hidden lmx:hidden ";
 
   return (
-    <div className="mt-12">
-    <div>
+    <div className="mt-12 flex shadow-lg rounded-lg ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 gap-4">
+      <div className="flex flex-col gap-4">
         <div
-          className={clsx(commonstyle,)}
+          // className={clsx(commonstyle,)}
+          className={''}
           id="allPurchases"
           onClick={handleClick}
           style={{ color: isAllPurchases ? "grey" : "black" }}
@@ -61,9 +62,10 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
           All Purchases
         </div>
 
-        
-    <div 
-          className={clsx(commonstyle)}
+
+        <div
+          // className={clsx(commonstyle)}
+          className={''}
           id="listedItems"
           onClick={handleClick}
           style={{ color: isListedItem ? "grey" : "black" }}
@@ -72,7 +74,8 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
         </div>
 
         <div
-          className={clsx(commonstyle)}
+          // className={clsx(commonstyle)}
+          className={''}
           id="pendingDelivery"
           onClick={handleClick}
           style={{ color: isPendingDelivery ? "grey" : "black" }}
@@ -81,7 +84,8 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
         </div>
 
         <div
-          className={clsx(commonstyle)}
+          // className={clsx(commonstyle)}
+          className={''}
           id="soldItems"
           onClick={handleClick}
           style={{ color: isSoldItem ? "grey" : "black" }}

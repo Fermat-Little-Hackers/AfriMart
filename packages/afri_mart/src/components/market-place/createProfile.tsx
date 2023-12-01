@@ -8,6 +8,7 @@ import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/
 import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
+import { useAccountContext } from '@/context/connectionContext';
 
 interface FormData {
     profilePicture: FileList | null;
@@ -49,8 +50,12 @@ const FormField = () => {
     const [imageSrc, setImageSrc] = useState('/image/wait.svg');
     const [isDisabled, setIsDisabled] = useState(false);
     const [imageblob, setImageBlob] = useState<File | undefined >()
+
+
     const [creating, setCreating] = useState(false);
     const { register, handleSubmit, setValue, formState: { errors }  } = useForm<FormData>();
+    const {ShareAccount, setShareAccount} = useAccountContext()
+
 
     const handleProcessPayment = () => {
         setIsDisabled(true);
@@ -116,7 +121,7 @@ const FormField = () => {
     const create = async (firsthalf : string, secondHalf : string) => {
       try {
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), connection?.account);
+      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), ShareAccount);
       await contract.createProfile(name,country,region,firsthalf,secondHalf);
       alert("Profile created")
       setSharedState(false);
@@ -220,7 +225,7 @@ const FormField = () => {
               type="submit"
               className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              List Product
+              Create Profile
             </button>
             }
               <button

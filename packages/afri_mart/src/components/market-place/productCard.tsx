@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from "react";
 import Stars from "./stars";
 import marketplaceAbi from '../../ABI/marketPlace';
-import { MarketPlaceAddr } from '../../components/addresses';
+import { MarketPlaceAddr, RattingAddr } from '../../components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
+import TrendingPhoto from "./trendingPhoto";
+import rattingsContract from '@/ABI/rattingsContract.json';
 
 
 
@@ -15,8 +17,9 @@ interface MyProps {
 const ProductCard: React.FC<MyProps> = ({ productId }) => {
   const [price, setPrice] = useState<any>();
   const [imgUri, setImgUri] = useState<any>();
-  const [imgUri2, setImgUri2] = useState<any>();
+  // const [imgUri2, setImgUri2] = useState<any>();
   const [name, setName] = useState<any>();
+  const [rating, setRating] = useState<number>();
 
   const getProductDetails = async () => {
     const provider = new Provider({
@@ -34,8 +37,10 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
       let eth = 1000000000000000000;
       const details = await contract.getProductDetails(productId);
       setName(hexToReadableText(details.name.toString(16)))
-      setImgUri(details.imageUri1.toString(16));
-      setImgUri2(details.imageUri2.toString(16));
+      setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));
+      
+      // setImgUri2(details.imageUri2.toString(16));
+
       setPrice(Number(BigInt(details.price)) / eth);
       
       // console.log(`item details`,details);
@@ -45,10 +50,27 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
   };
 
 
+  const getProductReview = async() => {
+    const provider = new Provider({
+      rpc: {
+        nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+      }
+    })
+      try {
+          const contract = new Contract(rattingsContract, RattingAddr(), provider);
+          const details = await contract.getProductRatting(productId);
+          setRating(Number(details));
+        // setProducts(details);
+      } catch (error : any) {      
+        console.log(error.message);
+      }
+  }
+
+
 
   useEffect(() => {
     getProductDetails();
-
+    getProductReview();
   }, [productId])
   
   function hexToReadableText(hexString : any) {
@@ -59,11 +81,11 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
 
   return (
     <div className="border-2 border-black w-[100%] h-fit md:h-60 p-2 md:p-3">
-      <div className="border-2 border-black h-[6rem] md:h-[60%] w-[100%] bg-gray-700"></div>
+      <TrendingPhoto uri={imgUri} />
       <div className="mt-2 flex flex-col gap-1">
-        <p>{name? name : 'loading...'}</p>
+        <p className=" font-bold">{name? name : 'loading...'}</p>
         <p>{price ? price : '0.00'} ETH</p>
-        <Stars amount={3.5} />
+        <Stars amount={rating ? rating : 0} />
       </div>
     </div>
   );

@@ -4,10 +4,14 @@ import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/
 import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
+import { useConnectionContext } from "@/context/connectionContext";
+
 
 const SoldItems = () => {
 const [allSold, setAllSold] = useState<any[]>([])
 const [allProductSold, setAllproductSold] = useState<any[]>([]);
+const {ShareAddress, setShareAddress} = useConnectionContext()
+
 
   const getAllsolditem = async () => {
     const provider = new Provider({
@@ -20,7 +24,7 @@ const [allProductSold, setAllproductSold] = useState<any[]>([]);
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allsoldData = await contract.getItemsSold(
-        connection?.selectedAddress?.toString()
+        ShareAddress?.toString()
       );
       setAllSold([...allsoldData]);
     } catch (error : any) {
@@ -97,8 +101,11 @@ useEffect(() => {
        let productname =  hexToReadableText(item.name.toString(16)) 
        let productprice = Number(item.price)/1e18
        let available = Number(item.amountAvailable)
+       let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
+       let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
+        let cid = `${firstHash + secondHash}`
       return  <div key={index} className="w-[20%] space-y-10">
-       <Soldcard title={productname} amount={productprice} quantity={available} />
+       <Soldcard title={productname} amount={productprice} quantity={available} uri={cid}  />
      </div>                
         })}
   </div>;
