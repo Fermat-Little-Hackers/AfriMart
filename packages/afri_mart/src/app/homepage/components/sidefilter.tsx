@@ -76,14 +76,14 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
     }
   }
     return (
-    <div className="smx:hidden mt-10 flex shadow-lg rounded-lg cursor-pointer ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 gap-4">
-       <div className="flex flex-col gap-4">
-        <div  id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>Agriculture</div>
-        <div id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>Craft And Arts</div>
-        <div id="fashion" onClick={handleClick} style={{color: isFashion ? 'grey' : 'black'}}>Fashion</div>
-        <div id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>Textiles & Fabrica</div>
-        <div id="digital" onClick={handleClick} style={{color: isDigital ? 'grey' : 'black'}}>Digital Arts</div>
-        <div id="physical" onClick={handleClick} style={{color: isPhysical ? 'grey' : 'black'}}>Physical Arts</div>
+    <div className="smx:hidden mt-10 flex shadow-lg rounded-lg cursor-pointer ring-1 ring-red-100 md:border-r-8 border-[var(--sienna)]  w-[270px] smx:w-[100%] smx:mx-auto md:pb-20 md:pr-0 p-4 gap-4">
+       <div className="flex flex-col gap-4 w-[100%] mt-5 mr-0">
+        <div  id="Agric" onClick={handleClick} style={{color: isAgric ? 'white' : 'black', backgroundColor: isAgric ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isAgric ? '1.5rem': ''}}>Agriculture</div>
+        <div id="craft" onClick={handleClick} style={{color: isCraft ? 'white' : 'black', backgroundColor: isCraft ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isCraft ? '1.5rem': ''}}>Craft And Arts</div>
+        <div id="fashion" onClick={handleClick} style={{color: isFashion ? 'white' : 'black', backgroundColor: isFashion ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isFashion ? '1.5rem': ''}}>Fashion</div>
+        <div id="textiles" onClick={handleClick} style={{color: isTextile ? 'white' : 'black', backgroundColor: isTextile ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isTextile ? '1.5rem': ''}}>Textiles & Fabrics</div>
+        <div id="digital" onClick={handleClick} style={{color: isDigital ? 'white' : 'black', backgroundColor: isDigital ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isDigital ? '1.5rem': ''}}>Digital Arts</div>
+        <div id="physical" onClick={handleClick} style={{color: isPhysical ? 'white' : 'black', backgroundColor: isPhysical ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isPhysical ? '1.5rem': ''}}>Physical Arts</div>
        </div>
     </div>
   )
