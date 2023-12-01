@@ -12,7 +12,7 @@ export const MarketPlaceAddr = () => {
 }
 export const RattingAddr = () => {
   return (
-    '0x03d76627ca3d148a303f1dd2c8770127715066c81f52621e9b85094f39d689f6'
+    '0x00082bb5dba2f85f20e8e204e8560fde63d0837494e1a139a353fbc63d3f6442'
   )
 }
 

@@ -12,6 +12,17 @@ struct order {
     paymentTime: u64,
     paymentStatus: orderPaymentStatus,
     shipmentStatus: deliveryStatus,
+    processingDelivery: bool,
+}
+
+#[derive(Drop, Copy, starknet::Store, Serde)]
+struct newRating {
+    itemID: u256,
+    orderId: u256,
+    buyer: ContractAddress,
+    rating: u32,
+    review1: felt252,
+    review2: felt252,
 }
 
 #[derive(Drop, Copy, Serde, starknet::Store)]
@@ -95,34 +106,11 @@ trait IAftimart<TContractState> {
 #[starknet::interface]
 trait IRating <TContractState>{
 
-    fn get_user_rating(self: @TContractState, user_address: ContractAddress) -> u32;
+    fn viewReviews(self: @TContractState, ItemId: u256) -> Array::<newRating>;
 
-    fn get_product_rating(self: @TContractState, product_id: u256) -> u32;
-    
-    fn review_product(ref self: TContractState, order_id: u256, rating: u32, review: felt252, extra_info_url: felt252);
+    fn getProductRatting (self: @TContractState, ItemId: u256) -> u256;
 
-    fn review_user(ref self: TContractState, order_id: u256, rating: u32, review: felt252, extra_info_url: felt252);
-
-    fn get_product_review(self: @TContractState, product_id: u256) -> felt252;
-
-    fn get_user_review(self: @TContractState, user_address: ContractAddress) -> Array<felt252>;
-    
-    fn comment_on_product(ref self: TContractState, order_id: u256, comment: felt252);
-
-    fn comment_on_user(ref self: TContractState, order_id: u256, comment: felt252);
-
-    fn get_user_comments(self: @TContractState, user_address: ContractAddress) -> Array<felt252> ;
-
-    fn get_product_comments(self: @TContractState, product_id: u256) -> felt252 ;
-
-    fn get_user_reviewers(self: @TContractState, user_address: ContractAddress) -> Array<ContractAddress>;
-
-    fn get_product_reviewers(self: @TContractState, product_id: u256) -> ContractAddress;
-
-    fn get_user_extra_info_url(self: @TContractState, user_address: ContractAddress) -> Array<felt252>;
-
-    fn get_product_extra_info_url(self: @TContractState, product_id: u256) -> felt252 ;
-
+    fn review_product(ref self: TContractState, order_id: u256, rating: u32, review: felt252, review2: felt252);
 }
 
 #[derive(starknet::Store, Drop)]
@@ -150,7 +138,7 @@ mod Rating {
     use alexandria_storage::list::{List, ListTrait};
     use starknet::{ContractAddress, get_caller_address};
     use array::ArrayTrait;
-    use super::{IRating, ProductReview, UserReview, IAftimartDispatcher, IAftimartDispatcherTrait, userProfile, Item};
+    use super::{IRating, ProductReview, UserReview, IAftimartDispatcher, IAftimartDispatcherTrait, userProfile, Item, newRating};
 
 
     #[event]
@@ -204,6 +192,11 @@ mod Rating {
         user_comments: LegacyMap<ContractAddress, List<felt252>>,
         user_extra_info_url: LegacyMap<ContractAddress, List<felt252>>,
         user_reviewers: LegacyMap<ContractAddress, List<ContractAddress>>,
+
+        // track reviews through mapping itemID to number of reviews
+        totalReviews: LegacyMap<u256, u256>,
+        totalStars: LegacyMap<u256, u256>,
+        individualReview: LegacyMap<(u256, u256), newRating>,
     }
 
     #[constructor]
@@ -215,106 +208,47 @@ mod Rating {
     #[external(v0)]
     impl RatingImpl of IRating<ContractState> {
 
-        fn get_user_rating(self: @ContractState, user_address: ContractAddress) -> u32 {
-            let user_reviewers_len = self.user_reviewers.read(user_address).len();
-            let user_total_rating = self.user_total_rating.read(user_address);
-            user_total_rating / user_reviewers_len
-        }
-
-        fn get_product_rating(self: @ContractState, product_id: u256) -> u32 {
-            self.product_rating.read(product_id)
-        }
-        
-        fn review_product(ref self: ContractState, order_id: u256, rating: u32, review: felt252, extra_info_url: felt252) {
+        fn review_product(ref self: ContractState, order_id: u256, rating: u32, review: felt252, review2: felt252) {
             let caller_address = get_caller_address();
             assert(rating <= 5, 'Max rating is 5');
             let market_place_contract = self.marketplace_contract.read();
             let order = IAftimartDispatcher { contract_address: market_place_contract }.getOrderDetails(order_id);
             assert(order.buyer == caller_address, 'Not a valid buyer');
-            self.product_rating.write(order.itemID, rating);
-            self.product_review.write(order.itemID, review);
-            self.product_extra_info_url.write(order.itemID, extra_info_url);
-            self.product_reviewer.write(order.itemID, caller_address);
-            self.emit(ProductReviewed {
-                product_id: order.itemID, 
-                reviewed_by: caller_address, 
-                rating: rating, 
-                review: review,
-                extra_info_url: extra_info_url
-            });
-        }
-        
-        fn review_user(ref self: ContractState, order_id: u256, rating: u32, review: felt252, extra_info_url: felt252) {
-            let caller_address = get_caller_address();
-            assert(rating <= 5, 'Max rating is 5');
-            let market_place_contract = self.marketplace_contract.read();
-            let order = IAftimartDispatcher { contract_address: market_place_contract }.getOrderDetails(order_id);
-            let item = IAftimartDispatcher { contract_address: market_place_contract }.getProductDetails(order.itemID);
-            assert(order.buyer == caller_address, 'Not a valid buyer');
-            self.user_total_rating.write(item.seller, self.user_total_rating.read(item.seller) + rating);
-            let mut rev = self.user_reviews.read(item.seller);
-            rev.append(review);
-            let mut xtrainfo = self.user_extra_info_url.read(item.seller);
-            xtrainfo.append(extra_info_url);
-            let mut revrs = self.user_reviewers.read(item.seller);
-            revrs.append(caller_address);
-            self.emit(UserReviewed {
-                user_address: item.seller, 
-                reviewed_by: caller_address, 
-                rating: rating, 
-                review: review,
-                extra_info_url: extra_info_url
-            });
+            let newOrder = newRating{
+                    itemID: order.itemID,
+                    orderId: order_id,
+                    buyer: caller_address,
+                    rating: rating,
+                    review1: review,
+                    review2: review2,
+            };
+           let mut totalReviews = (self.totalReviews.read(order.itemID) + 1);
+           let mut totalStars = self.totalReviews.read(order.itemID);
+           self.totalReviews.write(order.itemID, totalReviews);
+           self.individualReview.write((order.itemID, totalReviews), newOrder);
+           self.totalStars.write(order.itemID, totalStars + rating.into());
         }
 
-        fn get_product_review(self: @ContractState, product_id: u256) -> felt252 {
-            self.product_review.read(product_id)
+        fn viewReviews(self: @ContractState, ItemId: u256) -> Array::<newRating> {
+            let totalReviews = self.totalReviews.read(ItemId);
+            let maxReviews = self.totalReviews.read(ItemId);
+            let mut allReview = ArrayTrait::new();
+            let mut i: u256 = 1;
+            loop {
+                if i > maxReviews {
+                    break;
+                }
+                let review = self.individualReview.read((ItemId, i));
+                allReview.append(review);
+                i= i + 1;
+            };
+            return allReview;
         }
 
-        fn get_user_review(self: @ContractState, user_address: ContractAddress) -> Array<felt252> {
-            self.user_reviews.read(user_address).array()
-        }
-        
-        fn comment_on_product(ref self: ContractState, order_id: u256, comment: felt252) {
-            let caller_address = get_caller_address();
-            let market_place_contract = self.marketplace_contract.read();
-            let order = IAftimartDispatcher { contract_address: market_place_contract }.getOrderDetails(order_id);
-            assert(order.buyer == caller_address, 'Not a valid buyer');
-            self.product_comments.write(order.itemID, comment);
-        }
-
-        fn comment_on_user(ref self: ContractState, order_id: u256, comment: felt252) {
-            let caller_address = get_caller_address();
-            let market_place_contract = self.marketplace_contract.read();
-            let order = IAftimartDispatcher { contract_address: market_place_contract }.getOrderDetails(order_id);
-            let item = IAftimartDispatcher { contract_address: market_place_contract }.getProductDetails(order.itemID);
-            assert(order.buyer == caller_address, 'Not a valid buyer');
-            let mut user_comments = self.user_comments.read(item.seller);
-            user_comments.append(comment);
-        }
-
-        fn get_user_comments(self: @ContractState, user_address: ContractAddress) -> Array<felt252> {
-            self.user_comments.read(user_address).array()
-        }
-
-        fn get_product_comments(self: @ContractState, product_id: u256) -> felt252 {
-            self.product_comments.read(product_id)
-        }
-
-        fn get_user_reviewers(self: @ContractState, user_address: ContractAddress) -> Array<ContractAddress> {
-            self.user_reviewers.read(user_address).array()
-        }
-
-        fn get_product_reviewers(self: @ContractState, product_id: u256) -> ContractAddress {
-            self.product_reviewer.read(product_id)
-        }
-
-        fn get_user_extra_info_url(self: @ContractState, user_address: ContractAddress) -> Array<felt252> {
-            self.user_extra_info_url.read(user_address).array()
-        }
-
-        fn get_product_extra_info_url(self: @ContractState, product_id: u256) -> felt252 {
-            self.product_extra_info_url.read(product_id)
+        fn getProductRatting (self: @ContractState, ItemId: u256) -> u256 {
+            let totalStars = self.totalStars.read(ItemId);
+            let totalRatters = self.totalReviews.read(ItemId);
+            return (totalStars / totalRatters);
         }
 
     }
