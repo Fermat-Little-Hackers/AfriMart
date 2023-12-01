@@ -15,7 +15,7 @@ const DeliveryPortal = () => {
           <div className="md:w-[20%] w-[80%]">
             <SideMenu />
           </div>
-          <div className="md:w-[80%] w-[100%] flex shadow-lg rounded-lg ring-1 ring-red-100 smx:w-[100%] smx:mx-auto p-4 gap-4">
+          <div className="md:w-[80%] w-[100%] flex shadow-lg rounded-lg ring-1 ring-red-100 smx:w-[100%] smx:mx-auto gap-4">
             <PageContents />
           </div>
         </div>
