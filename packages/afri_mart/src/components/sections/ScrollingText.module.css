@@ -1,0 +1,22 @@
+/* styles/ScrollingText.module.css */
+
+.scrollingTextContainer {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+  }
+  
+  .scrollingText {
+    white-space: nowrap;
+    animation: scrollText 10s linear infinite;
+  }
+  
+  @keyframes scrollText {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
