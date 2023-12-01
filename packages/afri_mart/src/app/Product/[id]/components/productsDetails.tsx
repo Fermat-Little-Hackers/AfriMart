@@ -40,6 +40,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const [description, setDescription] = useState<any>();
     const [price, setPrice] = useState<any>();
     const [imgUri, setImgUri] = useState<any>();
+    const [imgUri2, setImgUri2] = useState<any>();
     const [addingCart, setAddingCart] = useState<boolean>(false);
 
 
@@ -71,16 +72,18 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const getProduct = async() => {
         const provider = new Provider({
           rpc: {
-            // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-            nodeUrl: "https://rpc.starknet-testnet.lava.build"
+            nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+            // nodeUrl: "https://rpc.starknet-testnet.lava.build"
           }
         })
           try {
           const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
           const details = await contract.getProductDetails(itemId);
+          // console.log(details);
           let eth = 1000000000000000000;
             setName(hexToReadableText(details.name.toString(16)))
-            setImgUri(details.imageUri.toString(16));
+            setImgUri(details.imageUri1.toString(16));
+            setImgUri2(details.imageUri2.toString(16));
             setPrice(Number(BigInt(details.price)) / eth);
             let cart:CairoEnumRaw = details.cartegory;
             setSeller(`0x${details.seller.toString(16)}`);
@@ -93,10 +96,10 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
 
     useEffect(() => {
       getProduct();
-    }, [itemId])
+    }, [])
     
 
-    const intervalId = setInterval(getProduct, 2000);
+    // const intervalId = setInterval(getProduct, 7000);
       
       function hexToReadableText(hexString : any) {
         const bytes = Buffer.from(hexString, 'hex'); 
@@ -183,7 +186,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
       
 
   return (
-    <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] md:p-0">
+    <div className="flex flex-col md:flex-row md:gap-10 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
         <div className="flex flex-col md:w-[40%] gap-4">
             <div className=" bg-[var(--afroroasters-brown)] md:w-[20rem] h-[20rem]"></div>
             <div className='flex flex-col gap-2'>

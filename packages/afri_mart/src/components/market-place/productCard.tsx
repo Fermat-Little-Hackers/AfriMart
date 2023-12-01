@@ -15,6 +15,7 @@ interface MyProps {
 const ProductCard: React.FC<MyProps> = ({ productId }) => {
   const [price, setPrice] = useState<any>();
   const [imgUri, setImgUri] = useState<any>();
+  const [imgUri2, setImgUri2] = useState<any>();
   const [name, setName] = useState<any>();
 
   const getProductDetails = async () => {
@@ -33,7 +34,8 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
       let eth = 1000000000000000000;
       const details = await contract.getProductDetails(productId);
       setName(hexToReadableText(details.name.toString(16)))
-      setImgUri(details.imageUri.toString(16));
+      setImgUri(details.imageUri1.toString(16));
+      setImgUri2(details.imageUri2.toString(16));
       setPrice(Number(BigInt(details.price)) / eth);
       
       // console.log(`item details`,details);
