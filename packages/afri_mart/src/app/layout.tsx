@@ -14,6 +14,7 @@ import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
 import {ConnectionContextProvider, AccountContextProvider} from '../context/connectionContext'
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { ListProductContextProvider } from '../context/listProductContext';
 // import { ConnectkitProvider } from '../../connectkit';
 
 import PagesLayout from './PagesLayout';
@@ -32,6 +33,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <body className={clsx("", inter.className)}>
         <ConnectionContextProvider>
          <AccountContextProvider>
+        <ListProductContextProvider>
         <SupplyChainContextProvider>
           <RegisteredContextProvider>
             <YourContextProvider>
@@ -45,6 +47,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </SupplyChainContextProvider>
         </AccountContextProvider> 
         </ConnectionContextProvider>
+        </ListProductContextProvider>
       </body>
     </html>
   );

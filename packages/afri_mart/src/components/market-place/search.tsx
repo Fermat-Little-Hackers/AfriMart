@@ -35,7 +35,7 @@ const Search = () => {
 
 
     return(
-    <div>
+    <div className='shadow-lg items-center py-1'>
         <div className='menuBar sticky flex flex-row md:flex-row mx-5 md:mx-20 my-5 md:justify-between gap-2 md:gap-0'>
           <div className='flex items-center  w-full md:w-[30rem] h-10 ring-1 ring-[var(--sienna)] p-4 pr-0 rounded-lg  shadow-lg outline-none'>
             <input
@@ -74,7 +74,6 @@ const Search = () => {
             </div> */}
           </div>
         </div>
-        <hr></hr>
         {sharedState && ( <ProfileForm /> )}
     </div>
     )

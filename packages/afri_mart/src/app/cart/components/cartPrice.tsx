@@ -15,7 +15,7 @@ const CartPrice = () => {
     const [account, setAccount] = useState();
     const [cartValue, setCartValue] = useState<any>();
     const [address, setAddress] = useState('');
-  
+    
 
     function formatDecimalTo5Places(inputNumber: any) {
         // Convert the input number to a fixed string with 5 decimal places
@@ -32,11 +32,13 @@ const CartPrice = () => {
       setSharedState(true);
     };
 
+
+
     const getCartValue = async() => {
       const provider = new Provider({
         rpc: {
-          nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx"
-  
+        //   nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx"
+          nodeUrl: "https://rpc.starknet-testnet.lava.build"
         }
       })
         try {
@@ -90,7 +92,7 @@ const CartPrice = () => {
 
             <div className='flex flex-row w-[100%] gap-5'>
                 <div className='w-[60%] font-bold text-xl'> <p> Total Fee</p></div>
-                <div className='w-[40%] font-bold text-xl'><p>{cartValue ? cartValue + ((cartValue * 10) / 100) : '0.00'} Eth</p></div>
+                <div className='w-[40%] font-bold text-xl'><p>{cartValue ? formatDecimalTo5Places(cartValue + ((cartValue * 10) / 100)) : '0.00'} Eth</p></div>
             </div>
         </div>
         <div className='mt-12'>

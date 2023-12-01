@@ -4,6 +4,7 @@ import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/
 import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
+import { setInterval } from "timers";
 
 const ListedItems = () => {
   const [allListedItem, setAllListed] = useState<any[]>([]);
@@ -59,6 +60,8 @@ function hexToReadableText(hexString : any) {
 useEffect(() => {
   getAllListing()
 }, [])
+
+
 
 useEffect(() => {
   if(allListedItem.length > 0){
