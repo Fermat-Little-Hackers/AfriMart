@@ -13,7 +13,7 @@ export const HeroSection = () => {
         <Container className="flex text-center h-screen items-center">
             <div className={clsx("h-fit")}>
                 <MainAnimation
-                    text="Afrimath" 
+                    text="Afrimart" 
                     repeatDelay={2} 
                     className="font-serif text-9xl text-[var(--sand)]"
                  />
