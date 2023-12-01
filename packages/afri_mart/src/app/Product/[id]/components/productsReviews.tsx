@@ -79,14 +79,14 @@ const ProductsReviews: React.FC<MyProps> = ({ itemId }) => {
   return (
     <div className='bg-art-graphics p-5 md:p-12'>
 
-    <div className=" bg-[var(--ivory)] rounded-md h-fit md:h-fit px-5 py-5 md:px-10 md:py-7 flex flex-col gap-5 md:gap-7 items-center md:w-max mx-auto">
+    <div className=" bg-[var(--ivory)] rounded-md h-fit md:h-fit px-5 py-5 md:px-10 md:py-7 flex flex-col gap-5 md:gap-7 items-center md:w-max mx-auto min-w-[70vw] md:min-h-[20rem]">
         <div className="">
             <h1 className='md:text-4xl text-3xl text-ceter font-serif'>
                 REVIEWS
             </h1>                    
         </div>
 
-        {products?.map((product, index) => (
+        {products && products?.length > 0 ? products?.map((product, index) => (
             <div className="flex flex-row gap-5 md:gap-10" key={index}>
                 <div className="">
                     <div className="border-solid border-2 border-black h-[3rem] rounded-3xl w-[3rem] flex items-center justify-center">
@@ -101,7 +101,7 @@ const ProductsReviews: React.FC<MyProps> = ({ itemId }) => {
                         </div>
                 </div>
             </div>
-        ))}
+        )) : <p className=' text-gray-700'> No Reviews Yet </p>}
 
     </div>
     </div>
