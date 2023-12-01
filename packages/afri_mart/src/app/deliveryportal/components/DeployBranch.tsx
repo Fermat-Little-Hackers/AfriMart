@@ -92,7 +92,7 @@ const DeployBranch = () => {
 
   return (
     <div className="">
-      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl ">Create a new branch</h3>
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Create a new branch</h3>
       <div className="justify-start text-left ">
         <form
           onSubmit={handleSubmit(onSubmit)}
