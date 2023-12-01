@@ -231,6 +231,7 @@ const UpdateShipment = () => {
                 onChange={(e) => handleCurrentStatus(e)}
                 className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
               >
+                <option value="">Select Status</option>
                 <option value="Processing">Processing</option>
                 <option value="Shipped">Shipped</option>
                 <option value="Arrived">Arrived</option>
