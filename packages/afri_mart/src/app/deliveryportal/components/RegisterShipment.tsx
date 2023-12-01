@@ -6,6 +6,7 @@ import {connect} from "@argent/get-starknet";
 import { ConnectedStarknetWindowObject } from "get-starknet-core";
 import { Contract } from "starknet";
 import { SupplyChainContractAddr } from "@/components/addresses";
+import main from "../../../../utils/upload.mjs";
 
 interface FormData {
   profilePicture: FileList | null;
@@ -20,6 +21,8 @@ const ResgisterShipment = () => {
   const [shipmentAddress, setShipmentAddress] = useState("");
   const [trackMode, settrackMode] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [imageBlob, setImageBlob] = useState<File | undefined>();
+  const [imageHash, setImageHash] = useState<Array<String>>();
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
   const [account, setAccount] = useState();
   const [address, setAddress] = useState('');
@@ -100,12 +103,25 @@ const ResgisterShipment = () => {
   const registerShipment: SubmitHandler<FormData> = async () => {
     console.log("Registering Shipment......");
     try {
+
+      let ipfsDetails = await main(imageBlob,Name,OrderId)
+      let length = (ipfsDetails?.ipnft).length; 
+      let halfLength = Math.floor(length / 2)
+      
+      let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
+      let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
+
+      console.log('FIRST HALF', firstHalf);
+      console.log('second HALF', secondhalf);
+      setImageHash([firstHalf,secondhalf]);
+
+
       const contract = new Contract(
         contractAbi,
         SupplyChainContractAddr(),
         account
       );
-      await contract.create_shipment(OrderId, Name, previewImage, shipmentAddress, trackMode);
+      await contract.create_shipment(OrderId, Name, imageHash, shipmentAddress, trackMode);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -127,6 +143,7 @@ const ResgisterShipment = () => {
 
       // Update form value for validation
       setValue("profilePicture", event.target.files);
+      setImageBlob(file);
     }
   };
 
