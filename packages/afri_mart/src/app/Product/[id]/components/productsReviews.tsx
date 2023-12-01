@@ -1,9 +1,81 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Stars from '../../../../components/market-place/stars'
 import { FaUser } from 'react-icons/fa';
 import { CheckIcon } from '@heroicons/react/20/solid';
+import rattingsContract from '@/ABI/rattingsContract.json';
+import { MarketPlaceAddr, RattingAddr } from '@/components/addresses';
+import { Account, Contract, Provider, constants, AccountInterface, CairoCustomEnum, CallData } from 'starknet'
+import marketPlaceAbi from '@/ABI/marketPlace';
+import marketplaceAbi from '@/ABI/marketPlace';
 
-const ProductsReviews = () => {
+
+interface MyProps {
+    itemId: number;
+  }
+
+const ProductsReviews: React.FC<MyProps> = ({ itemId }) => {
+    const [products, setProducts] = useState<any[]>();
+    const [buyerNames, setBuyerNames] = useState<string[]>();
+
+    const getProduct = async() => {
+      const provider = new Provider({
+        rpc: {
+          nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+        }
+      })
+        try {
+            const contract = new Contract(rattingsContract, RattingAddr(), provider);
+            const details = await contract.viewReviews(itemId);
+
+            getUserProfile(details);
+            // const products = res.map((item:any) => item.toString())
+
+          setProducts(details);
+        } catch (error : any) {      
+          console.log(error.message);
+        }
+    }
+        // const intervalId = setInterval(getProduct, 3000);
+  
+            useEffect(() => {
+              getProduct();
+  
+            }, [itemId])
+
+  
+        const getUserProfile = async(users: any) => {
+            const buyersArray: string[] = [];
+            const provider = new Provider({
+                rpc: {
+                // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+                nodeUrl: "https://rpc.starknet-testnet.lava.build"
+                }
+            })
+            try {
+                const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
+                for (const user of users) {
+                    // Extract the 'buyer' property and append it to the buyersArray
+                    const details = await contract.getUserProfile(user.buyer);
+                    buyersArray.push((hexToReadableText(details.name.toString(16))));
+                }
+
+                setBuyerNames(buyersArray);
+
+            } catch(error: any) {
+                console.log(error.message);
+            }
+        }
+
+            function hexToReadableText(hexString : any) {
+                const bytes = Buffer.from(hexString, 'hex'); 
+                const text = new TextDecoder('utf-8').decode(bytes);
+                return text;
+              }
+
+        
+
+
+
   return (
     <div className='bg-art-graphics p-5 md:p-12'>
 
@@ -14,34 +86,23 @@ const ProductsReviews = () => {
             </h1>                    
         </div>
 
-        <div className="flex flex-row gap-5 md:gap-10 ">
-            <div className="">
-                <div className="border-solid border-2 border-black h-[3rem] rounded-3xl w-[3rem] flex items-center justify-center">
-                    <FaUser />
+        {products?.map((product, index) => (
+            <div className="flex flex-row gap-5 md:gap-10" key={index}>
+                <div className="">
+                    <div className="border-solid border-2 border-black h-[3rem] rounded-3xl w-[3rem] flex items-center justify-center">
+                        <FaUser />
+                    </div>
+                </div>
+                <div className="w-[80%] flex flex-col gap-1">
+                    <p className='font-bold'> {buyerNames ? buyerNames[index] : 'Loading Buyer...'}</p>
+                    <p>{(hexToReadableText(product.review1.toString(16)))} {(hexToReadableText(product.review2.toString(16)))}</p>
+                        <div>
+                            <Stars amount={Number(product.rating)}/>
+                        </div>
                 </div>
             </div>
-            <div className="w-[80%] flex flex-col gap-1">
-                <p> Emmanuel John </p>
-                <p> EVeniam commodo excepteur deserunt eu consequat nulla.mmanuel John </p>
-                    <div>
-                        <Stars amount={3}/>
-                    </div>
-            </div>
-        </div>
-        <div className="flex flex-row gap-5 md:gap-10 ">
-            <div className="">
-                <div className="border-solid border-2 border-black h-[3rem] rounded-3xl w-[3rem] flex items-center justify-center">
-                    <FaUser />
-                </div>
-            </div>
-            <div className="w-[80%] flex flex-col gap-1">
-                <p> Emmanuel John </p>
-                <p> EVeniam commodo excepteur deserunt eu consequat nulla.mmanuel John </p>
-                    <div>
-                        <Stars amount={2}/>
-                    </div>
-            </div>
-        </div>
+        ))}
+
     </div>
     </div>
   )

@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from "react";
 import Stars from "./stars";
 import marketplaceAbi from '../../ABI/marketPlace';
-import { MarketPlaceAddr } from '../../components/addresses';
+import { MarketPlaceAddr, RattingAddr } from '../../components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
+import rattingsContract from '@/ABI/rattingsContract.json';
 
 
 
@@ -17,6 +18,7 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
   const [imgUri, setImgUri] = useState<any>();
   const [imgUri2, setImgUri2] = useState<any>();
   const [name, setName] = useState<any>();
+  const [rating, setRating] = useState<number>();
 
   const getProductDetails = async () => {
     const provider = new Provider({
@@ -45,10 +47,27 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
   };
 
 
+  const getProductReview = async() => {
+    const provider = new Provider({
+      rpc: {
+        nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+      }
+    })
+      try {
+          const contract = new Contract(rattingsContract, RattingAddr(), provider);
+          const details = await contract.getProductRatting(productId);
+          setRating(Number(details));
+        // setProducts(details);
+      } catch (error : any) {      
+        console.log(error.message);
+      }
+  }
+
+
 
   useEffect(() => {
     getProductDetails();
-
+    getProductReview();
   }, [productId])
   
   function hexToReadableText(hexString : any) {
@@ -61,9 +80,9 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
     <div className="border-2 border-black w-[100%] h-fit md:h-60 p-2 md:p-3">
       <div className="border-2 border-black h-[6rem] md:h-[60%] w-[100%] bg-gray-700"></div>
       <div className="mt-2 flex flex-col gap-1">
-        <p>{name? name : 'loading...'}</p>
+        <p className=" font-bold">{name? name : 'loading...'}</p>
         <p>{price ? price : '0.00'} ETH</p>
-        <Stars amount={3.5} />
+        <Stars amount={rating ? rating : 0} />
       </div>
     </div>
   );
