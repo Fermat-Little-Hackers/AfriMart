@@ -11,7 +11,7 @@ const Productphoto : React.FC<productprops> = ({uri}) => {
     const trimmedUri = data?.image?.substring(7);
     return (
     <div className="md:w-[20rem] h-[20rem]">
-               <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" />
+               <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" className='w-full h-full object-cover' />
     </div>
 
   )

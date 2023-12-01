@@ -229,7 +229,8 @@ const UpdateShipment = () => {
                 id="CurrentStatus" 
                 name="CurrentStatus"
                 onChange={(e) => handleCurrentStatus(e)}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                // className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                className="block bg-transparent w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-[var(--terracota)] placeholder:text-gray-400  focus:ring-indigo-600 sm:text-sm sm:leading-6"
               >
                 <option value="">Select Status</option>
                 <option value="Processing">Processing</option>

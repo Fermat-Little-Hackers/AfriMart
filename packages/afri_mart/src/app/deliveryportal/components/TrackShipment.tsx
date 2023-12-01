@@ -100,14 +100,14 @@ const TrackShipment = () => {
     <div className="">
       <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Track Shipment</h3>
       <div className="justify-start p-5 md:p-10 text-left">
-        <div className="flex items-center border-2 border-black w-full md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl mx-20">
+        <div className="flex items-center border-0 w-full md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl mx-20 ring-1 ring-[var(--terracota)]">
           <input
             type="search"
             name="search"
             id="search"
             placeholder="Tracking Number"
             onChange={(e) => manageTrackingNumber(e)}
-            className="outline-none focus:outline-none w-full md:w-[100%] mr-4 md:mr-6"
+            className="outline-none focus:outline-none w-full md:w-[100%] mr-4 md:mr-6 bg-transparent"
           />
           <button
             type="button"

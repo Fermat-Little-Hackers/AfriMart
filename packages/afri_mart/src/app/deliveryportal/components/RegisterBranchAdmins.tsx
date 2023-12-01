@@ -85,7 +85,7 @@ const RegisterBranchAdmins = () => {
     <div className="">
       <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Register New Admins</h3>
       <div className="justify-start p-5 md:p-10 text-left">
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-4 p-5 md:p-20 rounded" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label
               htmlFor="name"

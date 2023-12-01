@@ -80,7 +80,7 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
   }
 
   return (
-    <div className="border-2 border-black w-[100%] h-fit md:h-60 p-2 md:p-3">
+    <div className="border-2 border-red-100 rounded-lg w-[100%] h-fit md:h-60 p-2 md:p-3">
       <TrendingPhoto uri={imgUri} />
       <div className="mt-2 flex flex-col gap-1">
         <p className=" font-bold">{name? name : 'loading...'}</p>
