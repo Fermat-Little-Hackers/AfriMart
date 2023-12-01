@@ -20,7 +20,7 @@ interface FormData {
 const ProfileForm: React.FC = () => {
   return (
     <div className="fixed top-0 left-0 w-full h-full flex md:items-center justify-center bg-gray-700 bg-opacity-70">
-    <div className="md:max-w-xl w-[80%] h-fit mt-[10vh] mx-auto md:mt-10 p-6 md:p-10 bg-gray-100 rounded-md shadow-md">
+    <div className="md:max-w-xl w-[80%] h-fit mt-[10vh] mx-auto md:mt-10 p-6 md:p-10 bg-gray-100 rounded-md shadow-md z-50">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Create profile to proceed
@@ -49,7 +49,7 @@ const FormField = () => {
     const [imageSrc, setImageSrc] = useState('/image/wait.svg');
     const [isDisabled, setIsDisabled] = useState(false);
     const [imageblob, setImageBlob] = useState<File | undefined >()
-
+    const [creating, setCreating] = useState(false);
     const { register, handleSubmit, setValue, formState: { errors }  } = useForm<FormData>();
 
     const handleProcessPayment = () => {
@@ -67,6 +67,7 @@ const FormField = () => {
 
     const handleSubmission = async (e: { preventDefault: () => void; }) => {
       e.preventDefault()
+      setCreating(true);
         // Handle the form submission logic (e.g., send data to server)
         // setSubmittedData(data);
         let ipfsDetails = await main(imageblob,name,name)
@@ -80,6 +81,7 @@ const FormField = () => {
         console.log('FIRST HALF', firstHalf);
         console.log('second HALF', secondhalf);
         create(firstHalf,secondhalf);
+        setCreating(false);
     };
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -126,7 +128,7 @@ const FormField = () => {
 
     return (
         <div className="mt-5 md:mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmission}>
           <div>
             <label htmlFor="profilePicture" className="block text-sm font-medium leading-6 text-gray-900">
               Profile Picture
@@ -206,13 +208,21 @@ const FormField = () => {
           </div>
 
           <div className='flex flex-row gap-5 items-center justify-center'>
+          { creating ? 
+            <button
+                type="button"
+                className='bg-indigo-600 text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem] justify-center items-center flex'
+            >
+                <Image src={'/image/loading.svg'} alt="Example Image" className="w-[1.5rem] md:w-[1.5rem]" width={1} height={1} />
+            </button>
+            :
             <button
               type="submit"
               className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={handleSubmission}
             >
-              Create Profile
+              List Product
             </button>
+            }
               <button
                   type="button"
                   className="bg-gray-500 rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

@@ -57,12 +57,22 @@ const FormField = () => {
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
     const [account, setAccount] = useState();
     const [address, setAddress] = useState('');
+    const [listing, setListing] = useState<boolean>();
 
+    const Fetchcategories = (Itemindex: number) => { 
+       const cart = [
+        'Agriculture',
+        'TextileAndClothings',
+        'Accesories',
+        'ToolsAndEquipments',
+        'DigitalArts',
+        'PhysicalArtsNDSculptures',
+      ]
+      return cart[Itemindex];
+    }
 
-
-
-
-    const listProduct = async() => {
+    const listProduct = async(e: { preventDefault: () => void; }) => {
+        e.preventDefault();
         const provider = new Provider({
           rpc: {
             // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
@@ -70,17 +80,16 @@ const FormField = () => {
           }
         })
           try {
+            setListing(true);
             let ipfsDetails = await main(imageblob,name,name)
             let length = (ipfsDetails?.ipnft).length; 
             let halfLength = Math.floor(length / 2)
             
             let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
             let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
-            console.log('FIRST HALF', firstHalf);
-            console.log('second HALF', secondhalf);
-
-          const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), account)
-          const details = await contract.listProduct(name, description, firstHalf, secondhalf, price, amount, resolveCartegory(findCategoryIndex(selectedOption as string)) );
+            const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), account)
+            const details = await contract.listProduct(name, description, firstHalf, secondhalf, price, amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
+            setListing(false);
             alert("Item Listed Successfully");
             setSharedState(false);
         } catch (error : any) {      
@@ -88,13 +97,40 @@ const FormField = () => {
                 }
         }
 
-//   const intervalId = setInterval(getProduct, 3000);
 
     function resolveCartegory(cartIndex: number): any {
-        const myCustomEnum = new CairoCustomEnum({
-            cartegory: cartIndex,
+        const myCustomEnum0 = new CairoCustomEnum({
+            Agriculture : cartIndex,
         }); 
-        return myCustomEnum 
+        const myCustomEnum1 = new CairoCustomEnum({
+            TextileAndClothings : cartIndex,
+        }); 
+        const myCustomEnum2 = new CairoCustomEnum({
+            Accesories : cartIndex,
+        }); 
+        const myCustomEnum3 = new CairoCustomEnum({
+            ToolsAndEquipments : cartIndex,
+        }); 
+        const myCustomEnum4 = new CairoCustomEnum({
+            DigitalArts : cartIndex,
+        }); 
+        const myCustomEnum5 = new CairoCustomEnum({
+            PhysicalArtsNDSculptures : cartIndex,
+        }); 
+
+       if (cartIndex == 0 ) {
+        return myCustomEnum0;
+       } else if (cartIndex == 1) {
+        return myCustomEnum1;
+       } else if (cartIndex == 2) {
+        return myCustomEnum2;
+       } else if (cartIndex == 3) {
+        return myCustomEnum3;
+       } else if (cartIndex == 4) {
+        return myCustomEnum4;
+        } else if (cartIndex == 5) {
+            return myCustomEnum5;
+        };
     }
 
   useEffect(() => {
@@ -200,7 +236,7 @@ const FormField = () => {
 
     return (
         <div className="mt-5 md:mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="">
+        <form className="" onSubmit={listProduct}>
           <div>
             <label htmlFor="productImage" className="block text-sm font-medium leading-6 text-gray-900">
               Item Image
@@ -304,13 +340,21 @@ const FormField = () => {
           </div>
 
           <div className='flex flex-row gap-5 items-center justify-center mt-5'>
+            { listing ? 
             <button
-              type="button"
+                type="button"
+                className='bg-indigo-600 text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem] justify-center items-center flex'
+            >
+                <Image src={'/image/loading.svg'} alt="Example Image" className="w-[1.5rem] md:w-[1.5rem]" width={1} height={1} />
+            </button>
+            :
+            <button
+              type="submit"
               className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                onClick={listProduct}
             >
               List Product
             </button>
+            }
               <button
                   type="button"
                   className="bg-gray-500 rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
