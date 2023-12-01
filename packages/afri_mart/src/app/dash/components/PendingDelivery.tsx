@@ -118,7 +118,7 @@ const GetItem = async (args : number[] | undefined) => {
       return text;
     }
 
-  return <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2"> 
+  return <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2"> 
       <table className="smx:hidden" style={{ width: '100%' }}>
       <tr>
       <th>SN</th>
@@ -128,8 +128,9 @@ const GetItem = async (args : number[] | undefined) => {
       <th>Amount</th>
       </tr>
     
+    <div className="overflow-y-auto scrollbar-thin">
     {allProductPendingArray?.map((item, index) => {
-       let productname =  hexToReadableText(item.name.toString(16)) 
+      let productname =  hexToReadableText(item.name.toString(16)) 
        let productprice = Number(item.price)/1e18
      return <tr key={index} className="smx:hidden ">
         <td>{index + 1}</td>
@@ -141,6 +142,7 @@ const GetItem = async (args : number[] | undefined) => {
         </tr>
       
     })}
+    </div>
     </table>
     <div>
       {allProductPendingArray?.map((item, index) =>{ 
