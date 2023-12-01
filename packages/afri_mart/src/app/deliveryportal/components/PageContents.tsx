@@ -42,7 +42,8 @@ const PageContents = () => {
   };
 
   return (
-    <div className="border-2 border-black h-fit px-5 md:px-20 py-7 md:py-16">
+    // <div className="border-2 border-black h-fit px-5 md:px-20 py-7 md:py-16">
+    <div className="">
       {renderContents()}
     </div>
   );

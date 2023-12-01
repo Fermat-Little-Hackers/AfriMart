@@ -24,7 +24,7 @@ const TrendingProducts = () => {
       const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), provider);
         const res: any = await contract.call("getAllProducts", []);
         setProducts(getRandomNumbersFromArray(res));
-        console.log(`RANDOM PRODUCTS`, getRandomNumbersFromArray(res));
+        // console.log(`RANDOM PRODUCTS`, getRandomNumbersFromArray(res));
         // const products = res.map((item:any) => item.toString())
         // setProducts(products);
       } catch (error : any) {      

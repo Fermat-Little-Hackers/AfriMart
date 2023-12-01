@@ -12,10 +12,10 @@ interface MyProps {
 
 const CartItem: React.FC<MyProps> =  ({ProductId, amount}) => {
   const [price, setPrice] = useState<Number>();
-  const [imgUri, setImgUri] = useState<any>();
+  const [imgUri1, setImgUri1] = useState<any>();
+  const [imgUri2, setImgUri2] = useState<any>();
   const [name, setName] = useState<any>();
 
-  console.log(`amounttt::`, amount)
 
   const getProduct = async() => {
     const provider = new Provider({
@@ -28,7 +28,8 @@ const CartItem: React.FC<MyProps> =  ({ProductId, amount}) => {
       const details = await contract.getProductDetails(ProductId);
       let eth = 1000000000000000000;
         setName(hexToReadableText(details.name.toString(16)))
-        setImgUri(details.imageUri.toString(16));
+        setImgUri1(details.imageUri1.toString(16));
+        setImgUri2(details.imageUri2.toString(16));
         setPrice(Number(details.price) / eth);
       } catch (error : any) {      
         console.log(error.message);

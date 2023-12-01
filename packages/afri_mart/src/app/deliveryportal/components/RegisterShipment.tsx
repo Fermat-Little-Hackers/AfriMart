@@ -82,19 +82,19 @@ const ResgisterShipment = () => {
         setAddress(connection.selectedAddress);
       }
 
-      if (connection?.chainId !== "SN_GOERLI") {
-        alert("you need to switch to GOERLI to proceed!");
-        try {
-          await window?.starknet?.request({
-            type: "wallet_switchStarknetChain",
-            params: {
-              chainId: "SN_GOERLI",
-            },
-          });
-        } catch (error: any) {
-          alert(error.message);
-        }
-      }
+      // if (connection?.chainId !== "SN_GOERLI") {
+      //   alert("you need to switch to GOERLI to proceed!");
+      //   try {
+      //     await window?.starknet?.request({
+      //       type: "wallet_switchStarknetChain",
+      //       params: {
+      //         chainId: "SN_GOERLI",
+      //       },
+      //     });
+      //   } catch (error: any) {
+      //     alert(error.message);
+      //   }
+      // }
     };
     connectToStarknet();
   }, []);
@@ -153,7 +153,7 @@ const ResgisterShipment = () => {
       <div className="justify-start text-left ">
         <form
           onSubmit={handleSubmit(registerShipment)}
-          className="p-5 md:p-20 bg-white rounded shadow-md"
+          className="p-5 md:p-20 rounded"
         >
           <div className="mb-4">
             <label

@@ -46,19 +46,19 @@ const TrackShipment = () => {
         setAddress(connection.selectedAddress);
       }
 
-      if (connection?.chainId !== "SN_GOERLI") {
-        alert("you need to switch to GOERLI to proceed!");
-        try {
-          await window?.starknet?.request({
-            type: "wallet_switchStarknetChain",
-            params: {
-              chainId: "SN_GOERLI",
-            },
-          });
-        } catch (error: any) {
-          alert(error.message);
-        }
-      }
+      // if (connection?.chainId !== "SN_GOERLI") {
+      //   alert("you need to switch to GOERLI to proceed!");
+      //   try {
+      //     await window?.starknet?.request({
+      //       type: "wallet_switchStarknetChain",
+      //       params: {
+      //         chainId: "SN_GOERLI",
+      //       },
+      //     });
+      //   } catch (error: any) {
+      //     alert(error.message);
+      //   }
+      // }
     };
     connectToStarknet();
   }, []);
@@ -99,7 +99,7 @@ const TrackShipment = () => {
   return (
     <div className="">
       <h3 className="mb-7 text-xl md:text-2xl">Track Shipment</h3>
-      <div className="justify-start p-5 md:p-10 text-left border-2 border-black">
+      <div className="justify-start p-5 md:p-10 text-left">
         <div className="flex items-center border-2 border-black w-full md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl">
           <input
             type="search"
@@ -118,7 +118,7 @@ const TrackShipment = () => {
           </button>
         </div>
 
-        <div className="flex flex-row h-[15rem] gap-5 items-center justify-center border-2 border-black mt-7">
+        <div className="flex flex-row h-[15rem] gap-5 items-center justify-center mt-7">
           <div className="flex flex-col">
             <h1 className="text-3xl font-bold">Location Info</h1>
             <p>Order ID: {trackingNumber}</p>

@@ -31,19 +31,19 @@ const OnboardMarketPlace = () => {
         setAddress(connection.selectedAddress);
       }
 
-      if (connection?.chainId !== "SN_GOERLI") {
-        alert("you need to switch to GOERLI to proceed!");
-        try {
-          await window?.starknet?.request({
-            type: "wallet_switchStarknetChain",
-            params: {
-              chainId: "SN_GOERLI",
-            },
-          });
-        } catch (error: any) {
-          alert(error.message);
-        }
-      }
+      // if (connection?.chainId !== "SN_GOERLI") {
+      //   alert("you need to switch to GOERLI to proceed!");
+      //   try {
+      //     await window?.starknet?.request({
+      //       type: "wallet_switchStarknetChain",
+      //       params: {
+      //         chainId: "SN_GOERLI",
+      //       },
+      //     });
+      //   } catch (error: any) {
+      //     alert(error.message);
+      //   }
+      // }
     };
     connectToStarknet();
   }, []);
@@ -95,8 +95,8 @@ const OnboardMarketPlace = () => {
 
   return (
     <div className="">
-      <h3 className="mb-7 text-xl md:text-2xl">Onboard Market Place</h3>
-      <div className="justify-start p-5 md:p-10 text-left border-2 border-black">
+      <h3 className="mb-7 text-3xl md:text-2xl">Onboard Market Place</h3>
+      <div className="justify-start p-5 md:p-10 text-left">
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label

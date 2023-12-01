@@ -19,7 +19,7 @@ const Stars: React.FC<StarsProps> = ({ amount }) => {
         stars.push(<FaStarHalfAlt key={i} className="text-orange-600"/>);
       } else {
         // Render an empty star
-        stars.push(<FaStar key={i} className="text-gray-300" />);
+        stars.push(<FaStar key={i} className="text-white " />);
       }
     }
 

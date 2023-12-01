@@ -30,19 +30,19 @@ const RegisterBranchAdmins = () => {
         setAddress(connection.selectedAddress);
       }
 
-      if (connection?.chainId !== "SN_GOERLI") {
-        alert("you need to switch to GOERLI to proceed!");
-        try {
-          await window?.starknet?.request({
-            type: "wallet_switchStarknetChain",
-            params: {
-              chainId: "SN_GOERLI",
-            },
-          });
-        } catch (error: any) {
-          alert(error.message);
-        }
-      }
+      // if (connection?.chainId !== "SN_GOERLI") {
+      //   alert("you need to switch to GOERLI to proceed!");
+      //   try {
+      //     await window?.starknet?.request({
+      //       type: "wallet_switchStarknetChain",
+      //       params: {
+      //         chainId: "SN_GOERLI",
+      //       },
+      //     });
+      //   } catch (error: any) {
+      //     alert(error.message);
+      //   }
+      // }
     };
     connectToStarknet();
   }, []);
@@ -84,7 +84,7 @@ const RegisterBranchAdmins = () => {
   return (
     <div className="">
       <h3 className="mb-7 text-xl md:text-2xl">Register New Admins</h3>
-      <div className="justify-start p-5 md:p-10 text-left border-2 border-black">
+      <div className="justify-start p-5 md:p-10 text-left">
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label

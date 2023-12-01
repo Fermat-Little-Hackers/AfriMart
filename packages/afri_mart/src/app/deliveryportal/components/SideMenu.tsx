@@ -32,8 +32,8 @@ const SideMenu = () => {
   return (
     <div
       className={`${
-        textVisible ? "border-2 border-black" : "border-0"
-      } md:border-2 md:border-black`}
+        textVisible ? "border-2 border-red-100" : "border-0"
+      } md:border-2 md:border-red-100 flex shadow-lg rounded-lg ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 gap-4`}
     >
       <div
         className={`border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center md:hidden cursor-pointer`}
