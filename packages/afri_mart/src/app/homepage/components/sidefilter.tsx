@@ -15,7 +15,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const clickedElementId = (event.target as HTMLDivElement).id;
     if(clickedElementId == "Agric"){
-        onClickAction('AGRICULTURE', 1)
+        onClickAction('AGRICULTURE', 0)
         setIsAgric(true)
         setIsCraft(false)
         setIsFashion(false)
@@ -25,7 +25,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "craft"){
-        onClickAction('TOOLS AND EQUIPMENT', 4)
+        onClickAction('TOOLS AND EQUIPMENT', 3)
         setIsCraft(true)
         setIsAgric(false)
         setIsFashion(false)
@@ -35,7 +35,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "fashion"){
-        onClickAction('ACCESSORIES', 3)
+        onClickAction('ACCESSORIES', 2)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(true)
@@ -45,7 +45,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "textiles"){
-        onClickAction('TEXTILES AND FABRICS', 2)
+        onClickAction('TEXTILES AND FABRICS', 1)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
@@ -55,7 +55,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "digital"){
-        onClickAction('DIGITAL ARTS', 5)
+        onClickAction('DIGITAL ARTS', 4)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
@@ -65,7 +65,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "physical"){
-        onClickAction('PHYSICAL ARTS', 6)
+        onClickAction('PHYSICAL ARTS', 5)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
