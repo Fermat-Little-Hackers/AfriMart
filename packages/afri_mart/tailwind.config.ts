@@ -38,6 +38,7 @@ const config: Config = {
       'body': ['"Open Sans"',],
     }
 },
-  plugins: [],
+  plugins: [
+  ],
 };
 export default config;

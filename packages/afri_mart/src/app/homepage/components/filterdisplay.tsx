@@ -43,28 +43,8 @@ const Filterdisplay : React.FC<filterProps> = ({ title, enumoption})  => {
       }, [title, enumoption])
    
    
-   
-   
-    const items = [
-        {
-            name : 'Ashoki Material',
-            price : 100
-        },
-        {
-            name : 'Akure Material',
-            price : 200
-        },
-        {
-            name : 'Egbado Material',
-            price : 300
-        },
-        {
-            name : 'Ikare Material',
-            price : 300
-        },
-    ]
     return (
-        <div className=" w-[1400px] smx:w-[100%] lmx:w-[95%] p-10 smx:p-[5px] mt-10 smx:mb-16">
+        <div className=" h-80 overflow-y-auto scrollbar w-[100%] smx:w-[100%] shadow-lg rounded-lg ring-1 ring-red-100 lmx:w-[95%] mt-10 smx:mt-4 p-4">
             <div className="w-full mx-auto">
                 <p>
                 {title}

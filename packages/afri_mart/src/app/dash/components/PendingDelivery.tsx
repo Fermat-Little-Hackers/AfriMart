@@ -128,7 +128,7 @@ const GetItem = async (args : number[] | undefined) => {
       <th>Amount</th>
       </tr>
     
-    <div className="overflow-y-auto scrollbar-thin">
+    <div className=" h-56 overflow-y-auto scrollbar">
     {allProductPendingArray?.map((item, index) => {
       let productname =  hexToReadableText(item.name.toString(16)) 
        let productprice = Number(item.price)/1e18
