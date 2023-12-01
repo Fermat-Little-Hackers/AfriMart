@@ -5,17 +5,12 @@ interface imageprop {
     uri : string;
 }
 const UserWithPhotos : React.FC<imageprop> = ({uri}) => {
-    //to test if hook works
-    //pass in the below cid
-    // bafyreibxtffb6gmuksf35szlkjcacodpwo2rz7p4jytx46miwhri2qkfca
-    //request will fail, if uri is not being fetched from onchain
-
     const {data} = useFetchURI(uri)
     const trimmedUri = data?.image?.substring(7);
     
     return (
     <div className="rounded-full ring-1 ring-red-300 w-12 h-12 border-solid bg-white">
-        <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt=""/>
+        <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" className='rounded-full ring-1 ring-red-300 w-12 h-12 border-solid'/>
     </div>
 
   )

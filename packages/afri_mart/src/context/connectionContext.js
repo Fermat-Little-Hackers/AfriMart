@@ -13,3 +13,18 @@ export const ConnectionContextProvider = ({ children })=>{
     );
 }
 export const useConnectionContext = () => useContext(ConnectionContext);
+
+
+
+const AccountContext = createContext();
+export const AccountContextProvider = ({ children })=>{
+  const [ShareAccount, setShareAccount] = useState(null);
+
+  return (
+    <AccountContext.Provider value={{ ShareAccount, setShareAccount }}>
+      {children}
+    </AccountContext.Provider>
+  );
+}
+export const useAccountContext = () => useContext(AccountContext);
+
