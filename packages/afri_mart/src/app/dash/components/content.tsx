@@ -18,7 +18,7 @@ const Content  : React.FC<prop> = ({ title}) => {
 
 
   return (
-    <div className="mt-12 shadow-lg rounded-lg ring-1 ring-red-100 h-[80%] smx:mt-4 p-4 gap-4">
+    <div className="shadow-lg rounded-lg ring-1 ring-red-100 h-[80%] smx:mt-4 p-4 gap-4">
           <div className="w-[70%]  lg:w-[95%] smx:w-[93%] mx-auto text-2xl mt-2 ml-2 smx:ml-2 flex flex-row justify-between">
                 <p>
                 {title}

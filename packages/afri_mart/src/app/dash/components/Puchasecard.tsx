@@ -13,7 +13,7 @@ const Puchasecard : React.FC<purchaseProps> = ({ title, amount, quantity, uri}) 
   return (
     <div className="w-[500px] mb-8 smx:w-[500%] flex justify-between smx:space-x-2 border-b border-black">
             <div className="h-[80px] p-4 smx:h-[100%] w-[20%] smx:w-[30%] ">
-            <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt=""/>
+            <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" className='w-full h-full object-cover'/>
             </div>
             <div>
                 <p className="smx:text-[15px]">{title}</p>
