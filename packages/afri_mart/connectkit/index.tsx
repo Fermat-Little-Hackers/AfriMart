@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { Contract, Provider, constants } from 'starknet'
 import { IconWallet } from "@tabler/icons-react"
 import { FaShoppingCart, FaUser, FaBars, FaTimes, FaGoogleWallet } from 'react-icons/fa';
-
+import { useConnectionContext } from '@/context/connectionContext'
 // import contractAbi from './abis/abi.json'
 // const contractAddress = "0x077e0925380d1529772ee99caefa8cd7a7017a823ec3db7c003e56ad2e85e300"
 
@@ -13,18 +13,26 @@ function ConnectButtoN() {
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
   const [account, setAccount] = useState();
   const [address, setAddress] = useState('');
+  const {ShareAddress, setShareAddress} = useConnectionContext()
 
   const [retrievedValue, setRetrievedValue] = useState('')
 
   useEffect(() => {
     const connectToStarknet = async() => {
-      const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+      try {
+        const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
   
-      if(connection && connection.isConnected) {
-        setConnection(connection)
-        setAccount(connection.account)
-        setAddress(connection.selectedAddress)
+        if(connection && connection.isConnected) {
+          setConnection(connection)
+          setAccount(connection.account)
+          setAddress(connection.selectedAddress)
+          setShareAddress(connection.selectedAddress)
+          console.log('shared')
+        }
+      } catch (error) {
+        console.log(error)
       }
+     
       //@ts-ignore
       // console.log(connection.chainId)
       //@ts-ignore
@@ -52,6 +60,8 @@ function ConnectButtoN() {
       setConnection(connection)
       setAccount(connection.account)
       setAddress(connection.selectedAddress)
+      setShareAddress(connection.selectedAddress)
+      console.log('shared')
     }
 
   }
@@ -61,41 +71,9 @@ function ConnectButtoN() {
     setConnection(undefined)
     setAccount(undefined)
     setAddress('')
+    setShareAddress('')
+
   }
-
-//   const increaseCounter = async() => {
-//     try {
-//       const contract = new Contract(contractAbi, contractAddress, account)
-//       await contract.increment()
-//       alert("you successfully increased the counter")
-//     }
-//     catch(error) {
-//       console.log(error.message)
-//     }
-//   }
-
-//   const decreaseCounter = async() => {
-//     try {
-//       const contract = new Contract(contractAbi, contractAddress, account)
-//       await contract.decrement()
-//       alert("you sucessfully decreased the counter")
-//     }
-//     catch(error) {
-//       console.log(error.message)
-//     }
-//   }
-
-//   const getCounter = async() => {
-//     const provider = new Provider( {sequencer: { network:constants.NetworkName.SN_MAIN } } )
-//     try {
-//       const contract = new Contract(contractAbi, contractAddress, provider)
-//       const counter = await contract.get_current_count()
-//       setRetrievedValue(counter.toString())
-//     }
-//     catch(error) {
-//       console.log(error.message)
-//     }
-//   } 
 
   return (
     <div className="App">

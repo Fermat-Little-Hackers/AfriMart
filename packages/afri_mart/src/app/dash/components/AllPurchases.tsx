@@ -8,6 +8,7 @@ import marketplaceAbi from "@/ABI/marketPlace";
 const AllPurchases =  ()  => {  
 const [allPurchase, setAllPurchase] = useState<any[]>([])
 const [allProductArray, setAllproductArray] = useState<any[]>([]);
+const [address, setAddress] = useState<string | undefined>('');
 
 
   const getAllpurchase = async () => {
@@ -19,10 +20,11 @@ const [allProductArray, setAllproductArray] = useState<any[]>([]);
 
     try {
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
+      setAddress(connection?.selectedAddress)
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allPurchaseData = await contract.getProductsBoughtByUser(
-        connection?.selectedAddress?.toString(),
-        connection?.selectedAddress?.toString()
+        address?.toString(),
+        address?.toString()
       );
       setAllPurchase([...allPurchaseData]);
     } catch (error : any) {
