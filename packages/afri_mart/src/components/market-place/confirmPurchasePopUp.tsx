@@ -14,9 +14,10 @@ interface ConfirmPurchasePopUpProps {
   price: number;
   id: any;
   amount: any;
+  isCart: boolean;
 }
 
-function ConfirmPurchasePopUp({ itemName, price, id, amount }: ConfirmPurchasePopUpProps) {
+function ConfirmPurchasePopUp({ itemName, price, id, amount, isCart }: ConfirmPurchasePopUpProps) {
   const { sharedState, setSharedState } = useYourContext();
   const [waitText, setWaitText] = useState(
     `Confirm you intend to make a purchase ${itemName} worth ${price * amount} Eth from AfriMart`
@@ -35,7 +36,7 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount }: ConfirmPurchasePo
       prevSrc === "/image/wait.svg" ? "/image/loading.svg" : "/image/wait.svg"
     );
     setWaitText("Processing transaction, please wait");
-    purchaseProduct();
+    isCart ? checkoutCart() : purchaseProduct();
   };
 
   const handlePaymentCompleted = () => {
@@ -75,7 +76,7 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount }: ConfirmPurchasePo
     const erc20Call = ERC20contract.populate('approve', [CONTRACT_ADDRESS, Tfee])
 
     const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
-    const collective_inputs = [1, 2];
+    const collective_inputs = [id, amount];
     const myCall = contract.populate('purchaseProduct', collective_inputs)
 
     //@ts-ignore
@@ -101,7 +102,45 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount }: ConfirmPurchasePo
     }).finally(() => {
       handlePaymentCompleted();
     })
+}
 
+  const checkoutCart = async() => {
+    const ERC_ADDRESS = EthAddr();
+    const Eth = 1000000000000000000;
+    const defAmount = 100000000000000;
+    let Tfee = amount == 1 && Eth * price < defAmount ? defAmount : (Eth * price) * amount;
+    // console.log(`amount....${Tfee}`)
+    const CONTRACT_ADDRESS = MarketPlaceAddr();
+    const ERC20contract = new Contract(erc20abi.erc20abi, ERC_ADDRESS, account)
+    const erc20Call = ERC20contract.populate('approve', [CONTRACT_ADDRESS, Tfee])
+
+    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
+    // const collective_inputs = [ ];
+    const myCall = contract.populate('checkOutCart', [])
+
+    //@ts-ignore
+    const multiCall = await account.execute(
+        [
+            {
+                contractAddress: ERC_ADDRESS,
+                entrypoint: "approve",
+                calldata: erc20Call.calldata
+            },
+            {
+                contractAddress: CONTRACT_ADDRESS,
+                entrypoint: "checkOutCart",
+                calldata: myCall.calldata
+            }
+        ]
+    )
+    // console.log("Multicall: ", multiCall)
+    //@ts-ignore
+    account?.provider.waitForTransaction(multiCall.transaction_hash).then(() => {
+    }).catch((e: any) => {
+        console.log("Error: ", e)
+    }).finally(() => {
+      handlePaymentCompleted();
+    })
 }
 
 

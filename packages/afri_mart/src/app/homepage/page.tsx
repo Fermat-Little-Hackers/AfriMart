@@ -6,22 +6,25 @@ import Trendingbar from "./components/trendingbar";
 import OurPartners from "@/components/market-place/ourPartners";
 import { useState } from "react";
 import SelectOption from "./components/selecttab";
+import TrendingProducts from "../cart/components/trendingProducts";
 
 const Homepage = () => {
   const [productTitle, setProductTitle] = useState("AGRICULTURE");
-  const handleFilterClick = (message: string) => {
+  const [enumOption, setEnumOption] = useState(1);
+  const handleFilterClick = (message: string, option: number) => {
     setProductTitle(message);
+    setEnumOption(option)
   };
 
   return (
     <div>
         <HomeSearch />
-        <div className='flex space-x-24 xlg:space-x-0 mmx:gap-[30px] smx:space-x-0 lmx:space-x-0 justify-center'>
+        <SelectOption onClickAction={handleFilterClick} />
+        <div className='flex space-x-24 xlg:space-x-0 mmx:gap-[30px] smx:space-x-0 lmx:space-x-0 justify-center md:px-10 lg:px-20'>
         <Sidefilter onClickAction={handleFilterClick} />
-        <Trendingbar />
+        <Filterdisplay title={productTitle} enumoption={enumOption} />
       </div>
-      <SelectOption onClickAction={handleFilterClick} />
-      <Filterdisplay title={productTitle} />
+        <TrendingProducts />
       <OurPartners />
     </div>
   );

@@ -2,9 +2,10 @@ import { Fragment, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
+
 interface ClickProps {
-    onClickAction: (message: string) => void;
-  }
+  onClickAction: (message: string, enumOption : number) => void;
+}
 
 const category = [
   {
@@ -12,7 +13,7 @@ const category = [
     name: 'AGRIC',
    },
   {
-    id: 2,
+    id: 4,
     name: 'CRAFT ART',
 },
   {
@@ -20,19 +21,15 @@ const category = [
     name: 'FASHION',
   },
   {
-    id: 4,
-    name: 'ARTIFACTS',
-   },
-  {
-    id: 5,
+    id: 2,
     name: 'TEXTILES & FABRICS',
     },
   {
-    id: 6,
+    id: 5,
     name: 'DIGITAL ARTS',
   },
   {
-    id: 7,
+    id: 6,
     name: 'PHYSICAL ARTS',
   },
 ]
@@ -78,7 +75,7 @@ const SelectOption : React.FC<ClickProps> = ({ onClickAction }) => {
                       )
                     }
                     value={item}
-                    onClick={() => onClickAction(item.name)}
+                    onClick={() => onClickAction(item.name, item.id)}
                   >
                     {({ selected, active }) => (
                       <>

@@ -40,22 +40,21 @@ const SimilarProducts:React.FC<MyProps>= ({cartegory, cartegoryIndex}) => {
       }
 }
 
-      const intervalId = setInterval(getProduct, 3000);
+      // const intervalId = setInterval(getProduct, 3000);
 
-    // ;
-    //   useEffect(() => {
-    //     getProduct();
+          useEffect(() => {
+            getProduct();
 
-    //   }, [cartegory, cartegoryIndex])
+          }, [cartegory, cartegoryIndex])
 
 
 
   return (
-    <div className="md:border-2 md:border-black mx-5 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-5 md:gap-7 mt-10 md:mt-20">
+    <div className=" m-5 my-7 md:my-0 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-5 md:gap-7 ">
         <div className="">
-            <p>
+            <h1 className='text-xl font-semibold'>
                 SIMILAR PRODUCTS 
-            </p>                    
+            </h1>                    
         </div>
           <div className='grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4 md:gap-7 xl:gap-16'>
             {products?.map((product, index) => (

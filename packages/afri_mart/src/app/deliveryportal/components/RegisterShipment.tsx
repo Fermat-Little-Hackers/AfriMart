@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
+import contractAbi from "../../../ABI/supplyChainContract.json";
+import {connect} from "@argent/get-starknet";
+import { ConnectedStarknetWindowObject } from "get-starknet-core";
+import { Contract } from "starknet";
+import { SupplyChainContractAddr } from "@/components/addresses";
+import main from "../../../../utils/upload.mjs";
 
 interface FormData {
   profilePicture: FileList | null;
@@ -12,9 +18,15 @@ interface FormData {
 const ResgisterShipment = () => {
   const [OrderId, setOrderId] = useState<any>();
   const [Name, setName] = useState<any>();
-  const [Address, setAddress] = useState("");
+  const [shipmentAddress, setShipmentAddress] = useState("");
   const [trackMode, settrackMode] = useState("");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [imageBlob, setImageBlob] = useState<File | undefined>();
+  const [imageHash, setImageHash] = useState<Array<String>>();
+  const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
+  const [account, setAccount] = useState();
+  const [address, setAddress] = useState('');
+
 
   const {
     register,
@@ -22,6 +34,7 @@ const ResgisterShipment = () => {
     setValue,
     formState: { errors },
   } = useForm<FormData>();
+
   // const getStaffBranch = async () => {
   //   const provider = new Provider({
   //     rpc: {
@@ -48,16 +61,74 @@ const ResgisterShipment = () => {
   };
 
   const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAddress(e.target.value);
+    setShipmentAddress(e.target.value);
   };
 
   const handletrackMode = (e: React.ChangeEvent<HTMLInputElement>) => {
     settrackMode(e.target.value);
   };
 
-  const createBranch: SubmitHandler<FormData> = () => {
-    console.log("submitted......");
+
+  useEffect(() => {
+    const connectToStarknet = async () => {
+      const connection = await connect({
+        modalMode: "neverAsk",
+        webWalletUrl: "https://web.argent.xyz",
+      });
+
+      if (connection && connection.isConnected) {
+        setConnection(connection);
+        setAccount(connection.account);
+        setAddress(connection.selectedAddress);
+      }
+
+      if (connection?.chainId !== "SN_GOERLI") {
+        alert("you need to switch to GOERLI to proceed!");
+        try {
+          await window?.starknet?.request({
+            type: "wallet_switchStarknetChain",
+            params: {
+              chainId: "SN_GOERLI",
+            },
+          });
+        } catch (error: any) {
+          alert(error.message);
+        }
+      }
+    };
+    connectToStarknet();
+  }, []);
+
+
+  const registerShipment: SubmitHandler<FormData> = async () => {
+    console.log("Registering Shipment......");
+    try {
+
+      let ipfsDetails = await main(imageBlob,Name,OrderId)
+      let length = (ipfsDetails?.ipnft).length; 
+      let halfLength = Math.floor(length / 2)
+      
+      let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
+      let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
+
+      console.log('FIRST HALF', firstHalf);
+      console.log('second HALF', secondhalf);
+      setImageHash([firstHalf,secondhalf]);
+
+
+      const contract = new Contract(
+        contractAbi,
+        SupplyChainContractAddr(),
+        account
+      );
+      await contract.create_shipment(OrderId, Name, firstHalf, secondhalf, shipmentAddress, trackMode);
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
+
+
+
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -72,21 +143,22 @@ const ResgisterShipment = () => {
 
       // Update form value for validation
       setValue("profilePicture", event.target.files);
+      setImageBlob(file);
     }
   };
 
   return (
     <div className="">
       <h3 className="mb-5 md:mb-7 text-xl md:text-2xl">Register Shipment</h3>
-      <div className="justify-start text-left border-2 border-black">
+      <div className="justify-start text-left ">
         <form
-          onSubmit={handleSubmit(createBranch)}
+          onSubmit={handleSubmit(registerShipment)}
           className="p-5 md:p-20 bg-white rounded shadow-md"
         >
           <div className="mb-4">
             <label
               htmlFor="OrderId"
-              className="block text-gray-600 text-sm font-semibold mb-2"
+              className="block  text-gray-600 text-sm font-semibold mb-2"
             >
               Order ID
             </label>
@@ -96,7 +168,7 @@ const ResgisterShipment = () => {
               id="OrderId"
               value={OrderId}
               onChange={handleOrderId}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -112,7 +184,7 @@ const ResgisterShipment = () => {
               id="Name"
               value={Name}
               onChange={handleName}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="flex flex-col md:flex-row">
@@ -149,9 +221,9 @@ const ResgisterShipment = () => {
               type="text"
               name="Address"
               id="Address"
-              value={Address}
+              value={shipmentAddress}
               onChange={handleAddress}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -167,7 +239,7 @@ const ResgisterShipment = () => {
               id="trackMode"
               value={trackMode}
               onChange={handletrackMode}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div>
@@ -175,7 +247,7 @@ const ResgisterShipment = () => {
               type="submit"
               className="bg-blue-500 text-white py-2 px-4 rounded focus:outline-none hover:bg-blue-700"
             >
-              Update Shipment
+              Register Shipment
             </button>
           </div>
         </form>

@@ -1,14 +1,17 @@
 import React from 'react'
 import Stars from '../../../../components/market-place/stars'
 import { FaUser } from 'react-icons/fa';
+import { CheckIcon } from '@heroicons/react/20/solid';
 
 const ProductsReviews = () => {
   return (
-    <div className="border-2 border-black mx-5 md:mx-20 h-fit md:h-[45vh] px-3 py-3 md:px-10 md:py-7 flex flex-col gap-5 md:gap-7">
+    <div className='bg-art-graphics p-5 md:p-12'>
+
+    <div className=" bg-[var(--ivory)] rounded-md h-fit md:h-fit px-5 py-5 md:px-10 md:py-7 flex flex-col gap-5 md:gap-7 items-center md:w-max mx-auto">
         <div className="">
-            <p>
+            <h1 className='md:text-4xl text-3xl text-ceter font-serif'>
                 REVIEWS
-            </p>                    
+            </h1>                    
         </div>
 
         <div className="flex flex-row gap-5 md:gap-10 ">
@@ -39,6 +42,7 @@ const ProductsReviews = () => {
                     </div>
             </div>
         </div>
+    </div>
     </div>
   )
 }

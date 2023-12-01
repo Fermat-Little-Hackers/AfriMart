@@ -79,7 +79,11 @@ const marketPlaceAbi = [
         "type": "core::felt252"
       },
       {
-        "name": "imageUri",
+        "name": "imageUri1",
+        "type": "core::felt252"
+      },
+      {
+        "name": "imageUri2",
         "type": "core::felt252"
       },
       {
@@ -133,7 +137,11 @@ const marketPlaceAbi = [
         "type": "core::felt252"
       },
       {
-        "name": "profileImg",
+        "name": "profileImg1",
+        "type": "core::felt252"
+      },
+      {
+        "name": "profileImg2",
         "type": "core::felt252"
       },
       {
@@ -307,7 +315,11 @@ const marketPlaceAbi = [
             "type": "core::felt252"
           },
           {
-            "name": "profileImg",
+            "name": "profileImg1",
+            "type": "core::felt252"
+          },
+          {
+            "name": "profileImg2",
             "type": "core::felt252"
           }
         ],
@@ -327,7 +339,11 @@ const marketPlaceAbi = [
             "type": "core::felt252"
           },
           {
-            "name": "imageUri",
+            "name": "imageUri1",
+            "type": "core::felt252"
+          },
+          {
+            "name": "imageUri2",
             "type": "core::felt252"
           },
           {
@@ -363,7 +379,11 @@ const marketPlaceAbi = [
             "type": "core::felt252"
           },
           {
-            "name": "imageUri",
+            "name": "imageUri1",
+            "type": "core::felt252"
+          },
+          {
+            "name": "imageUri2",
             "type": "core::felt252"
           },
           {
@@ -787,6 +807,30 @@ const marketPlaceAbi = [
         ],
         "outputs": [],
         "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "setSupplyChainFactory",
+        "inputs": [
+          {
+            "name": "supplyChainFactory",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "reEmburse",
+        "inputs": [
+          {
+            "name": "amount",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
       }
     ]
   },
@@ -1169,5 +1213,4 @@ const marketPlaceAbi = [
     ]
   }
 ]
-
 export default marketPlaceAbi;
