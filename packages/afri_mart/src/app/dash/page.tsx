@@ -1,5 +1,5 @@
 "use client";
-import  { useState } from "react";
+import  { useEffect, useState } from "react";
 import Search from "@/components/market-place/search";
 import SideFilter from "./components/sideFilter";
 import UserDetails from "./components/userDetails";
@@ -7,12 +7,24 @@ import TrendingProducts from "../cart/components/trendingProducts";
 import OurPartners from "@/components/market-place/ourPartners";
 import Content from "./components/content";
 import SelectCat from "./components/Selectcat";
+import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
 
 const Dashboard = () => {
     const [title, setTitle] = useState('All Purchases')
   const props = (message: string) => {
     setTitle(message);
   };
+
+  useEffect(() => {
+    const connectToStarknet = async() => {
+       let connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })  
+
+    if (connection && connection.isConnected) {
+      alert('connected')
+    }
+}
+    connectToStarknet()
+  }, [])
   return (
     <div>
       <Search />

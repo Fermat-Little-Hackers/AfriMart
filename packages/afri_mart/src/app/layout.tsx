@@ -12,6 +12,8 @@ import { ProviderInterface, RpcProvider, provider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
+import {ConnectionContextProvider} from '../context/connectionContext'
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ListProductContextProvider } from '../context/listProductContext';
 // import { ConnectkitProvider } from '../../connectkit';
 
@@ -24,19 +26,25 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     new InjectedConnector({ options: { id: 'braavos' } }),
     new InjectedConnector({ options: { id: 'argentX' } }),
   ];
+  const queryClient = new QueryClient();
+
   return (
     <html lang="en">
       <body className={clsx("", inter.className)}>
+        <ConnectionContextProvider>
         <ListProductContextProvider>
         <SupplyChainContextProvider>
           <RegisteredContextProvider>
             <YourContextProvider>
               <StarknetProvider>
+      <QueryClientProvider client={queryClient}>
                 <PagesLayout>{children}</PagesLayout>
+        </QueryClientProvider>
               </StarknetProvider>
             </YourContextProvider>
           </RegisteredContextProvider>
         </SupplyChainContextProvider>
+        </ConnectionContextProvider>
         </ListProductContextProvider>
       </body>
     </html>
