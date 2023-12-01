@@ -179,11 +179,11 @@ const UpdateShipment = () => {
 
   return (
     <div className="">
-      <h3 className="mb-5 md:mb-7 text-xl md:text-2xl">Update Shipment</h3>
-      <div className="justify-start text-left  ">
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Update Shipment</h3>
+      <div className="justify-start text-left">
         <form
           onSubmit={updateShipment}
-          className="  rounded  "
+          className="p-5 md:p-20 rounded w-full"
         >
           <div className="mb-4">
             <label
@@ -229,7 +229,8 @@ const UpdateShipment = () => {
                 id="CurrentStatus" 
                 name="CurrentStatus"
                 onChange={(e) => handleCurrentStatus(e)}
-                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                // className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+                className="block bg-transparent w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-[var(--terracota)] placeholder:text-gray-400  focus:ring-indigo-600 sm:text-sm sm:leading-6"
               >
                 <option value="">Select Status</option>
                 <option value="Processing">Processing</option>

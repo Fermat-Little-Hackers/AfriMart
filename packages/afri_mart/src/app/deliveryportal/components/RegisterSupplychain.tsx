@@ -109,7 +109,7 @@ const RegisterSupplychain = () => {
 
   return (
     <div className="">
-      <h3 className="mb-7 text-xl md:text-2xl">Register Supply Chain</h3>
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Register Supply Chain</h3>
       <div className="justify-start text-left ">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -128,7 +128,7 @@ const RegisterSupplychain = () => {
               id="repAddress"
               value={companyRepAddr}
               onChange={handleAddress}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -144,7 +144,7 @@ const RegisterSupplychain = () => {
               id="companyName"
               value={companyName}
               onChange={handleCompanyName}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
@@ -160,7 +160,7 @@ const RegisterSupplychain = () => {
               id="city"
               value={city}
               onChange={handleCity}
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+              className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
           <div className="mb-4">
