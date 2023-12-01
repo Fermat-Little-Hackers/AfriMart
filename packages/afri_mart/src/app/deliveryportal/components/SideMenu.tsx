@@ -156,19 +156,7 @@ const SideMenu = () => {
           {" "}
           Update Shipment Location{" "}
         </div>
-        <div
-          className="hover:cursor-pointer"
-          onClick={handleClick}
-          style={
-            sortColor("UpdateShipmentLocation")
-              ? { color: "gray" }
-              : { color: "black" }
-          }
-          id="UpdateShipmentLocation"
-        >
-          {" "}
-          Update Shipment Location{" "}
-        </div>
+
         <div
           className="hover:cursor-pointer"
           onClick={handleClick}

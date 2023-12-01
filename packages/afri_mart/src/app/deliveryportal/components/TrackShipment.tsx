@@ -46,19 +46,19 @@ const TrackShipment = () => {
         setAddress(connection.selectedAddress);
       }
 
-      if (connection?.chainId !== "SN_GOERLI") {
-        alert("you need to switch to GOERLI to proceed!");
-        try {
-          await window?.starknet?.request({
-            type: "wallet_switchStarknetChain",
-            params: {
-              chainId: "SN_GOERLI",
-            },
-          });
-        } catch (error: any) {
-          alert(error.message);
-        }
-      }
+      // if (connection?.chainId !== "SN_GOERLI") {
+      //   alert("you need to switch to GOERLI to proceed!");
+      //   try {
+      //     await window?.starknet?.request({
+      //       type: "wallet_switchStarknetChain",
+      //       params: {
+      //         chainId: "SN_GOERLI",
+      //       },
+      //     });
+      //   } catch (error: any) {
+      //     alert(error.message);
+      //   }
+      // }
     };
     connectToStarknet();
   }, []);

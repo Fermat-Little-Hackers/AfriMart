@@ -23,9 +23,9 @@ const TrackAllItem = () => {
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
   const [account, setAccount] = useState();
   const [address, setAddress] = useState("");
-  const [allItems, setAllItems] = useState<any[]>();
-  const [orderId, setOrderId] = useState();
-  const [status, setStatus] = useState("");
+  const [allItems, setAllItems] = useState<ItemStatus[]>();
+  const [orderId, setOrderId] = useState<number | undefined>();
+  const [status, setStatus] = useState<CairoCustomEnum | undefined>();
 
   function hexToReadableText(hexString: any): string {
     const bytes = Buffer.from(hexString, "hex");
@@ -97,13 +97,11 @@ const TrackAllItem = () => {
     <div className="">
       <h3 className="mb-7 text-xl md:text-2xl"> Pending Deliveries</h3>
       <div className="flex items-center border-2 border-black">
-        {/* <div>{orderId}</div>
-        <div>{status}</div> */}
         {allItems?.map((item, index) => {
           return (
-            <div key={index}>
+            <div key={index} className=" ">
               <div>{item.OrderID.toString()}</div>
-              {/* <div>{item.status}</div> */}
+              <div>{item.status.activeVariant()}</div>
             </div>
           );
         })}
