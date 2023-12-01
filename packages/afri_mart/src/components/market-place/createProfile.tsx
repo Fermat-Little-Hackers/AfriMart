@@ -8,6 +8,7 @@ import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/
 import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
+import { useAccountContext } from '@/context/connectionContext';
 
 interface FormData {
     profilePicture: FileList | null;
@@ -50,7 +51,10 @@ const FormField = () => {
     const [isDisabled, setIsDisabled] = useState(false);
     const [imageblob, setImageBlob] = useState<File | undefined >()
 
+
     const { register, handleSubmit, setValue, formState: { errors }  } = useForm<FormData>();
+    const {ShareAccount, setShareAccount} = useAccountContext()
+
 
     const handleProcessPayment = () => {
         setIsDisabled(true);
@@ -114,7 +118,7 @@ const FormField = () => {
     const create = async (firsthalf : string, secondHalf : string) => {
       try {
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), connection?.account);
+      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), ShareAccount);
       await contract.createProfile(name,country,region,firsthalf,secondHalf);
       alert("Profile created")
       setSharedState(false);

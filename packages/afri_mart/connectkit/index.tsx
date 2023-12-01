@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { Contract, Provider, constants } from 'starknet'
 import { IconWallet } from "@tabler/icons-react"
 import { FaShoppingCart, FaUser, FaBars, FaTimes, FaGoogleWallet } from 'react-icons/fa';
-import { useConnectionContext } from '@/context/connectionContext'
+import { useConnectionContext, useAccountContext } from '@/context/connectionContext'
 // import contractAbi from './abis/abi.json'
 // const contractAddress = "0x077e0925380d1529772ee99caefa8cd7a7017a823ec3db7c003e56ad2e85e300"
 
@@ -14,6 +14,8 @@ function ConnectButtoN() {
   const [account, setAccount] = useState();
   const [address, setAddress] = useState('');
   const {ShareAddress, setShareAddress} = useConnectionContext()
+  const {ShareAccount, setShareAccount} = useAccountContext()
+
 
   const [retrievedValue, setRetrievedValue] = useState('')
 
@@ -27,6 +29,7 @@ function ConnectButtoN() {
           setAccount(connection.account)
           setAddress(connection.selectedAddress)
           setShareAddress(connection.selectedAddress)
+          setShareAccount(connection.account)
           console.log('shared')
         }
       } catch (error) {
@@ -61,6 +64,7 @@ function ConnectButtoN() {
       setAccount(connection.account)
       setAddress(connection.selectedAddress)
       setShareAddress(connection.selectedAddress)
+      setShareAccount(connection.account)
       console.log('shared')
     }
 
@@ -72,6 +76,8 @@ function ConnectButtoN() {
     setAccount(undefined)
     setAddress('')
     setShareAddress('')
+    setShareAccount(null)
+
 
   }
 
@@ -86,7 +92,7 @@ function ConnectButtoN() {
               <div className=''>
                 <p className="description text-xs md:text-sm">
                 {
-                    address ? `${address.slice(0, 5)}.....${address.slice(-5)}` : ''
+                    ShareAddress ? `${ShareAddress.slice(0, 5)}.....${ShareAddress.slice(-5)}` : ''
                 }
                 </p>
               </div>

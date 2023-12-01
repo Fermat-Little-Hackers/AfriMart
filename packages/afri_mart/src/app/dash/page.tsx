@@ -8,21 +8,24 @@ import OurPartners from "@/components/market-place/ourPartners";
 import Content from "./components/content";
 import SelectCat from "./components/Selectcat";
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
+import { useConnectionContext } from "@/context/connectionContext";
 
 const Dashboard = () => {
     const [title, setTitle] = useState('All Purchases')
+    const {ShareAddress, setShareAddress} = useConnectionContext()
+
   const props = (message: string) => {
     setTitle(message);
   };
 
   useEffect(() => {
     const connectToStarknet = async() => {
-       let connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })  
-
-    if (connection && connection.isConnected) {
-      alert('connected')
+      let connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })  
+    console.log(connection)
+      if (connection && connection.isConnected) {
+      setShareAddress(connection.selectedAddress)
     }
-}
+    }
     connectToStarknet()
   }, [])
   return (

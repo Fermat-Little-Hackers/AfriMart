@@ -12,7 +12,7 @@ import { ProviderInterface, RpcProvider, provider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
-import {ConnectionContextProvider} from '../context/connectionContext'
+import {ConnectionContextProvider, AccountContextProvider} from '../context/connectionContext'
 import { QueryClient, QueryClientProvider } from 'react-query';
 // import { ConnectkitProvider } from '../../connectkit';
 
@@ -31,6 +31,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <html lang="en">
       <body className={clsx("", inter.className)}>
         <ConnectionContextProvider>
+         <AccountContextProvider>
         <SupplyChainContextProvider>
           <RegisteredContextProvider>
             <YourContextProvider>
@@ -42,6 +43,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </YourContextProvider>
           </RegisteredContextProvider>
         </SupplyChainContextProvider>
+        </AccountContextProvider> 
         </ConnectionContextProvider>
       </body>
     </html>
