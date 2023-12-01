@@ -23,13 +23,13 @@ Our vision is to bridge the gap between African producers and the global market.
    - All transactions, product listings, and supply chain activities are securely recorded on the Starknet blockchain.
 
 ### 3. **Global Payment Integration**
-   - Accept payments worldwide using universally accepted payment methods, ensuring a seamless buying experience for customers.
+   - Accept payments worldwide using universally accepted payment methods (Ether), ensuring a seamless buying experience for customers.
 
 ### 4. **Supply Chain Dapp**
    - Utilize our decentralized application (Dapp) to track the location and delivery of goods from the seller to the buyer.
 
 ### 5. **Partnership with Delivery Companies**
-   - Onboard delivery partners like Speedaf Express into our supply chain Dapp for efficient and reliable delivery services.
+   - Onboard delivery partners like Speedaf Express, etc into our supply chain Dapp for efficient and reliable delivery services.
 
 # User Roles and Workflows
 
@@ -55,9 +55,6 @@ Our platform is designed to provide a seamless experience for sellers, buyers, a
 5. **Handover to Delivery Partner**
    - The seller takes the goods, along with the assigned tracking ID, to one of our partnering delivery companies, e.g., Speedaf Express.
 
-6. **Tracking Portal**
-   - The seller uploads information about the goods and their current location to our tracking portal.
-   - Pictures of the goods are taken and added to the portal for transparency.
 
 ## Buyer Workflow
 
