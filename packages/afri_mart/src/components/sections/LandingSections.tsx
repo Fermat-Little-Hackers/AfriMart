@@ -1,3 +1,5 @@
+import { FadeIn } from "../animations/FadeIn";
+
 export const LandingSections = () => {
     let contents = [
         {
@@ -16,31 +18,35 @@ export const LandingSections = () => {
             headings: "🛒 Shop with Confidence",
             content: "AfriMart is committed to providing a secure and trustworthy shopping environment.Explore our collection with confidence, knowing that each item has been carefully selected to represent the best of African culture."
         },
-    ]
-    return(
+    ];
+    return (
         <>
-           {contents.map((e,i)=> {
-            return(
-                <FormI key={i} content={e.content} headings={e.headings} />
-           )
-           })}
+            {contents.map((e, i) => {
+                return (
+                    <FormI key={i} content={e.content} headings={e.headings} />
+                );
+            })}
         </>
-    )
+    );
 
-}
+};
 
 export const FormI = (content: {
     headings: string,
-    content: string
+    content: string;
 }) => {
     return (
         <div className="bg-charcoal h-max w-full bg-cover text-center p-16 space-y-8">
-            <h1 className="mx-auto text-[var(--sand)] font-serif text-4xl">
-                {content.headings}
-            </h1>
-            <p className="text-white max-w-2xl mx-auto">
-               {content.content}
-            </p>
+            <FadeIn>
+                <h1 className="mx-auto text-[var(--sand)] font-serif text-4xl">
+                    {content.headings}
+                </h1>
+            </FadeIn>
+            <FadeIn>
+                <p className="text-white max-w-2xl mx-auto">
+                    {content.content}
+                </p>
+            </FadeIn>
         </div>
     );
 };
