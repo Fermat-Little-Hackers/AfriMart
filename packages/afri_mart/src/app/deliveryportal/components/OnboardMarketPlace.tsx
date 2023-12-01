@@ -95,13 +95,13 @@ const OnboardMarketPlace = () => {
 
   return (
     <div className="">
-      <h3 className="mb-7 text-3xl md:text-2xl">Onboard Market Place</h3>
-      <div className="justify-start p-5 md:p-10 text-left">
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Onboard Market Place</h3>
+      <div className="justify-start p-5 md:p-20 text-left">
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium leading-6 text-gray-900"
+              className="block text-gray-600 text-sm font-semibold mb-2"
             >
               Market place Address
             </label>
@@ -113,7 +113,7 @@ const OnboardMarketPlace = () => {
                 onChange={handleAddress}
                 autoComplete="name"
                 required
-                className="block w-3/4 rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[var(--terracota)] placeholder:text-gray-400 focus:ring-1  bg-transparent focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[var(--terracota)] placeholder:text-gray-400 focus:ring-1  bg-transparent focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>

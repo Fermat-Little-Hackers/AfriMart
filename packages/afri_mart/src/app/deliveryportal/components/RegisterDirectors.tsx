@@ -84,9 +84,9 @@ const RegisterDirectors = () => {
 
   return (
     <div className="">
-      <h3 className="mb-7 text-xl md:text-2xl">Register Directors</h3>
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Register Directors</h3>
       <div className="justify-start p-5 md:p-10 text-left">
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+        <form className="space-y-4 p-5 md:p-20 rounded" onSubmit={handleSubmit(onSubmit)}>
           <div>
             <label
               htmlFor="name"
@@ -102,7 +102,7 @@ const RegisterDirectors = () => {
                 onChange={handleAddress}
                 autoComplete="name"
                 required
-                className="block w-full rounded-md bg-transparent border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block bg-transparent w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-[var(--terracota)] placeholder:text-gray-400  focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
