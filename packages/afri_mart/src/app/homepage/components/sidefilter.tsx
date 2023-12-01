@@ -81,7 +81,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         <div  id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>Agriculture</div>
         <div id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>Craft And Arts</div>
         <div id="fashion" onClick={handleClick} style={{color: isFashion ? 'grey' : 'black'}}>Fashion</div>
-        <div id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>Textiles & Fabrica</div>
+        <div id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>Textiles & Fabrics</div>
         <div id="digital" onClick={handleClick} style={{color: isDigital ? 'grey' : 'black'}}>Digital Arts</div>
         <div id="physical" onClick={handleClick} style={{color: isPhysical ? 'grey' : 'black'}}>Physical Arts</div>
        </div>

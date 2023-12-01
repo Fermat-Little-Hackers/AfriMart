@@ -28,3 +28,16 @@ export const AccountContextProvider = ({ children })=>{
 }
 export const useAccountContext = () => useContext(AccountContext);
 
+
+const LoadingContext = createContext();
+export const LoadingContextProvider = ({ children })=>{
+  const [ShareLoad, setShareLoad] = useState(null);
+
+  return (
+    <LoadingContext.Provider value={{ ShareLoad, setShareLoad }}>
+      {children}
+    </LoadingContext.Provider>
+  );
+}
+export const useLoadingContext = () => useContext(LoadingContext);
+
