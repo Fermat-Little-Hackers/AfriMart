@@ -5,7 +5,6 @@ export default function useFetchURI(uri :string) {
 
  const API=`https://ipfs.io/ipfs/${uri}/metadata.json`
 
-console.log(uri)
  const getUri = async () =>{
     return await axios.get(API).then((res)=>
      res.data

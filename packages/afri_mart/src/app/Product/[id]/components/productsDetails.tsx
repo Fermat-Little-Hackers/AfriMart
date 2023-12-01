@@ -14,6 +14,7 @@ import { Account, Contract, Provider, constants, AccountInterface } from 'starkn
 import dummy from '../../../../ABI/dummy.json'
 import Image from 'next/image';
 import { CairoOption, CairoCustomEnum, CairoEnumRaw } from "starknet";
+import Productphoto from './productphoto';
 
 type cartegory = {
   Agriculture: any,
@@ -40,7 +41,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const [description, setDescription] = useState<any>();
     const [price, setPrice] = useState<any>();
     const [imgUri, setImgUri] = useState<any>();
-    const [imgUri2, setImgUri2] = useState<any>();
+    // const [imgUri2, setImgUri2] = useState<any>();
     const [addingCart, setAddingCart] = useState<boolean>(false);
 
 
@@ -82,8 +83,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
           // console.log(details);
           let eth = 1000000000000000000;
             setName(hexToReadableText(details.name.toString(16)))
-            setImgUri(details.imageUri1.toString(16));
-            setImgUri2(details.imageUri2.toString(16));
+            setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));
             setPrice(Number(BigInt(details.price)) / eth);
             let cart:CairoEnumRaw = details.cartegory;
             setSeller(`0x${details.seller.toString(16)}`);
@@ -188,7 +188,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
   return (
     <div className="flex flex-col md:flex-row md:gap-32 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
         <div className="flex flex-col md:w-[40%] gap-4">
-            <div className=" bg-[var(--afroroasters-brown)] md:w-[20rem] h-[20rem]"></div>
+            {/* <div className=" bg-[var(--afroroasters-brown)] md:w-[20rem] h-[20rem]"></div> */}
+            <Productphoto uri={imgUri} />
             <div className='flex flex-col gap-2'>
                 <div>
                     <Stars amount={2.5}/>

@@ -5,10 +5,13 @@ import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import { setInterval } from "timers";
+import { useConnectionContext } from "@/context/connectionContext";
+
 
 const ListedItems = () => {
   const [allListedItem, setAllListed] = useState<any[]>([]);
   const [allProductArray, setAllproductArray] = useState<any[]>([]);
+  const {ShareAddress, setShareAddress} = useConnectionContext()
 
 
 
@@ -24,8 +27,8 @@ const ListedItems = () => {
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allPurchaseData = await contract.getProductsListedByUser(
-        connection?.selectedAddress?.toString(),
-        connection?.selectedAddress?.toString()
+        ShareAddress.toString(),
+        ShareAddress.toString()
       );
       setAllListed([...allPurchaseData]);
     } catch (error : any) {
@@ -66,7 +69,7 @@ useEffect(() => {
 useEffect(() => {
   if(allListedItem.length > 0){
     getProduct(allListedItem).then((products)=>{
-      console.log('product collected', products)
+      // console.log('product collected', products)
       //@ts-ignore
       setAllproductArray(products)
     }).catch((error)=>{
@@ -82,7 +85,7 @@ useEffect(() => {
        let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
        let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
         let cid = `${firstHash + secondHash}`
-        console.log(cid);
+        // console.log(cid);
        let productname =  hexToReadableText(item.name.toString(16)) 
        let productprice = Number(item.price)/1e18
        let available = Number(item.amountAvailable)
