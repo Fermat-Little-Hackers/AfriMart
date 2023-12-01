@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
 import contractAbi from "../../../ABI/supplyChainContract.json";
-import {connect} from "@argent/get-starknet";
+import { connect } from "@argent/get-starknet";
 import { ConnectedStarknetWindowObject } from "get-starknet-core";
 import { Contract } from "starknet";
 import { SupplyChainContractAddr } from "@/components/addresses";
@@ -25,8 +25,7 @@ const ResgisterShipment = () => {
   const [imageHash, setImageHash] = useState<Array<String>>();
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
   const [account, setAccount] = useState();
-  const [address, setAddress] = useState('');
-
+  const [address, setAddress] = useState("");
 
   const {
     register,
@@ -68,7 +67,6 @@ const ResgisterShipment = () => {
     settrackMode(e.target.value);
   };
 
-
   useEffect(() => {
     const connectToStarknet = async () => {
       const connection = await connect({
@@ -82,53 +80,54 @@ const ResgisterShipment = () => {
         setAddress(connection.selectedAddress);
       }
 
-      if (connection?.chainId !== "SN_GOERLI") {
-        alert("you need to switch to GOERLI to proceed!");
-        try {
-          await window?.starknet?.request({
-            type: "wallet_switchStarknetChain",
-            params: {
-              chainId: "SN_GOERLI",
-            },
-          });
-        } catch (error: any) {
-          alert(error.message);
-        }
-      }
+      // if (connection?.chainId !== "SN_GOERLI") {
+      //   alert("you need to switch to GOERLI to proceed!");
+      //   try {
+      //     await window?.starknet?.request({
+      //       type: "wallet_switchStarknetChain",
+      //       params: {
+      //         chainId: "SN_GOERLI",
+      //       },
+      //     });
+      //   } catch (error: any) {
+      //     alert(error.message);
+      //   }
+      // }
     };
     connectToStarknet();
   }, []);
 
-
   const registerShipment: SubmitHandler<FormData> = async () => {
     console.log("Registering Shipment......");
     try {
+      let ipfsDetails = await main(imageBlob, Name, OrderId);
+      let length = (ipfsDetails?.ipnft).length;
+      let halfLength = Math.floor(length / 2);
 
-      let ipfsDetails = await main(imageBlob,Name,OrderId)
-      let length = (ipfsDetails?.ipnft).length; 
-      let halfLength = Math.floor(length / 2)
-      
-      let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
-      let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
+      let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength);
+      let secondhalf = (ipfsDetails?.ipnft).substring(halfLength);
 
-      console.log('FIRST HALF', firstHalf);
-      console.log('second HALF', secondhalf);
-      setImageHash([firstHalf,secondhalf]);
-
+      console.log("FIRST HALF", firstHalf);
+      console.log("second HALF", secondhalf);
+      setImageHash([firstHalf, secondhalf]);
 
       const contract = new Contract(
         contractAbi,
         SupplyChainContractAddr(),
         account
       );
-      await contract.create_shipment(OrderId, Name, firstHalf, secondhalf, shipmentAddress, trackMode);
+      await contract.create_shipment(
+        OrderId,
+        Name,
+        firstHalf,
+        secondhalf,
+        shipmentAddress,
+        trackMode
+      );
     } catch (error: any) {
       console.log(error.message);
     }
   };
-
-
-
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
