@@ -5,7 +5,7 @@ import { ButtonLink } from "../atomic/Button";
 import clsx from 'clsx';
 import { GrainnyBackground } from "../atomic/GrainnyBackground";
 import { Variant, motion, useAnimation, useInView } from 'framer-motion';
-import { AnimatedText } from "../animations";
+import { AnimatedText } from "../animations/animations";
 import { useEffect, useRef } from "react";
 
 export const HeroSection = () => {
@@ -17,7 +17,7 @@ export const HeroSection = () => {
                     repeatDelay={2} 
                     className="font-serif text-9xl text-[var(--sand)]"
                  />
-                <p className={clsx("text-[var(--sand)] ", "mt-32")}>Where cultural treasures tell timeless stories</p>
+                <AnimatedText text="Where cultural treasures tell timeless stories" className="text-[var(--sand)] mt-32"/>
             </div>
         </Container>
     )
