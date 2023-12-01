@@ -1,6 +1,6 @@
 ![Image description](./packages/afri_mart/public/afrimart%20barner.png)
 #  AFRIMART README FILE
-### *Where cultural treasure’s tell timeless stories.*
+### *Where cultural treasures tell timeless stories.*
 
 ## Introduction
 
