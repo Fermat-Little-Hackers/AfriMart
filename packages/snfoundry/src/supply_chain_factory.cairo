@@ -168,6 +168,7 @@ mod DispatchCompanyFactory {
         // dispatchAdmin ID to store admin details
         dispatchAdmins: LegacyMap<u128, DispatchAdmin>,
         confirmBranchAdmin: LegacyMap<ContractAddress, bool>,
+        hasCreatedBranch: LegacyMap<ContractAddress, bool>,
         // takes companyID as an args
         adminStatistics: LegacyMap<u16, AdminStats>,
         overAllAdminsNumber: u128,
@@ -186,6 +187,8 @@ mod DispatchCompanyFactory {
         trackOrderIdNumber: LegacyMap<u256, u256>,
         
         stafftobranch: LegacyMap<ContractAddress, ContractAddress>,
+        isStaff: LegacyMap<ContractAddress, bool>,
+
 
     }
 
@@ -318,6 +321,7 @@ mod DispatchCompanyFactory {
 
         fn createBranch(ref self: ContractState, city: felt252, state: felt252, country: felt252) -> ContractAddress {
             assert(self.isDispatchAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
+            assert(self.hasCreatedBranch.read(get_caller_address()) == false, 'You have a branch');
 
             // constructor arguments   
             let mut constructor_args = array![city.into(), state.into(), country.into(), get_caller_address().into(), get_contract_address().into()];
@@ -341,9 +345,13 @@ mod DispatchCompanyFactory {
 
             let market_dispatch =  IMarketPlaceDispatcher{contract_address: market_address};
             market_dispatch.registerSupplyChainChild(deployed_contract_address);
+
+            self.stafftobranch.write(get_caller_address(), deployed_contract_address);
+            self.hasCreatedBranch.write(get_caller_address(), true);
             
 
             self.emit(BranchCreated{by: get_caller_address(), for: deployed_contract_address, city});
+
 
             deployed_contract_address
 
@@ -447,6 +455,7 @@ mod DispatchCompanyFactory {
         fn setStaffBranch(ref self: ContractState, staffAddress: ContractAddress) -> bool {
             assert(self.isBranch.read(get_caller_address()) == true, 'Unauthorized Personnel');
             self.stafftobranch.write(staffAddress, get_caller_address());
+            self.isStaff.write(staffAddress, true);
             true
         }
         fn getStaffBranch(self: @ContractState, staffAddress: ContractAddress ) -> ContractAddress {
