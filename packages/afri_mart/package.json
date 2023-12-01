@@ -16,6 +16,7 @@
     "@starknet-react/core": "^2.0.0",
     "@tabler/icons-react": "^2.42.0",
     "axios": "^1.6.2",
+    "base64-js": "^1.5.1",
     "buffer": "^6.0.3",
     "clsx": "^2.0.0",
     "framer-motion": "^10.16.5",
