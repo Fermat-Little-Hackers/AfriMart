@@ -8,6 +8,8 @@ import marketPlaceAbi from '@/ABI/marketPlace';
 import { MarketPlaceAddr } from '@/components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface, CairoCustomEnum } from 'starknet'
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
+import { useAccountContext } from '@/context/connectionContext';
+
 
 
 interface FormData {
@@ -58,6 +60,8 @@ const FormField = () => {
     const [account, setAccount] = useState();
     const [address, setAddress] = useState('');
     const [listing, setListing] = useState<boolean>();
+    const {ShareAccount, setShareAccount} = useAccountContext()
+
 
     const Fetchcategories = (Itemindex: number) => { 
        const cart = [
@@ -87,7 +91,7 @@ const FormField = () => {
             
             let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
             let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
-            const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), account)
+            const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), ShareAccount)
             const details = await contract.listProduct(name, description, firstHalf, secondhalf, price, amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
             setListing(false);
             alert("Item Listed Successfully");

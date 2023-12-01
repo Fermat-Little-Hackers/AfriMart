@@ -5,11 +5,6 @@ interface imageprop {
     uri : string;
 }
 const UserWithPhotos : React.FC<imageprop> = ({uri}) => {
-    //to test if hook works
-    //pass in the below cid
-    // bafyreibxtffb6gmuksf35szlkjcacodpwo2rz7p4jytx46miwhri2qkfca
-    //request will fail, if uri is not being fetched from onchain
-
     const {data} = useFetchURI(uri)
     const trimmedUri = data?.image?.substring(7);
     

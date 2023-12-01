@@ -45,9 +45,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </YourContextProvider>
           </RegisteredContextProvider>
         </SupplyChainContextProvider>
+        </ListProductContextProvider>
         </AccountContextProvider> 
         </ConnectionContextProvider>
-        </ListProductContextProvider>
       </body>
     </html>
   );

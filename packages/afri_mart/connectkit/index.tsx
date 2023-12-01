@@ -92,7 +92,7 @@ function ConnectButtoN() {
               <div className=''>
                 <p className="description text-xs md:text-sm">
                 {
-                    ShareAddress ? `${ShareAddress.slice(0, 5)}.....${ShareAddress.slice(-5)}` : ''
+                    address ? `${address.slice(0, 5)}.....${address.slice(-5)}` : ''
                 }
                 </p>
               </div>
