@@ -5,11 +5,11 @@ import { CheckIcon } from '@heroicons/react/20/solid';
 
 const ProductsReviews = () => {
   return (
-    <div className='bg-art-graphics p-12'>
+    <div className='bg-art-graphics p-5 md:p-12'>
 
-    <div className=" bg-[var(--ivory)] rounded-md h-fit md:h-[45vh] px-12 py-3 md:px-10 md:py-7 flex flex-col gap-5 md:gap-7 items-center w-max mx-auto">
+    <div className=" bg-[var(--ivory)] rounded-md h-fit md:h-fit px-5 py-5 md:px-10 md:py-7 flex flex-col gap-5 md:gap-7 items-center md:w-max mx-auto">
         <div className="">
-            <h1 className='text-4xl text-ceter font-serif'>
+            <h1 className='md:text-4xl text-3xl text-ceter font-serif'>
                 REVIEWS
             </h1>                    
         </div>
