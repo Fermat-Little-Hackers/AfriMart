@@ -40,18 +40,17 @@ const SimilarProducts:React.FC<MyProps>= ({cartegory, cartegoryIndex}) => {
       }
 }
 
-      const intervalId = setInterval(getProduct, 3000);
+      // const intervalId = setInterval(getProduct, 3000);
 
-    // ;
-    //   useEffect(() => {
-    //     getProduct();
+          useEffect(() => {
+            getProduct();
 
-    //   }, [cartegory, cartegoryIndex])
+          }, [cartegory, cartegoryIndex])
 
 
 
   return (
-    <div className=" mx-5 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-5 md:gap-7 ">
+    <div className=" m-5 my-7 md:my-0 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-5 md:gap-7 ">
         <div className="">
             <h1 className='text-xl font-semibold'>
                 SIMILAR PRODUCTS 

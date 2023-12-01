@@ -9,7 +9,8 @@ struct userProfile {
     address: ContractAddress,
     region: felt252,
     country: felt252,
-    profileImg: felt252,
+    profileImg1: felt252, 
+    profileImg2: felt252,
     totalItemListed: u256,
     totalItemsPurchased: u256,
     totalItemsSold: u256,
@@ -64,7 +65,8 @@ struct Item {
     id: u256,
     name: felt252,
     description: felt252,
-    imageUri: felt252,
+    imageUri1: felt252, 
+    imageUri2: felt252,
     price: u256,
     cartegory: cartegory,
     seller: ContractAddress,
@@ -121,9 +123,9 @@ trait IERC20<TContractState> {
 
 #[starknet::interface]
 trait aftimartTrait<TContractState> {
-    fn createProfile(ref self:TContractState, Name: felt252, country: felt252, region: felt252, profileImg: felt252);
-    fn listProduct(ref self:TContractState, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256, cartegory: cartegory);
-    fn editProductDetails(ref self: TContractState, productId: u256, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256);
+    fn createProfile(ref self:TContractState, Name: felt252, country: felt252, region: felt252, profileImg1: felt252, profileImg2: felt252);
+    fn listProduct(ref self:TContractState, name: felt252, description: felt252, imageUri1: felt252, imageUri2: felt252, price: u256, amountAvailable: u256, cartegory: cartegory);
+    fn editProductDetails(ref self: TContractState, productId: u256, name: felt252, description: felt252, imageUri1: felt252, imageUri2: felt252, price: u256, amountAvailable: u256);
     fn takeProductOffMarket(ref self: TContractState, productId: u256);
     fn purchaseProduct(ref self: TContractState, productId: u256, Amount: u256);
     fn confirmProductReceived(ref self: TContractState, orderId: u256);
@@ -380,7 +382,7 @@ mod afrimart {
 
     #[external(v0)]
     impl afrimartExternalImpl of super::aftimartTrait<ContractState> {
-        fn createProfile(ref self: ContractState, Name: felt252, country: felt252, region: felt252, profileImg: felt252) {
+        fn createProfile(ref self: ContractState, Name: felt252, country: felt252, region: felt252, profileImg1: felt252, profileImg2: felt252) {
             let UserId: u256 = self.totalProfiles.read() + 1;
             self.totalProfiles.write(UserId);
             let newUser = userProfile{
@@ -388,7 +390,8 @@ mod afrimart {
                 address: get_caller_address(),
                 region: region,
                 country: country,
-                profileImg: profileImg,
+                profileImg1: profileImg1,
+                profileImg2: profileImg2,
                 totalItemListed: 0, 
                 totalItemsPurchased: 0,
                 totalItemsSold: 0,
@@ -400,14 +403,15 @@ mod afrimart {
 
         }
 
-        fn listProduct(ref self: ContractState, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256, cartegory: cartegory){
+        fn listProduct(ref self: ContractState, name: felt252, description: felt252, imageUri1: felt252, imageUri2: felt252, price: u256, amountAvailable: u256, cartegory: cartegory){
             let ItemId: u256 = self.totalItems.read() + 1;
             self.totalItems.write(ItemId);
             let newProduct = Item {
                 id: ItemId,
                 name: name,
                 description: description,
-                imageUri: imageUri,
+                imageUri1: imageUri1, 
+                imageUri2: imageUri2,
                 price: price,
                 cartegory: cartegory,
                 seller: get_caller_address(),
@@ -432,12 +436,13 @@ mod afrimart {
             self.emit(ProductListed{by: get_caller_address(), name: name, cartegory: cartegory});
         }
 
-        fn editProductDetails(ref self: ContractState, productId: u256, name: felt252, description: felt252, imageUri: felt252, price: u256, amountAvailable: u256) {
+        fn editProductDetails(ref self: ContractState, productId: u256, name: felt252, description: felt252, imageUri1: felt252, imageUri2: felt252, price: u256, amountAvailable: u256) {
             let mut Item = self.allItems.read(productId);
             assert(Item.seller == get_caller_address(), 'CALLER DIDNT LIST ITEM');
             Item.name = name;
             Item.description = description;
-            Item.imageUri = imageUri;
+            Item.imageUri1 = imageUri1;
+            Item.imageUri2 = imageUri2;
             Item.price = price;
             Item.amountAvailable = amountAvailable;
 
@@ -640,7 +645,7 @@ mod afrimart {
         }
 
         fn getCartValue(self: @ContractState, user: ContractAddress) -> u256 {
-            self.cartTotalPrice.read(user)
+            return self.cartTotalPrice.read(user);
         }
 
         fn listNft(ref self: ContractState, nftContract: ContractAddress, tokenId: u256, data: Span<felt252>, price: u256) {
