@@ -1,6 +1,6 @@
 export const GreatDesign = () => {
     return(
-        <div className="bg-art-graphics h-96 w-full bg-cover text-center p-8 flex justify-end items-center">
+        <div className="bg-art-graphics w-full bg-cover text-center p-8 flex justify-end items-center">
             <div className="bg-[var(--black-2)]  bg-grainy-pattern space-y-4 my-auto max-w-3xl p-6 float-right">
                 <h1 className="mx-auto font-serif text-2xl  text-[var(--sand)]">Your Global Connection to African Culture</h1>
                 <h2>
