@@ -6,9 +6,13 @@ import { FaShoppingCart, FaUser, FaBars, FaTimes } from "react-icons/fa";
 import { Provider, Contract } from "starknet";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import factory_abi from "../../../ABI/supplyChainFactory.json";
-import { useAccountContext } from "@/context/connectionContext";
+import {
+  useAccountContext,
+  useConnectionContext,
+} from "@/context/connectionContext";
 
 const SideMenu = () => {
+  const [account, setAccount] = useState();
   const [staffAddress, setStaffAddress] = useState("");
   const { sharedState, setSharedState } = useSupplyChainContext();
   const [textVisible, setTextVisible] = useState(false);
@@ -16,7 +20,7 @@ const SideMenu = () => {
   const [isCompanyAdmin, setIsCompanyAdmin] = useState();
   const [isBranchAdmin, setIsBranchAdmin] = useState();
   const [isStaff, setIsStaff] = useState();
-  const { ShareAddress } = useAccountContext();
+  const { ShareAddress } = useConnectionContext();
 
   const toggleTextVisibility = () => {
     setTextVisible(!textVisible);
@@ -52,18 +56,28 @@ const SideMenu = () => {
       SupplyChainFactoryAddr(),
       provider
     );
-    let is_factory_admin = await factory_contract.confirmOwners(ShareAddress);
-    let is_company_admin = await factory_contract.confirmCompany(ShareAddress);
-    let is_branch_admin = await factory_contract.confirmBranchAdmins(
-      ShareAddress
+    console.log("haa", ShareAddress.toString());
+
+    let is_factory_admin = await factory_contract?.confirmOwners(ShareAddress);
+    let is_company_admin = await factory_contract?.confirmCompany(
+      ShareAddress?.toString()
     );
-    let is_staff = await factory_contract.confirmStaff(ShareAddress);
+    let is_branch_admin = await factory_contract?.confirmBranchAdmins(
+      ShareAddress?.toString()
+    );
+    let is_staff = await factory_contract?.confirmStaff(
+      ShareAddress?.toString()
+    );
 
     setIsFactoryAdmin(is_factory_admin);
     setIsCompanyAdmin(is_company_admin);
     setIsBranchAdmin(is_branch_admin);
-    setIsStaff(is_staff);
+    // setIsStaff(is_staff);
   };
+
+  useEffect(() => {
+    setAccount(ShareAddress);
+  }, []);
 
   useEffect(() => {
     try {
