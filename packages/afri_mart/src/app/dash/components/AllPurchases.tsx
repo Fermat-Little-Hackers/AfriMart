@@ -15,6 +15,7 @@ const [allProductArray, setAllproductArray] = useState<any[]>([]);
 const [address, setAddress] = useState<string | undefined>('');
 const {ShareAddress, setShareAddress} = useConnectionContext()
 const [sectionload, setSectionLoad] = useState(true);
+const [orderArray, setOrderArray] = useState<number[]>();
 
 
   const getAllpurchase = async () => {
@@ -91,6 +92,8 @@ useEffect(() => {
       if(allPurchase.length > 0 || allPurchase.length == 0){
         GetOrder(allPurchase).then((orderidsArray)=>{
           // console.log('order id array collected', orderidsArray)
+          console.log(`orders`, orderidsArray)
+          setOrderArray(orderidsArray?orderidsArray:[]);
           GetItem(orderidsArray).then((products)=>{
             // console.log('products obtained array',products)
             //@ts-ignore
@@ -117,7 +120,7 @@ useEffect(() => {
            let cid = `${firstHash + secondHash}`
            let available = Number(item.amountAvailable)
          return ( <div key={index} className="w-[20%] space-y-10">          
-         <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} />
+         <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} orderId={allPurchase ? Number(allPurchase[index]) : 0}/>
        </div> )             
     })}
         

@@ -111,6 +111,8 @@ trait IRating <TContractState>{
     fn getProductRatting (self: @TContractState, ItemId: u256) -> u256;
 
     fn review_product(ref self: TContractState, order_id: u256, rating: u32, review: felt252, review2: felt252);
+
+    fn setMarketPlace(ref self: TContractState, marketPlace: ContractAddress);
 }
 
 #[derive(starknet::Store, Drop)]
@@ -180,28 +182,17 @@ mod Rating {
     #[storage]
     struct Storage {
         marketplace_contract: ContractAddress,
-
-        product_rating: LegacyMap<u256, u32>,
-        product_review: LegacyMap<u256, felt252>,
-        product_comments: LegacyMap<u256, felt252>,
-        product_extra_info_url: LegacyMap<u256, felt252>,
-        product_reviewer: LegacyMap<u256, ContractAddress>,
-        
-        user_total_rating: LegacyMap<ContractAddress, u32>,
-        user_reviews: LegacyMap<ContractAddress, List<felt252>>,
-        user_comments: LegacyMap<ContractAddress, List<felt252>>,
-        user_extra_info_url: LegacyMap<ContractAddress, List<felt252>>,
-        user_reviewers: LegacyMap<ContractAddress, List<ContractAddress>>,
-
         // track reviews through mapping itemID to number of reviews
         totalReviews: LegacyMap<u256, u256>,
         totalStars: LegacyMap<u256, u256>,
         individualReview: LegacyMap<(u256, u256), newRating>,
+        admin: ContractAddress,
     }
 
     #[constructor]
-    fn constructor(ref self: ContractState, marketplace_contract: ContractAddress) {
+    fn constructor(ref self: ContractState, marketplace_contract: ContractAddress, admin: ContractAddress) {
         self.marketplace_contract.write(marketplace_contract);
+        self.admin.write(admin);
     }
 
 
@@ -249,6 +240,12 @@ mod Rating {
             let totalStars = self.totalStars.read(ItemId);
             let totalRatters = self.totalReviews.read(ItemId);
             return (totalStars / totalRatters);
+        }
+
+        fn setMarketPlace(ref self: ContractState, marketPlace: ContractAddress) {
+            let caller_address = get_caller_address();
+            assert(caller_address == self.admin.read(), 'UNAUTHORIZED');
+            self.marketplace_contract.write(marketPlace);
         }
 
     }
