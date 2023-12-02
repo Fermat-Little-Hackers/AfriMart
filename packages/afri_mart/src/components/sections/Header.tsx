@@ -1,3 +1,4 @@
+"use client"
 import clsx from 'clsx';
 // import { ConnectButton } from '../../../connectkit';
 // components/Header.js
@@ -7,8 +8,11 @@ import WalletBar from "../WalletBar";
 import Image from "next/image";
 import afri_mart_logo from "../../../public/AfriMart_Logo_small-NO-BG.png";
 import ConnectButtoN from '../../../connectkit';
+import { usePathname } from 'next/navigation';
+
 
 export const Header = () => {
+    const pathname = usePathname()
     return (
         <header className="bg-grainy-pattern  bg-[var(--black-2)]   text-white m-0 p-4 flex flex-row justify-between items-center gap-8 md:h-[15vh] md:px-20 z-50">
             <div>
@@ -17,8 +21,13 @@ export const Header = () => {
                 </Link>
             </div>
             <div className='flex flex-row gap-8 items-center z-50'>
-                <div>
+                <div className='flex gap-4 '>
                     <Link href={"/deliveryportal"} className='flex text-sm md:text-lg'>Delivery Portal</Link>
+                    {
+                        pathname == '/' ? 
+                        <Link href={"/homepage"} className='flex text-sm md:text-lg'>Launch App</Link>
+                        : null
+                    }
                 </div>
                 <div>
                     <ConnectButtoN />
