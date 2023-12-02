@@ -2,7 +2,7 @@ import { FadeIn } from "../animations/FadeIn";
 
 export const ResourceShop = () => {
     return(
-        <div className="bg-charcoal h-96 w-full bg-cover text-center p-16 space-y-8">
+        <div className="bg-charcoal w-full bg-cover text-center p-16 space-y-8">
             <FadeIn>
 
             <h1 className="mx-auto text-[var(--sand)] font-serif text-4xl">

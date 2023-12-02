@@ -19,7 +19,7 @@ const Puchasecard : React.FC<purchaseProps> = ({ title, amount, uri})  => {
                 <p className="smx:text-[15px]">{title}</p>
             </div>
             <div className='my-auto items-center h-[100%]'>
-            <p className="h-[50px] text-center my-auto text-xl smx:text-[15px]">{amount} ETH</p>
+            <p className="h-[50px] text-center my-auto text-base smx:text-[15px]">{amount} ETH</p>
             </div>
             <button className=' bg-[var(--sienna)] my-auto text-white px-2 md:px-4 py-2 rounded-lg flex items-center text-sm text-center'>REVIEW</button>
     </div>
