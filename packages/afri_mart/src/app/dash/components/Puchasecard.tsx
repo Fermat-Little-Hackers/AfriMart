@@ -6,14 +6,15 @@ import { useState } from 'react';
 interface purchaseProps {
     title : string,
     amount : number,
-    quantity : number
-    uri : string
+    quantity : number,
+    uri : string,
+    orderId : number,
 }
 
-const Puchasecard : React.FC<purchaseProps> = ({ title, amount, uri})  => {
-  // const { ratingLoad, setRatingLoad} = useRatingContext();
-  const [ratingLoad, setRatingLoad] = useState<boolean>();
-
+const Puchasecard : React.FC<purchaseProps> = ({ title, amount, uri, orderId})  => {
+  const { ratingLoad, setRatingLoad} = useRatingContext();
+  // const [ratingLoad, setRatingLoad] = useState<boolean>();
+  console.log(`orderId purchase card:`, orderId);
   const handleReview = () => {
     setRatingLoad(true);
     console.log(`setting review`)
@@ -28,14 +29,14 @@ const Puchasecard : React.FC<purchaseProps> = ({ title, amount, uri})  => {
             <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" className='w-full h-full object-cover'/>
             </div>
             <div className='items-center h-[100%] my-auto'>
-                <p className="smx:text-[15px]">{title}</p>
+                <p className="smx:text-[15px]">{title} </p>
             </div>
             <div className='my-auto items-center h-[100%]'>
             <p className="h-[50px] text-center my-auto text-base smx:text-[15px]">{amount} ETH</p>
             </div>
             <button className=' bg-[var(--sienna)] my-auto text-white px-2 md:px-4 py-2 rounded-lg flex items-center text-sm text-center' onClick={handleReview}>Review</button>
 
-        {ratingLoad && (<ProductRatingForm />)}
+        {ratingLoad && (<ProductRatingForm itemId={orderId} />)}
     </div>
   )
 }

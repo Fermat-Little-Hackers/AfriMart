@@ -51,5 +51,5 @@ export const RatingContextProvider = ({ children })=>{
     </RatingContext.Provider>
   );
 }
-export const useRatingContext = () => useContext(LoadingContext);
+export const useRatingContext = () => useContext(RatingContext);
 
