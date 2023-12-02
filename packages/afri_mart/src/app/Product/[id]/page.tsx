@@ -10,12 +10,17 @@ import OurPartners from "../../../components/market-place/ourPartners"
 import marketplaceAbi from '../../../ABI/marketPlace'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLoadingContext } from "@/context/connectionContext";
+import LoadingOverlay from "@/components/Loading";
+
 
 export default function Home() {
     const { account, address, status } = useAccount();
     const [cartegory, setCartegory] = useState<String>();
     const [cartegory2, setCartegory2] = useState<Number>();
+  const {ShareLoad, setShareLoad} = useLoadingContext();
+
 
     const id = useParams();
 
@@ -52,10 +57,15 @@ export default function Home() {
     }
 
   const intervalId = setInterval(getProduct, 3000);
+    useEffect(() => {
+    setShareLoad(true)
+    }, [])
 
-
+   
+    
     return(
         <div>
+          {ShareLoad && <LoadingOverlay/>}
             <Search />
             <ProductsDetails itemId={Number(id.id)} />
             <ProductsReviews itemId={Number(id.id)}/>

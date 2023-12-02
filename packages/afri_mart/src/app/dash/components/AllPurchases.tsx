@@ -86,18 +86,23 @@ useEffect(() => {
 }, [])
 
   useEffect(() => {
-    if(allPurchase.length > 0){
-      GetOrder(allPurchase).then((orderidsArray)=>{
-        // console.log('order id array collected', orderidsArray)
-        GetItem(orderidsArray).then((products)=>{
-          console.log('products obtained array',products)
-          //@ts-ignore
-          setAllproductArray(products)
+    if(allPurchase){
+      setTimeout(() => {
+      if(allPurchase.length > 0 || allPurchase.length == 0){
+        GetOrder(allPurchase).then((orderidsArray)=>{
+          // console.log('order id array collected', orderidsArray)
+          GetItem(orderidsArray).then((products)=>{
+            // console.log('products obtained array',products)
+            //@ts-ignore
+            setAllproductArray(products)
+            setSectionLoad(false)
+          })
+        }).catch((error)=>{
           setSectionLoad(false)
+            console.log(error)
         })
-      }).catch((error)=>{
-          console.log(error)
-      })
+      }
+    }, 1000);
     }
   }, [allPurchase]); 
   

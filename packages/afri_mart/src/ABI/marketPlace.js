@@ -756,7 +756,7 @@ const marketPlaceAbi = [
         ],
         "outputs": [
           {
-            "type": "(core::array::Array::<core::integer::u256>, core::array::Array::<core::integer::u256>)"
+            "type": "core::array::Array::<core::integer::u256>"
           }
         ],
         "state_mutability": "view"
@@ -831,6 +831,22 @@ const marketPlaceAbi = [
         ],
         "outputs": [],
         "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "getPendingDelivery",
+        "inputs": [
+          {
+            "name": "user",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::array::Array::<core::integer::u256>"
+          }
+        ],
+        "state_mutability": "view"
       }
     ]
   },
