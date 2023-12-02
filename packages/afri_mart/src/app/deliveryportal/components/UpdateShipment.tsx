@@ -1,10 +1,11 @@
 import { SupplyChainContractAddr } from "@/components/addresses";
 import React, { useState, useEffect } from "react";
 import { SubmitHandler } from "react-hook-form";
-import {CairoCustomEnum, Contract} from "starknet";
-import {connect} from "@argent/get-starknet";
+import { CairoCustomEnum, Contract } from "starknet";
+import { connect } from "@argent/get-starknet";
 import { ConnectedStarknetWindowObject } from "get-starknet-core";
 import contractAbi from "../../../ABI/supplyChainContract.json";
+import { useAccountContext } from "@/context/connectionContext";
 
 
 
@@ -12,36 +13,7 @@ const UpdateShipment = () => {
   const [OrderId, setOrderId] = useState<any>();
   const [NextStop, setNextStop] = useState<any>();
   const [CurrentStatus, setCurrentStatus] = useState<CairoCustomEnum>();
-  const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
-  const [account, setAccount] = useState();
-  const [address, setAddress] = useState('');
-  
-  const Processing = new CairoCustomEnum({ Processing: 'Processing'})
-  const Shipped = new CairoCustomEnum({ Shipped: 'Shipped'})
-  const Arrived = new CairoCustomEnum({ Arrived: 'Arrived'})
-  const Enroute = new CairoCustomEnum({ Enroute: 'Enroute'})
-  const Delivered = new CairoCustomEnum({ Delivered: 'Delivered'})
-  const Cancelled = new CairoCustomEnum({Canceled: 'Cancelled'})
-
-
-  // const OrderStatus = new CairoCustomEnum({
-  //   Processing: 'Processing',
-  //   Shipped: 'Shipped',
-  //   Arrived: 'Arrived',
-  //   Enroute: 'Enroute',
-  //   Delivered: 'Delivered',
-  //   Canceled: 'Cancelled'
-  // })
-
-  // const OrderStatus = new CairoCustomEnum({
-  //   Processing: undefined,
-  //   Shipped: undefined,
-  //   Arrived: undefined,
-  //   Enroute: undefined,
-  //   Delivered: undefined,
-  //   Cancelled: undefined,
-  //   Default: 'No selection'
-  // })
+  const {ShareAccount: account} = useAccountContext();
 
 
   const handleOrderId = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,113 +25,81 @@ const UpdateShipment = () => {
   };
 
   const handleCurrentStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        // setCurrentStatus(OrderStatus.variant);
-        // console.log(CurrentStatus)
 
-      if (e.target.value == "Processing") {
-        const processing = new CairoCustomEnum({
-          Processing: 'Processing',
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: undefined,
-        })
-        setCurrentStatus(processing)
-      } else if (e.target.value == "Shipped") {
-        const shipped = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: 'Shipped',
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: undefined,
-        })
-        setCurrentStatus(shipped)
-      } else if (e.target.value == "Arrived") {
-        const arrived = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: 'Arrived',
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: undefined,
-        })
-        setCurrentStatus(arrived)
-      } else if (e.target.value == "Enroute") {
-        const enroute = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: 'Enroute',
-          Delivered: undefined,
-          Cancelled: undefined,
-        })
-        setCurrentStatus(enroute)
-      } else if (e.target.value == "Delivered") {
-        const delivered = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: 'Delivered',
-          Cancelled: undefined,
-        })
-        setCurrentStatus(delivered)
-      } else if (e.target.value == "Cancelled") {
-        const cancelled = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: 'Cancelled',
-        })
-        setCurrentStatus(cancelled)
-      } else {
-        const _ = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: undefined,
-          Default: "No selection"
-        })
-        setCurrentStatus(_);
-      }
-      console.log(CurrentStatus)
-    }
-
-  useEffect(() => {
-    const connectToStarknet = async () => {
-      const connection = await connect({
-        modalMode: "neverAsk",
-        webWalletUrl: "https://web.argent.xyz",
+    if (e.target.value == "Processing") {
+      const processing = new CairoCustomEnum({
+        Processing: "Processing",
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: undefined,
       });
-
-      if (connection && connection.isConnected) {
-        setConnection(connection);
-        setAccount(connection.account);
-        setAddress(connection.selectedAddress);
-      }
-
-      // if (connection?.chainId !== "SN_GOERLI") {
-      //   alert("you need to switch to GOERLI to proceed!");
-      //   try {
-      //     await window?.starknet?.request({
-      //       type: "wallet_switchStarknetChain",
-      //       params: {
-      //         chainId: "SN_GOERLI",
-      //       },
-      //     });
-      //   } catch (error: any) {
-      //     alert(error.message);
-      //   }
-      // }
-    };
-    connectToStarknet();
-  }, []);
+      setCurrentStatus(processing);
+    } else if (e.target.value == "Shipped") {
+      const shipped = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: "Shipped",
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: undefined,
+      });
+      setCurrentStatus(shipped);
+    } else if (e.target.value == "Arrived") {
+      const arrived = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: "Arrived",
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: undefined,
+      });
+      setCurrentStatus(arrived);
+    } else if (e.target.value == "Enroute") {
+      const enroute = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: "Enroute",
+        Delivered: undefined,
+        Cancelled: undefined,
+      });
+      setCurrentStatus(enroute);
+    } else if (e.target.value == "Delivered") {
+      const delivered = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: "Delivered",
+        Cancelled: undefined,
+      });
+      setCurrentStatus(delivered);
+    } else if (e.target.value == "Cancelled") {
+      const cancelled = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: "Cancelled",
+      });
+      setCurrentStatus(cancelled);
+    } else {
+      const _ = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: undefined,
+        Default: "No selection",
+      });
+      setCurrentStatus(_);
+    }
+    console.log(CurrentStatus);
+  };
 
 
   const updateShipment: React.FormEventHandler<HTMLFormElement> = async (e) => {
@@ -218,8 +158,7 @@ const UpdateShipment = () => {
             />
           </div>
           <div className="mb-4">
-
-            <label 
+            <label
               htmlFor="CurrentStatus"
               className="block text-gray-600 text-sm font-semibold mb-2"
             >
@@ -229,7 +168,6 @@ const UpdateShipment = () => {
                 id="CurrentStatus" 
                 name="CurrentStatus"
                 onChange={(e) => handleCurrentStatus(e)}
-                // className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
                 className="block bg-transparent w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-[var(--terracota)] placeholder:text-gray-400  focus:ring-indigo-600 sm:text-sm sm:leading-6"
               >
                 <option value="">Select Status</option>

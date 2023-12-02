@@ -167,6 +167,17 @@ const SideMenu = () => {
           {" "}
           Pending Deliveries{" "}
         </div>
+        <div
+          className="hover:cursor-pointer"
+          onClick={handleClick}
+          style={
+            sortColor("WhitelisAccount") ? { color: "gray" } : { color: "black" }
+          }
+          id="WhitelistAccount"
+        >
+          {" "}
+          Whitelist Account{" "}
+        </div>
       </div>
     </div>
   );

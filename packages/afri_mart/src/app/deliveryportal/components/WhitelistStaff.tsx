@@ -1,36 +1,50 @@
 import React, { useEffect, useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { Contract, Provider, constants } from "starknet";
 import {
   type ConnectedStarknetWindowObject,
   connect,
   disconnect,
 } from "@argent/get-starknet";
 
-import contractAbi from "../../../ABI/supplyChainFactory.json";
-import { SupplyChainFactoryAddr } from "@/components/addresses";
+import contractAbi from "../../../ABI/supplyChainContract.json";
+import factory_abi from "../../../ABI/supplyChainFactory.json";
+import { SupplyChainContractAddr, SupplyChainFactoryAddr } from "@/components/addresses";
+import { Contract, Provider } from "starknet";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useAccountContext } from "@/context/connectionContext";
 
-const RegisterBranchAdmins = () => {
+const WhitelistStaff = () => {
   const [connection, setConnection] =
     useState<ConnectedStarknetWindowObject | null>();
-  const [adminAddress, setAdminAddress] = useState("");
-  const {ShareAccount: account} = useAccountContext();
+  const [staffAddress, setStaffAddress] = useState("");
+  const {ShareAccount, ShareAddress} = useAccountContext();
 
-  const setAdmin = async () => {
+  const setStaff = async () => {
     try {
+
+        const provider = new Provider({
+        rpc: {
+            nodeUrl:
+            "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
+        },
+        });
+
+        let factory_contract = new Contract(factory_abi, SupplyChainFactoryAddr(), provider);
+        let address_to_call = factory_contract.getStaffBranch(ShareAddress);
+
+
       const contract = new Contract(
         contractAbi,
-        SupplyChainFactoryAddr(),
-        account
+        address_to_call,
+        ShareAccount
       );
-      await contract.setDispatchAdmin(adminAddress);
+      await contract.whitelist_account(staffAddress);
     } catch (error: any) {
       console.log(error.message);
     }
   };
+
   const handleAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAdminAddress(event.target.value);
+    setStaffAddress(event.target.value);
     console.log("name changed");
     console.log(event.target.value);
   };
@@ -38,7 +52,7 @@ const RegisterBranchAdmins = () => {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     // Handle the form submission logic (e.g., send data to server)
     // setSubmittedData(data);
-    setAdmin();
+    setStaff();
     console.log("submitted");
     // console.log(previewImage);
     // console.log(name);
@@ -53,7 +67,7 @@ const RegisterBranchAdmins = () => {
 
   return (
     <div className="">
-      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Register New Admins</h3>
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Whitelist Account</h3>
       <div className="justify-start p-5 md:p-10 text-left">
         <form className="space-y-4 p-5 md:p-20 rounded" onSubmit={handleSubmit(onSubmit)}>
           <div>
@@ -61,7 +75,7 @@ const RegisterBranchAdmins = () => {
               htmlFor="name"
               className="block text-sm font-medium leading-6 text-gray-900"
             >
-              Admin Address
+              Account to Whitelist
             </label>
             <div className="mt-2">
               <input
@@ -81,7 +95,7 @@ const RegisterBranchAdmins = () => {
               type="submit"
               className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-              Register
+              Whitelist Account
             </button>
           </div>
         </form>
@@ -90,4 +104,4 @@ const RegisterBranchAdmins = () => {
   );
 };
 
-export default RegisterBranchAdmins;
+export default WhitelistStaff;
