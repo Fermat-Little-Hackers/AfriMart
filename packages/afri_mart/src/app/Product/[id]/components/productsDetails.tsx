@@ -175,6 +175,10 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
       getProductReview();
     }, [])
     
+    useEffect(() => {
+      setShareLoad(false)
+    }, [name])
+    
 
     // const intervalId = setInterval(getProduct, 7000);
       

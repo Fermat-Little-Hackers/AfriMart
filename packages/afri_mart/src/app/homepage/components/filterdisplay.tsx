@@ -5,6 +5,8 @@ import { Contract, Provider, constants,CairoCustomEnum, CallData } from 'starkne
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import Link from "next/link";
+import { useLoadingContext } from "@/context/connectionContext";
+
 
 interface filterProps {
     title: string;
@@ -13,6 +15,8 @@ interface filterProps {
 
 const Filterdisplay : React.FC<filterProps> = ({ title, enumoption})  => {
   const [products, setProducts] = useState<string[]>();
+  const {ShareLoad, setShareLoad} = useLoadingContext();
+
 
    
     const getProduct = async() => {
@@ -42,6 +46,11 @@ const Filterdisplay : React.FC<filterProps> = ({ title, enumoption})  => {
         getProduct();
       }, [title, enumoption])
    
+      useEffect(() => {
+        setShareLoad(false)
+
+      }, [products])
+      
    
     return (
         <div className="md:max-h-[50rem] overflow-y-auto scrollbar w-[100%] smx:w-[100%] shadow-lg rounded-lg ring-1 ring-red-100 lmx:w-[95%] mt-10 smx:mt-4 p-4 md:p-10">

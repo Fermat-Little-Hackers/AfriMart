@@ -24,9 +24,10 @@ const {ShareAddress, setShareAddress} = useConnectionContext()
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allsoldData = await contract.getItemsSold(
-        ShareAddress?.toString()
+        ShareAddress?.toString(),
       );
       setAllSold([...allsoldData]);
+        console.log(allsoldData);
     } catch (error : any) {
       console.log(error)
   };
@@ -87,6 +88,8 @@ useEffect(() => {
   if(allSold.length > 0){
     GetOrder(allSold).then((orderidsArray)=>{
       GetProductSold(orderidsArray).then((products)=>{
+          console.log('products sold obtained array',products)
+          
         //@ts-ignore
         setAllproductSold(products)
       })
