@@ -20,7 +20,7 @@ const Listcard : React.FC<listprops> = ({ title, amount, quantity, uri}) => {
                     <p className="smx:text-[15px]">{title}</p>
                     <p className="md:text-sm text-xs">Qty: {quantity}</p>
                 </div>
-                <p className="text-xl smx:text-[14px] items-center h-[100%] my-auto">{amount.toFixed(5)}Eth</p>
+                <p className="text-base smx:text-[14px] items-center h-[100%] my-auto">{amount.toFixed(5)}Eth</p>
                 <div className="space-y-2">
                     <div className='items-center my-[50%]'>
                 <button className=' bg-[var(--sienna)] my-auto text-white px-2 md:px-4 py-2 rounded-lg flex items-center text-sm text-center'>EDIT</button>
