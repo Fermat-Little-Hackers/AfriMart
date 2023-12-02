@@ -5,56 +5,39 @@ import {
   disconnect,
 } from "@argent/get-starknet";
 
-import contractAbi from "../../../ABI/supplyChainFactory.json";
-import { SupplyChainFactoryAddr } from "@/components/addresses";
-import { Contract } from "starknet";
+import contractAbi from "../../../ABI/supplyChainContract.json";
+import factory_abi from "../../../ABI/supplyChainFactory.json";
+import { SupplyChainContractAddr, SupplyChainFactoryAddr } from "@/components/addresses";
+import { Contract, Provider } from "starknet";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useAccountContext } from "@/context/connectionContext";
 
 const WhitelistStaff = () => {
   const [connection, setConnection] =
     useState<ConnectedStarknetWindowObject | null>();
-  const [account, setAccount] = useState();
-  const [address, setAddress] = useState("");
   const [staffAddress, setStaffAddress] = useState("");
-
-  useEffect(() => {
-    const connectToStarknet = async () => {
-      const connection = await connect({
-        modalMode: "neverAsk",
-        webWalletUrl: "https://web.argent.xyz",
-      });
-
-      if (connection && connection.isConnected) {
-        setConnection(connection);
-        setAccount(connection.account);
-        setAddress(connection.selectedAddress);
-      }
-
-      // if (connection?.chainId !== "SN_GOERLI") {
-      //   alert("you need to switch to GOERLI to proceed!");
-      //   try {
-      //     await window?.starknet?.request({
-      //       type: "wallet_switchStarknetChain",
-      //       params: {
-      //         chainId: "SN_GOERLI",
-      //       },
-      //     });
-      //   } catch (error: any) {
-      //     alert(error.message);
-      //   }
-      // }
-    };
-    connectToStarknet();
-  }, []);
+  const {ShareAccount, ShareAddress} = useAccountContext();
 
   const setStaff = async () => {
     try {
+
+        const provider = new Provider({
+        rpc: {
+            nodeUrl:
+            "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
+        },
+        });
+
+        let factory_contract = new Contract(factory_abi, SupplyChainFactoryAddr(), provider);
+        let address_to_call = factory_contract.getStaffBranch(ShareAddress);
+
+
       const contract = new Contract(
         contractAbi,
-        SupplyChainFactoryAddr(),
-        account
+        address_to_call,
+        ShareAccount
       );
-      await contract.whitelistAdmin(staffAddress);
+      await contract.whitelist_account(staffAddress);
     } catch (error: any) {
       console.log(error.message);
     }

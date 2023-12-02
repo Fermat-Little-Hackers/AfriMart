@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
 import contractAbi from "../../../ABI/supplyChainContract.json";
+import factory_abi from "../../../ABI/supplyChainFactory.json";
 import {connect} from "@argent/get-starknet";
 import { ConnectedStarknetWindowObject } from "get-starknet-core";
-import { Contract } from "starknet";
-import { SupplyChainContractAddr } from "@/components/addresses";
+import { Contract, Provider } from "starknet";
+import { SupplyChainContractAddr, SupplyChainFactoryAddr } from "@/components/addresses";
 import main from "../../../../utils/upload.mjs";
+import { useAccountContext } from "@/context/connectionContext";
 
 interface FormData {
   profilePicture: FileList | null;
@@ -23,10 +25,7 @@ const ResgisterShipment = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [imageBlob, setImageBlob] = useState<File | undefined>();
   const [imageHash, setImageHash] = useState<Array<String>>();
-  const [connection, setConnection] = useState<ConnectedStarknetWindowObject>();
-  const [account, setAccount] = useState();
-  const [address, setAddress] = useState('');
-
+  const {ShareAccount: account, ShareAddress} = useAccountContext();
 
   const {
     register,
@@ -35,22 +34,6 @@ const ResgisterShipment = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  // const getStaffBranch = async () => {
-  //   const provider = new Provider({
-  //     rpc: {
-  //       nodeUrl:
-  //         "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
-  //     },
-  //   });
-
-  //   try {
-  //     const contract = new Contract(contractAbi, SupplyChainFactoryAddr(), provider)
-  //     const branch = await contract.
-  //   }
-  //   catch(error){
-
-  //   }
-  // };
 
   const handleOrderId = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOrderId(e.target.value);
@@ -69,37 +52,6 @@ const ResgisterShipment = () => {
   };
 
 
-  useEffect(() => {
-    const connectToStarknet = async () => {
-      const connection = await connect({
-        modalMode: "neverAsk",
-        webWalletUrl: "https://web.argent.xyz",
-      });
-
-      if (connection && connection.isConnected) {
-        setConnection(connection);
-        setAccount(connection.account);
-        setAddress(connection.selectedAddress);
-      }
-
-      // if (connection?.chainId !== "SN_GOERLI") {
-      //   alert("you need to switch to GOERLI to proceed!");
-      //   try {
-      //     await window?.starknet?.request({
-      //       type: "wallet_switchStarknetChain",
-      //       params: {
-      //         chainId: "SN_GOERLI",
-      //       },
-      //     });
-      //   } catch (error: any) {
-      //     alert(error.message);
-      //   }
-      // }
-    };
-    connectToStarknet();
-  }, []);
-
-
   const registerShipment: SubmitHandler<FormData> = async () => {
     console.log("Registering Shipment......");
     try {
@@ -115,10 +67,20 @@ const ResgisterShipment = () => {
       console.log('second HALF', secondhalf);
       setImageHash([firstHalf,secondhalf]);
 
+      const provider = new Provider({
+        rpc: {
+          nodeUrl:
+            "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
+        },
+      });
+
+      let factory_contract = new Contract(factory_abi, SupplyChainFactoryAddr(), provider);
+      let address_to_call = factory_contract.getStaffBranch(ShareAddress);
+
 
       const contract = new Contract(
         contractAbi,
-        SupplyChainContractAddr(),
+        address_to_call,
         account
       );
       await contract.create_shipment(OrderId, Name, firstHalf, secondhalf, shipmentAddress, trackMode);
