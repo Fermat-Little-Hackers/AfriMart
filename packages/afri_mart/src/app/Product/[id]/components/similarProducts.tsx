@@ -50,7 +50,7 @@ const SimilarProducts:React.FC<MyProps>= ({cartegory, cartegoryIndex}) => {
 
 
   return (
-    <div className=" m-5 my-7 md:my-0 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-5 md:gap-7 ">
+    <div className=" m-5 my-7 md:my-10 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-5 md:gap-7 ">
         <div className="">
             <h1 className='text-xl font-semibold'>
                 SIMILAR PRODUCTS 
