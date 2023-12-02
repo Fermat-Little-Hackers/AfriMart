@@ -29,7 +29,7 @@ export const HeroSection = () => {
                 <MainAnimation
                     text="Afrimart"
                     repeatDelay={2}
-                    className="font-serif text-9xl text-[var(--sand)]"
+                    className="font-serif text-6xl md:text-9xl text-[var(--sand)]"
                     />
                 <AnimatedText text="Where cultural treasures tell timeless stories" className="text-[var(--sand)] mt-32" />
                     </div>
