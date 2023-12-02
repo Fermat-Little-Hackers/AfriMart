@@ -97,7 +97,7 @@ useEffect(() => {
     }
   }, [allPurchase]); 
   
-  return    ( <div className=" h-64 overflow-y-auto scrollbar  smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">   
+  return    ( <div className=" max-h-[80vh] md:min-h-[17rem]  overflow-y-auto scrollbar  smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">   
       
       {allProductArray?.length == 0 ? <div className="text-center">No item purchased</div> : allProductArray?.map( (item:any,index : number) => {  
           let eth = 1000000000000000000;
@@ -106,6 +106,7 @@ useEffect(() => {
           let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
           let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
            let cid = `${firstHash + secondHash}`
+           let available = Number(item.amountAvailable)
          return ( <div key={index} className="w-[20%] space-y-10">          
          <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} />
        </div> )             

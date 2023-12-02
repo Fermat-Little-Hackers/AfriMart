@@ -1,6 +1,6 @@
 ![Image description](./packages/afri_mart/public/afrimart%20barner.png)
 #  AFRIMART README FILE
-### *Where cultural treasure’s tell timeless stories.*
+### *Where cultural treasures tell timeless stories.*
 
 ## Introduction
 
@@ -107,4 +107,4 @@ Our team comprises five full stark developer
 This project is licensed under the [MIT License](LICENSE).
 
 
-Thank you for joining us on this journey to empower African businesses globally! 🌍💼
+Thank you for joining us on this journey, leverage Starknet to empower African businesses globally! 🌍💼

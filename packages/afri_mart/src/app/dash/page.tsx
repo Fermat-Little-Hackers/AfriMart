@@ -9,10 +9,13 @@ import Content from "./components/content";
 import SelectCat from "./components/Selectcat";
 import { type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
 import { useConnectionContext } from "@/context/connectionContext";
+import LoadingOverlay from "@/components/Loading";
+import { useLoadingContext } from "@/context/connectionContext";
 
 const Dashboard = () => {
   const [title, setTitle] = useState('All Purchases')
   const { ShareAddress, setShareAddress } = useConnectionContext()
+  
 
   const props = (message: string) => {
     setTitle(message);
@@ -30,8 +33,9 @@ const Dashboard = () => {
   }, [])
   return (
     <div>
+      {/* {loadState && <LoadingOverlay/>} */}
       <Search />
-      <div className="m-0 p-8 md:px-20 w-[100vw] flex smx:flex-col lmx:flex-col space-x-24 smx:space-x-0 lmx:space-x-0 lmx:mx-auto lmx:w-[100%] smx:w-[100%]">
+      <div className="m-0 p-8 md:mt-10 md:px-20 w-[100vw] flex smx:flex-col lmx:flex-col space-x-24 smx:space-x-0 lmx:space-x-0 lmx:mx-auto lmx:w-[100%] smx:w-[100%]">
         <div>
           <UserDetails />
           <SideFilter onClickAction={props} />

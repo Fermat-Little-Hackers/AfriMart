@@ -2,7 +2,7 @@ import React from 'react'
 
 export const SupplyChainFactoryAddr = () => {
   return (
-    '0x06dc8701bf6349e558c7f6f8660cb19275cf40d4b46411143e603d639a711693'
+    '0x064bebfcffb0f8378a183c42c9b035a02050551d964a5d05df8f6b4d18b3aaec'
   )
 }
 export const MarketPlaceAddr = () => {
