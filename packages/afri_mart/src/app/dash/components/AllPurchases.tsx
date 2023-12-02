@@ -92,7 +92,7 @@ useEffect(() => {
       if(allPurchase.length > 0 || allPurchase.length == 0){
         GetOrder(allPurchase).then((orderidsArray)=>{
           // console.log('order id array collected', orderidsArray)
-          // console.log(`orders`, orderidsArray)
+          console.log(`orders`, orderidsArray)
           setOrderArray(orderidsArray?orderidsArray:[]);
           GetItem(orderidsArray).then((products)=>{
             // console.log('products obtained array',products)
@@ -120,7 +120,7 @@ useEffect(() => {
            let cid = `${firstHash + secondHash}`
            let available = Number(item.amountAvailable)
          return ( <div key={index} className="w-[20%] space-y-10">          
-         <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} orderId={orderArray ? orderArray[index] : 0}/>
+         <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} orderId={allPurchase ? Number(allPurchase[index]) : 0}/>
        </div> )             
     })}
         

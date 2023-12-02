@@ -45,6 +45,7 @@ const ProductRatingForm: React.FC<MyProps> = ({ itemId }) => {
         let halfLength = Math.floor(review.length / 2)
         const contract = new Contract(reviewContractAbi, RattingAddr(), account)
         const profileSetDetails = await contract.review_product(itemId, rating, review.substring(0, halfLength), review.substring(halfLength));
+        setRatingLoad(false);
     } catch (e:any) {
       console.log(e);
       // setProfileState(true)
@@ -66,7 +67,6 @@ const ProductRatingForm: React.FC<MyProps> = ({ itemId }) => {
     // Add your logic here to submit the review and rating
     // console.log('Review:', review);
     // console.log('Rating:', rating);
-    setRatingLoad(false);
 
   };
 
