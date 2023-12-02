@@ -24,7 +24,7 @@ const TrackAllItem = () => {
   const [allItems, setAllItems] = useState<any[]>();
   const [orderId, setOrderId] = useState();
   const [status, setStatus] = useState("");
-  const {ShareAccount: account} = useAccountContext();
+  const { ShareAccount: account } = useAccountContext();
 
   function hexToReadableText(hexString: any): string {
     const bytes = Buffer.from(hexString, "hex");
@@ -64,7 +64,10 @@ const TrackAllItem = () => {
 
   return (
     <div className="">
-      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10"> Pending Deliveries</h3>
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">
+        {" "}
+        Pending Deliveries
+      </h3>
       <div className="space-y-4 p-5 md:p-20">
         <table>
           <thead>

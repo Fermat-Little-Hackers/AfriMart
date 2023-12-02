@@ -1,12 +1,46 @@
 "use client";
-import React, { HTMLInputTypeAttribute, useState } from "react";
+import React, { HTMLInputTypeAttribute, useState, useEffect } from "react";
 // import {useSupplyChainContext} from "../../../context/supplyChainContext"
 import { useSupplyChainContext } from "../../../context/supplyChainContext";
 import { FaShoppingCart, FaUser, FaBars, FaTimes } from "react-icons/fa";
+import {
+  type ConnectedStarknetWindowObject,
+  connect,
+  disconnect,
+} from "@argent/get-starknet";
+import contractAbi from "../../../ABI/supplyChainContract.json";
+import factory_abi from "../../../ABI/supplyChainFactory.json";
+import { SupplyChainFactoryAddr } from "@/components/addresses";
+import { Contract, Provider } from "starknet";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useAccountContext } from "@/context/connectionContext";
 
 const SideMenu = () => {
+  const [connection, setConnection] =
+    useState<ConnectedStarknetWindowObject | null>();
+  const [staffAddress, setStaffAddress] = useState("");
+  const { ShareAccount, ShareAddress } = useAccountContext();
   const { sharedState, setSharedState } = useSupplyChainContext();
   const [textVisible, setTextVisible] = useState(false);
+
+  const confirmAccess = async () => {
+    try {
+      const provider = new Provider({
+        rpc: {
+          nodeUrl:
+            "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
+        },
+      });
+
+      let factory_contract = new Contract(
+        factory_abi,
+        SupplyChainFactoryAddr(),
+        provider
+      );
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   const toggleTextVisibility = () => {
     setTextVisible(!textVisible);
@@ -171,7 +205,9 @@ const SideMenu = () => {
           className="hover:cursor-pointer"
           onClick={handleClick}
           style={
-            sortColor("WhitelisAccount") ? { color: "gray" } : { color: "black" }
+            sortColor("WhitelisAccount")
+              ? { color: "gray" }
+              : { color: "black" }
           }
           id="WhitelistAccount"
         >
