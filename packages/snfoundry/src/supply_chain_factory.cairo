@@ -131,15 +131,18 @@ trait IDispatchFactory<TContractState>{
 
     fn setStaffBranch(ref self: TContractState, staffAddress: ContractAddress) -> bool;
     fn getStaffBranch(self: @TContractState, staffAddress: ContractAddress ) -> ContractAddress;
-}
 
+    fn confirmOwners(self: @TContractState, ownerAddress: ContractAddress) -> bool;
+    fn confirmCompany(self: @TContractState, companyAddress: ContractAddress) -> bool;
+    fn confirmBranchAdmins(self: @TContractState, branchAdminAddress: ContractAddress) -> bool;
+}
 
 #[starknet::contract]
 mod DispatchCompanyFactory {
     use snfoundry::supply_chain_factory::IMarketPlaceDispatcherTrait;
-use core::result::ResultTrait;
-use core::option::OptionTrait;
-use core::serde::Serde;
+    use core::result::ResultTrait;
+    use core::option::OptionTrait;
+    use core::serde::Serde;
     use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher, ItemStatus};
     use starknet::{get_caller_address, get_contract_address, syscalls::deploy_syscall};
     use debug::PrintTrait;
@@ -165,6 +168,7 @@ use core::serde::Serde;
         // dispatchAdmin ID to store admin details
         dispatchAdmins: LegacyMap<u128, DispatchAdmin>,
         confirmBranchAdmin: LegacyMap<ContractAddress, bool>,
+        hasCreatedBranch: LegacyMap<ContractAddress, bool>,
         // takes companyID as an args
         adminStatistics: LegacyMap<u16, AdminStats>,
         overAllAdminsNumber: u128,
@@ -183,6 +187,8 @@ use core::serde::Serde;
         trackOrderIdNumber: LegacyMap<u256, u256>,
         
         stafftobranch: LegacyMap<ContractAddress, ContractAddress>,
+        isStaff: LegacyMap<ContractAddress, bool>,
+
 
     }
 
@@ -315,6 +321,7 @@ use core::serde::Serde;
 
         fn createBranch(ref self: ContractState, city: felt252, state: felt252, country: felt252) -> ContractAddress {
             assert(self.isDispatchAdmin.read(get_caller_address()) == true, 'Unauthorized Personnel');
+            assert(self.hasCreatedBranch.read(get_caller_address()) == false, 'You have a branch');
 
             // constructor arguments   
             let mut constructor_args = array![city.into(), state.into(), country.into(), get_caller_address().into(), get_contract_address().into()];
@@ -338,9 +345,13 @@ use core::serde::Serde;
 
             let market_dispatch =  IMarketPlaceDispatcher{contract_address: market_address};
             market_dispatch.registerSupplyChainChild(deployed_contract_address);
+
+            self.stafftobranch.write(get_caller_address(), deployed_contract_address);
+            self.hasCreatedBranch.write(get_caller_address(), true);
             
 
             self.emit(BranchCreated{by: get_caller_address(), for: deployed_contract_address, city});
+
 
             deployed_contract_address
 
@@ -444,10 +455,21 @@ use core::serde::Serde;
         fn setStaffBranch(ref self: ContractState, staffAddress: ContractAddress) -> bool {
             assert(self.isBranch.read(get_caller_address()) == true, 'Unauthorized Personnel');
             self.stafftobranch.write(staffAddress, get_caller_address());
+            self.isStaff.write(staffAddress, true);
             true
         }
         fn getStaffBranch(self: @ContractState, staffAddress: ContractAddress ) -> ContractAddress {
             self.stafftobranch.read(staffAddress)
+        }
+
+        fn confirmOwners(self: @ContractState, ownerAddress: ContractAddress) -> bool{
+            self.isOwner.read(ownerAddress)
+        }
+        fn confirmCompany(self: @ContractState, companyAddress: ContractAddress) -> bool{
+            self.isDispatchAdmin.read(companyAddress)
+        }
+        fn confirmBranchAdmins(self: @ContractState, branchAdminAddress: ContractAddress) -> bool{
+            self.confirmBranchAdmin.read(branchAdminAddress)
         }
     }
 

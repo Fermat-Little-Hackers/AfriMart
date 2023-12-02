@@ -1,6 +1,16 @@
 import React, { HTMLInputTypeAttribute } from "react";
-import { num, Contract } from "starknet";
 import { useState, useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Contract, Provider, constants, num } from "starknet";
+import {
+  type ConnectedStarknetWindowObject,
+  connect,
+  disconnect,
+} from "@argent/get-starknet";
+
+import contractAbi from "../../../ABI/supplyChainFactory.json";
+import { SupplyChainFactoryAddr } from "@/components/addresses";
+import { useAccountContext } from "@/context/connectionContext";
 
 const RegisterSupplychain = () => {
   const [companyRepAddr, setCompanyRepAddr] = useState("");
@@ -8,6 +18,27 @@ const RegisterSupplychain = () => {
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
+  const {ShareAccount: account} = useAccountContext();
+
+
+  const setSupplyChain = async () => {
+    try {
+      const contract = new Contract(
+        contractAbi,
+        SupplyChainFactoryAddr(),
+        account
+      );
+      await contract.setDispatchHqAdmin(
+        companyRepAddr,
+        companyName,
+        country,
+        state,
+        city
+      );
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCompanyRepAddr(e.target.value);
@@ -29,17 +60,29 @@ const RegisterSupplychain = () => {
     setCity(e.target.value);
   };
 
-  const registerSupplychain: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    // Handle the form submission logic (e.g., send data to server)
+    // setSubmittedData(data);
+    setSupplyChain();
+    console.log("submitted");
+    // console.log(previewImage);
+    // console.log(name);
   };
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>();
 
   return (
     <div className="">
-      <h3 className="mb-7 text-xl md:text-2xl">Register Supply Chain</h3>
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Register Supply Chain</h3>
       <div className="justify-start text-left ">
         <form
-          onSubmit={registerSupplychain}
-          className="w-3/4 rounded "
+          onSubmit={handleSubmit(onSubmit)}
+          className="p-5 md:p-20 rounded w-full"
         >
           <div className="mb-4">
             <label
@@ -49,11 +92,11 @@ const RegisterSupplychain = () => {
               Rep Address
             </label>
             <input
-            type="text"
-            name="contract Address"
-            id="repAddress"
-            value={companyRepAddr}
-            onChange={handleAddress}
+              type="text"
+              name="contract Address"
+              id="repAddress"
+              value={companyRepAddr}
+              onChange={handleAddress}
               className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
@@ -65,11 +108,11 @@ const RegisterSupplychain = () => {
               Company Name
             </label>
             <input
-            type="text"
-            name="company"
-            id="companyName"
-            value={companyName}
-            onChange={handleCompanyName}
+              type="text"
+              name="company"
+              id="companyName"
+              value={companyName}
+              onChange={handleCompanyName}
               className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>
@@ -81,11 +124,11 @@ const RegisterSupplychain = () => {
               City
             </label>
             <input
-            type="text"
-            name="city"
-            id="city"
-            value={city}
-            onChange={handleCity}
+              type="text"
+              name="city"
+              id="city"
+              value={city}
+              onChange={handleCity}
               className="w-full p-2 bg-transparent ring-1 ring-[var(--terracota)]  rounded focus:outline-none focus:ring-blue-500"
             />
           </div>

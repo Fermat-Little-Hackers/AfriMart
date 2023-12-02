@@ -1,23 +1,67 @@
 import React, { useEffect, useState } from "react";
+import {
+  type ConnectedStarknetWindowObject,
+  connect,
+  disconnect,
+} from "@argent/get-starknet";
+
+import contractAbi from "../../../ABI/supplyChainFactory.json";
+import { SupplyChainFactoryAddr } from "@/components/addresses";
+import { Contract } from "starknet";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useAccountContext } from "@/context/connectionContext";
 
 const RegisterDirectors = () => {
+  const [connection, setConnection] =
+    useState<ConnectedStarknetWindowObject | null>();
   const [directorAddress, setDirectorAddress] = useState("");
+  const {ShareAccount: account} = useAccountContext();
 
-  const handleAddress = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDirectorAddress(e.target.value);
+  const setDirector = async () => {
+    try {
+      const contract = new Contract(
+        contractAbi,
+        SupplyChainFactoryAddr(),
+        account
+      );
+      await contract.setFactoryAdmin(directorAddress);
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
 
-  const onboardDirector: React.FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
+  const handleAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDirectorAddress(event.target.value);
+    console.log("name changed");
+    console.log(event.target.value);
   };
+
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    // Handle the form submission logic (e.g., send data to server)
+    // setSubmittedData(data);
+    setDirector();
+    console.log("submitted");
+    // console.log(previewImage);
+    // console.log(name);
+  };
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>();
+
   return (
     <div className="">
-    <h3 className="mb-7 text-xl md:text-2xl">Register Directors</h3>
-    <div className="justify-start md:p-10 text-left ">
-      <form className="space-y-4" onSubmit={onboardDirector}>
-
+      <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Register Directors</h3>
+      <div className="justify-start p-5 md:p-10 text-left">
+        <form className="space-y-4 p-5 md:p-20 rounded" onSubmit={handleSubmit(onSubmit)}>
           <div>
-            <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium leading-6 text-gray-900"
+            >
               Director Address
             </label>
             <div className="mt-2">
@@ -28,12 +72,12 @@ const RegisterDirectors = () => {
                 onChange={handleAddress}
                 autoComplete="name"
                 required
-                className="block w-full rounded-md bg-transparent border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block bg-transparent w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-[var(--terracota)] placeholder:text-gray-400  focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
 
-          <div className='flex flex-row gap-5 '>
+          <div className="flex flex-row gap-5 items-center justify-center">
             <button
               type="submit"
               className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -42,7 +86,7 @@ const RegisterDirectors = () => {
             </button>
           </div>
         </form>
-    </div>
+      </div>
     </div>
   );
 };

@@ -5,10 +5,13 @@ import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import { setInterval } from "timers";
+import { useConnectionContext } from "@/context/connectionContext";
+
 
 const ListedItems = () => {
   const [allListedItem, setAllListed] = useState<any[]>([]);
   const [allProductArray, setAllproductArray] = useState<any[]>([]);
+  const {ShareAddress, setShareAddress} = useConnectionContext()
 
 
 
@@ -24,8 +27,8 @@ const ListedItems = () => {
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allPurchaseData = await contract.getProductsListedByUser(
-        connection?.selectedAddress?.toString(),
-        connection?.selectedAddress?.toString()
+        ShareAddress.toString(),
+        ShareAddress.toString()
       );
       setAllListed([...allPurchaseData]);
     } catch (error : any) {
@@ -76,15 +79,18 @@ useEffect(() => {
 }, [allListedItem]); 
 
   
-  
 
-  return    ( <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">   
+  return    ( <div className="max-h-[80vh] md:min-h-[17rem] overflow-y-auto scrollbar scrollbar-thin smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">   
       {allProductArray?.length == 0 ? <div className="text-center">No item Listed</div> : allProductArray.map((item,index) => {             
+       let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
+       let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
+        let cid = `${firstHash + secondHash}`
+        // console.log(cid);
        let productname =  hexToReadableText(item.name.toString(16)) 
        let productprice = Number(item.price)/1e18
        let available = Number(item.amountAvailable)
       return <div key={index} className="w-[20%] space-y-10">
-       <Listcard title={productname} amount={productprice} quantity={available} />
+       <Listcard title={productname} amount={productprice} quantity={available} uri={cid} />
      </div>                
         })}
 </div>)

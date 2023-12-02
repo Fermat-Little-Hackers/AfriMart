@@ -4,10 +4,14 @@ import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/
 import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
+import { useConnectionContext } from "@/context/connectionContext";
+
 
 const AllPurchases =  ()  => {  
 const [allPurchase, setAllPurchase] = useState<any[]>([])
 const [allProductArray, setAllproductArray] = useState<any[]>([]);
+const [address, setAddress] = useState<string | undefined>('');
+const {ShareAddress, setShareAddress} = useConnectionContext()
 
 
   const getAllpurchase = async () => {
@@ -19,10 +23,11 @@ const [allProductArray, setAllproductArray] = useState<any[]>([]);
 
     try {
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
+      setAddress(connection?.selectedAddress)
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allPurchaseData = await contract.getProductsBoughtByUser(
-        connection?.selectedAddress?.toString(),
-        connection?.selectedAddress?.toString()
+        ShareAddress?.toString(),
+        ShareAddress?.toString()
       );
       setAllPurchase([...allPurchaseData]);
     } catch (error : any) {
@@ -82,7 +87,7 @@ useEffect(() => {
       GetOrder(allPurchase).then((orderidsArray)=>{
         // console.log('order id array collected', orderidsArray)
         GetItem(orderidsArray).then((products)=>{
-          // console.log('products obtained array',products)
+          console.log('products obtained array',products)
           //@ts-ignore
           setAllproductArray(products)
         })
@@ -92,15 +97,18 @@ useEffect(() => {
     }
   }, [allPurchase]); 
   
-  return    ( <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">   
+  return    ( <div className=" max-h-[80vh] md:min-h-[17rem]  overflow-y-auto scrollbar  smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">   
       
       {allProductArray?.length == 0 ? <div className="text-center">No item purchased</div> : allProductArray?.map( (item:any,index : number) => {  
           let eth = 1000000000000000000;
           let productname =  hexToReadableText(item.name.toString(16)) 
           let productprice = Number(BigInt(item.price)) / eth
-          
+          let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
+          let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
+           let cid = `${firstHash + secondHash}`
+           let available = Number(item.amountAvailable)
          return ( <div key={index} className="w-[20%] space-y-10">          
-         <Puchasecard title={productname} amount={productprice} quantity={0} />
+         <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} />
        </div> )             
     })}
 </div>)

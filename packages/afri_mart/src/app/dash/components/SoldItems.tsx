@@ -4,10 +4,14 @@ import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/
 import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
+import { useConnectionContext } from "@/context/connectionContext";
+
 
 const SoldItems = () => {
 const [allSold, setAllSold] = useState<any[]>([])
 const [allProductSold, setAllproductSold] = useState<any[]>([]);
+const {ShareAddress, setShareAddress} = useConnectionContext()
+
 
   const getAllsolditem = async () => {
     const provider = new Provider({
@@ -20,7 +24,7 @@ const [allProductSold, setAllproductSold] = useState<any[]>([]);
       const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allsoldData = await contract.getItemsSold(
-        connection?.selectedAddress?.toString()
+        ShareAddress?.toString()
       );
       setAllSold([...allsoldData]);
     } catch (error : any) {
@@ -92,13 +96,16 @@ useEffect(() => {
   }
 }, [allSold]); 
 
-  return <div className="smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[800px] smx:w-[80%] lmx:w-[90%] h-[80%] p-6 mt-2">
+  return <div className=" md:max-h-[80vh] md:min-h-[17rem] overflow-y-auto scrollbar smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">
      {allProductSold.length == 0 ? <div className="text-center">No item Sold</div> : allProductSold.map((item,index) => {             
        let productname =  hexToReadableText(item.name.toString(16)) 
        let productprice = Number(item.price)/1e18
        let available = Number(item.amountAvailable)
+       let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
+       let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
+        let cid = `${firstHash + secondHash}`
       return  <div key={index} className="w-[20%] space-y-10">
-       <Soldcard title={productname} amount={productprice} quantity={available} />
+       <Soldcard title={productname} amount={productprice} quantity={available} uri={cid}  />
      </div>                
         })}
   </div>;

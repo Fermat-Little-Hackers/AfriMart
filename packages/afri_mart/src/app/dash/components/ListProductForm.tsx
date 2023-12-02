@@ -8,6 +8,8 @@ import marketPlaceAbi from '@/ABI/marketPlace';
 import { MarketPlaceAddr } from '@/components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface, CairoCustomEnum } from 'starknet'
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
+import { useAccountContext } from '@/context/connectionContext';
+
 
 
 interface FormData {
@@ -53,11 +55,13 @@ const FormField = () => {
     const [imageblob, setImageBlob] = useState<File | undefined >()
     const { register, handleSubmit, setValue, formState: { errors }  } = useForm<FormData>();
     const dropdownOptions = ['Agriculture', 'Textile and Clothing', 'Accesories', 'Tools and Equipments', 'Digital Arts','Artifacts and Physical Arts'];
-    const [selectedOption, setSelectedOption] = useState<string>();
+    const [selectedOption, setSelectedOption] = useState<string>('Agriculture');
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
     const [account, setAccount] = useState();
     const [address, setAddress] = useState('');
     const [listing, setListing] = useState<boolean>();
+    const {ShareAccount, setShareAccount} = useAccountContext()
+
 
     const Fetchcategories = (Itemindex: number) => { 
        const cart = [
@@ -84,11 +88,11 @@ const FormField = () => {
             let ipfsDetails = await main(imageblob,name,name)
             let length = (ipfsDetails?.ipnft).length; 
             let halfLength = Math.floor(length / 2)
-            
             let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
             let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
-            const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), account)
-            const details = await contract.listProduct(name, description, firstHalf, secondhalf, price, amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
+            console.log(findCategoryIndex(selectedOption as string));
+            const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), ShareAccount)
+            const details = await contract.listProduct(name, description, firstHalf, secondhalf, BigInt(price as number), amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
             setListing(false);
             alert("Item Listed Successfully");
             setSharedState(false);
@@ -202,7 +206,8 @@ const FormField = () => {
         setDescription(event.target.value);
     }
     const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setPrice(Number(event.target.value));
+      let Eth = 1000000000000000000;
+        setPrice(Number(event.target.value) * Eth);
     }
     const handleAmountAvailableChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAmount(Number(event.target.value));
@@ -216,6 +221,7 @@ const FormField = () => {
     const Dropdown: React.FC<DropdownProps> = ({ options }) => {
       
         const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+          console.log(`check`, event.target.value)
           setSelectedOption(event.target.value);
         };
       
@@ -310,7 +316,7 @@ const FormField = () => {
               <input
                 id="price"
                 name="price"
-                type="number"
+                type="text"
                 onChange={handlePriceChange}
                 required
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -343,14 +349,14 @@ const FormField = () => {
             { listing ? 
             <button
                 type="button"
-                className='bg-indigo-600 text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem] justify-center items-center flex'
+                className='bg-[var(--sienna)] text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem] justify-center items-center flex'
             >
                 <Image src={'/image/loading.svg'} alt="Example Image" className="w-[1.5rem] md:w-[1.5rem]" width={1} height={1} />
             </button>
             :
             <button
               type="submit"
-              className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="rounded-md bg-[var(--sienna)] px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
               List Product
             </button>

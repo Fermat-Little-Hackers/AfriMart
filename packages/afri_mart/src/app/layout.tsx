@@ -12,8 +12,12 @@ import { ProviderInterface, RpcProvider, provider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
+import { ConnectionContextProvider, AccountContextProvider } from '../context/connectionContext'
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ListProductContextProvider } from '../context/listProductContext';
 // import { ConnectkitProvider } from '../../connectkit';
+import { ChakraProvider } from '@chakra-ui/react'
+import { LoadingContextProvider } from '../context/connectionContext';
 
 import PagesLayout from './PagesLayout';
 
@@ -24,22 +28,34 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     new InjectedConnector({ options: { id: 'braavos' } }),
     new InjectedConnector({ options: { id: 'argentX' } }),
   ];
+  const queryClient = new QueryClient();
+
   return (
     <html lang="en">
       <body className={clsx("", inter.className)}>
-        <ListProductContextProvider>
-        <SupplyChainContextProvider>
-          <RegisteredContextProvider>
-            <YourContextProvider>
-              <StarknetProvider>
-                <PagesLayout>{children}</PagesLayout>
-              </StarknetProvider>
-            </YourContextProvider>
-          </RegisteredContextProvider>
-        </SupplyChainContextProvider>
-        </ListProductContextProvider>
+      <ChakraProvider>
+        <ConnectionContextProvider>
+        <LoadingContextProvider>
+          <AccountContextProvider>
+            <ListProductContextProvider>
+              <SupplyChainContextProvider>
+                <RegisteredContextProvider>
+                  <YourContextProvider>
+                    <StarknetProvider>
+                      <QueryClientProvider client={queryClient}>
+                        <PagesLayout>{children}</PagesLayout>
+                      </QueryClientProvider>
+                    </StarknetProvider>
+                  </YourContextProvider>
+                </RegisteredContextProvider>
+              </SupplyChainContextProvider>
+            </ListProductContextProvider>
+          </AccountContextProvider>
+          </LoadingContextProvider>
+        </ConnectionContextProvider>
+        </ChakraProvider>
       </body>
-    </html>
+    </html >
   );
 };
 

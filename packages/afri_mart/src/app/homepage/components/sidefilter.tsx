@@ -15,7 +15,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
     const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const clickedElementId = (event.target as HTMLDivElement).id;
     if(clickedElementId == "Agric"){
-        onClickAction('AGRICULTURE', 1)
+        onClickAction('AGRICULTURE', 0)
         setIsAgric(true)
         setIsCraft(false)
         setIsFashion(false)
@@ -25,7 +25,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "craft"){
-        onClickAction('CRAFT AND ART', 4)
+        onClickAction('TOOLS AND EQUIPMENT', 3)
         setIsCraft(true)
         setIsAgric(false)
         setIsFashion(false)
@@ -35,7 +35,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "fashion"){
-        onClickAction('FASHION', 3)
+        onClickAction('ACCESSORIES', 2)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(true)
@@ -45,7 +45,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "textiles"){
-        onClickAction('TEXTILES AND FABRICS', 2)
+        onClickAction('TEXTILES AND FABRICS', 1)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
@@ -55,7 +55,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "digital"){
-        onClickAction('DIGITAL ARTS', 5)
+        onClickAction('DIGITAL ARTS', 4)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
@@ -65,7 +65,7 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
         setIsPhysical(false)
     }
     if(clickedElementId == "physical"){
-        onClickAction('PHYSICAL ARTS', 6)
+        onClickAction('PHYSICAL ARTS', 5)
         setIsCraft(false)
         setIsAgric(false)
         setIsFashion(false)
@@ -76,14 +76,14 @@ const Sidefilter : React.FC<ClickProps> = ({ onClickAction,}) => {
     }
   }
     return (
-    <div className="  w-[300px] mmx:w-[200px] mt-20 smx:hidden lmx:hidden">
-       <div className="">
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="craft" onClick={handleClick} style={{color: isCraft ? 'grey' : 'black'}}>CRAFT AND ART</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="fashion" onClick={handleClick} style={{color: isFashion ? 'grey' : 'black'}}>FASHION</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="textiles" onClick={handleClick} style={{color: isTextile ? 'grey' : 'black'}}>TEXTILES AND FABRICS</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="digital" onClick={handleClick} style={{color: isDigital ? 'grey' : 'black'}}>DIGITAL ARTS</div>
-        <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="physical" onClick={handleClick} style={{color: isPhysical ? 'grey' : 'black'}}>PHYSICAL ARTS</div>
+    <div className="smx:hidden mt-10 flex shadow-lg rounded-lg cursor-pointer ring-1 ring-red-100 md:border-r-8 border-[var(--sienna)]  w-[250px] smx:w-[100%] smx:mx-auto md:pb-20 md:pr-0 p-4 gap-4">
+       <div className="flex flex-col gap-4 w-[100%] mt-5 mr-0">
+        <div  id="Agric" onClick={handleClick} style={{color: isAgric ? 'white' : 'black', backgroundColor: isAgric ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isAgric ? '1.5rem': ''}}>Agriculture</div>
+        <div id="craft" onClick={handleClick} style={{color: isCraft ? 'white' : 'black', backgroundColor: isCraft ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isCraft ? '1.5rem': ''}}>Craft And Arts</div>
+        <div id="fashion" onClick={handleClick} style={{color: isFashion ? 'white' : 'black', backgroundColor: isFashion ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isFashion ? '1.5rem': ''}}>Fashion</div>
+        <div id="textiles" onClick={handleClick} style={{color: isTextile ? 'white' : 'black', backgroundColor: isTextile ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isTextile ? '1.5rem': ''}}>Textiles & Fabrics</div>
+        <div id="digital" onClick={handleClick} style={{color: isDigital ? 'white' : 'black', backgroundColor: isDigital ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isDigital ? '1.5rem': ''}}>Digital Arts</div>
+        <div id="physical" onClick={handleClick} style={{color: isPhysical ? 'white' : 'black', backgroundColor: isPhysical ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isPhysical ? '1.5rem': ''}}>Physical Arts</div>
        </div>
     </div>
   )

@@ -24,7 +24,7 @@ const TrendingProducts = () => {
       const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), provider);
         const res: any = await contract.call("getAllProducts", []);
         setProducts(getRandomNumbersFromArray(res));
-        console.log(`RANDOM PRODUCTS`, getRandomNumbersFromArray(res));
+        // console.log(`RANDOM PRODUCTS`, getRandomNumbersFromArray(res));
         // const products = res.map((item:any) => item.toString())
         // setProducts(products);
       } catch (error : any) {      
@@ -74,9 +74,9 @@ const TrendingProducts = () => {
   }
 
   return (
-    <div className=" mx-5 my-7 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-4 md:gap-4 mt-10 md:mt-20">
+    <div className=" mx-5 my-4 md:mx-20 h-fit md:h-fit px-0 md:p-10 flex flex-col gap-4 md:gap-4 md:mt-4 md:mb-20">
         <div className="">
-            <p className='font-serif text-2xl'>
+            <p className='font-serif text-2xl mb-4 md:mb-7'>
                 TRENDING PRODUCTS
             </p>                    
         </div>

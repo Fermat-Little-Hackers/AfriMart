@@ -7,13 +7,15 @@ import Stars from '../../../../components/market-place/stars'
 import { useYourContext } from '../../../../context/YourContext';
 import ConfirmPurchasePopUp from '@/components/market-place/confirmPurchasePopUp';
 import { useAccount, useContractRead } from "@starknet-react/core";
-import { MarketPlaceAddr } from '../../../../components/addresses';
+import { MarketPlaceAddr, RattingAddr } from '../../../../components/addresses';
 import { useEffect } from 'react';
 import marketplaceAbi from '../../../../ABI/marketPlace'
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
 import dummy from '../../../../ABI/dummy.json'
 import Image from 'next/image';
 import { CairoOption, CairoCustomEnum, CairoEnumRaw } from "starknet";
+import Productphoto from './productphoto';
+import rattingsContract from '@/ABI/rattingsContract.json';
 
 type cartegory = {
   Agriculture: any,
@@ -34,14 +36,36 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const [account, setAccount] = useState();
     const [address, setAddress] = useState('');
     const [count, setCount] = useState(1);
+    const [rating, setRating] = useState<number>( );
     const [name, setName] = useState<any>();
     const [seller, setSeller] = useState<any>();
     const [sellerName, setSellerName] = useState<any>();
     const [description, setDescription] = useState<any>();
     const [price, setPrice] = useState<any>();
     const [imgUri, setImgUri] = useState<any>();
-    const [imgUri2, setImgUri2] = useState<any>();
+    // const [imgUri2, setImgUri2] = useState<any>();
     const [addingCart, setAddingCart] = useState<boolean>(false);
+
+
+
+    const getProductReview = async() => {
+      const provider = new Provider({
+        rpc: {
+          nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+        }
+      })
+        try {
+            const contract = new Contract(rattingsContract, RattingAddr(), provider);
+            const details = await contract.getProductRatting(itemId);
+            setRating(Number(details));
+          // setProducts(details);
+        } catch (error : any) {      
+          console.log(error.message);
+        }
+    }
+
+
+
 
 
     const handlePurchaseClick = () => {
@@ -82,8 +106,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
           // console.log(details);
           let eth = 1000000000000000000;
             setName(hexToReadableText(details.name.toString(16)))
-            setImgUri(details.imageUri1.toString(16));
-            setImgUri2(details.imageUri2.toString(16));
+            setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));
             setPrice(Number(BigInt(details.price)) / eth);
             let cart:CairoEnumRaw = details.cartegory;
             setSeller(`0x${details.seller.toString(16)}`);
@@ -96,6 +119,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
 
     useEffect(() => {
       getProduct();
+      getProductReview();
     }, [])
     
 
@@ -188,10 +212,11 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
   return (
     <div className="flex flex-col md:flex-row md:gap-32 md:mx-20 my-5 md:my-20 md:h-[65vh] p-5 md:p-0">
         <div className="flex flex-col md:w-[40%] gap-4">
-            <div className=" bg-[var(--afroroasters-brown)] md:w-[20rem] h-[20rem]"></div>
+            {/* <div className=" bg-[var(--afroroasters-brown)] md:w-[20rem] h-[20rem]"></div> */}
+            <Productphoto uri={imgUri} />
             <div className='flex flex-col gap-2'>
                 <div>
-                    <Stars amount={2.5}/>
+                    <Stars amount={rating ? rating : 0}/>
                 </div>
                 <p> Seller: {sellerName ? sellerName : 'loading....'}</p>
             </div>
