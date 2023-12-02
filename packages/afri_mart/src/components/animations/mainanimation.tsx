@@ -41,7 +41,7 @@ export const MainAnimation = ({
     const ref = useRef(null);
 
     return (
-        <Wrapper className={clsx(className, "overflow-clip h-32")}>
+        <Wrapper className={clsx(className, "overflow-hidden h-32 z-40")}>
             <span className="sr-only">{text}</span>
             <motion.span
                 ref={ref}
