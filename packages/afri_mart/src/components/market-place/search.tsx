@@ -22,7 +22,7 @@ const startSearch = () => {
 const Search = () => {
   const router = useRouter();
   const [isRegistered, setIsRegistered] = useState(false);
-  const { sharedState, setSharedState } = useRegisteredContext();
+  const { profileState, setProfileState} = useRegisteredContext();
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
   const [account, setAccount] = useState();
   const [address, setAddress] = useState('');
@@ -61,21 +61,37 @@ useEffect(() => {
 
 
 
-  const handleProfileCheck = () => {
+  const handleProfileCheck = async() => {
+    const provider = new Provider({
+      rpc: {
+        // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+        nodeUrl: "https://rpc.starknet-testnet.lava.build"
+      }
+    }) 
+    try {
+        const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), provider)
+        const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+        const profileSetDetails = await contract.getUserProfile((connection&&connection.selectedAddress));
+        setIsCreated(profileSetDetails.isCreated);
+        !profileSetDetails.isCreated ? setProfileState(true) : router.push('/dash');
+    } catch (e:any) {
+      console.log(e);
+      setProfileState(true)
+    }
 
-    !isCreated ? setSharedState(true) : router.push('/dash');
+
 
   }
 
   const handleStateChange = useCallback(() => {
     // logic to handle the state change goes here
-    console.log('State changed:', sharedState);
+    console.log('State changed:', profileState);
     // ROUTE TO THE USER PROFILE PAGE
-  }, [sharedState]);
+  }, [profileState]);
 
   useEffect(() => {
     handleStateChange();
-  }, [sharedState, handleStateChange]);
+  }, [profileState, handleStateChange]);
 
 
     return(
@@ -124,7 +140,7 @@ useEffect(() => {
             </div> */}
           </div>
         </div>
-        {sharedState && ( <ProfileForm /> )}
+        {profileState && ( <ProfileForm /> )}
     </div>
     )
 }

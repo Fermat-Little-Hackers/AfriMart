@@ -8,7 +8,7 @@
   
   .scrollingText {
     white-space: nowrap;
-    animation: scrollText 10s linear infinite;
+    animation: scrollText 20s linear infinite;
   }
   
   @keyframes scrollText {

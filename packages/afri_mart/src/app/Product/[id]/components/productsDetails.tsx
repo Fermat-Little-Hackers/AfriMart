@@ -16,6 +16,8 @@ import Image from 'next/image';
 import { CairoOption, CairoCustomEnum, CairoEnumRaw } from "starknet";
 import Productphoto from './productphoto';
 import rattingsContract from '@/ABI/rattingsContract.json';
+import { useRegisteredContext } from '@/context/registeredContext';
+import ProfileForm from '@/components/market-place/createProfile';
 
 type cartegory = {
   Agriculture: any,
@@ -45,6 +47,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const [imgUri, setImgUri] = useState<any>();
     // const [imgUri2, setImgUri2] = useState<any>();
     const [addingCart, setAddingCart] = useState<boolean>(false);
+    const { profileState, setProfileState } = useRegisteredContext();
+    const [isCreated, setIsCreated] = useState<boolean>(false);
 
 
 
@@ -66,10 +70,28 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
 
 
 
+    const handlePurchaseClick = async() => {
+      const provider = new Provider({
+        rpc: {
+          // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+          nodeUrl: "https://rpc.starknet-testnet.lava.build"
+        }
+      }) 
+      try {
+          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
+          const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+        console.log(`addreses:`, connection&&connection.selectedAddress);
+      const profileSetDetails = await contract.getUserProfile(connection&&connection.selectedAddress);
+      // const profileSetDetails: any = await contract.call("getUserProfile", [connection&&connection.selectedAddress]);
+      console.log(`details check:`, profileSetDetails.isCreated)
+      console.log(`address check:`, connection&&connection.selectedAddress)
+      setIsCreated(profileSetDetails.isCreated);
+      !profileSetDetails.isCreated ? setProfileState(true) : setSharedState(true);
+      } catch (e:any) {
+        console.log(e);
+        setProfileState(true)
+      }
 
-
-    const handlePurchaseClick = () => {
-        setSharedState(true);
     };
 
     const getUserProfile = async(user: any) => {
@@ -82,15 +104,46 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
           try {
             const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
             const details = await contract.getUserProfile(user);
-            // let eth = 1000000000000000000;
-            // console.log(details);
             setSellerName(hexToReadableText(details.name.toString(16)));
+
             // console.log(`checksss: ${hexToReadableText(details.name.toString(16))}`);
+
+            const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+            // console.log(`addreses:`, connection&&connection.selectedAddress);
+          const profileSetDetails = await contract.getUserProfile(connection&&connection.selectedAddress);
+          setIsCreated(profileSetDetails.isCreated);
+          
 
           } catch(error: any) {
             console.log(error.message);
           }
     }
+
+
+    const checkUserProfile = async() => {
+      const provider = new Provider({
+          rpc: {
+            // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+            nodeUrl: "https://rpc.starknet-testnet.lava.build"
+          }
+        })
+        try {
+            const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
+            const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+          // console.log(`addreses:`, connection&&connection.selectedAddress);
+        const profileSetDetails = await contract.getUserProfile(connection&&connection.selectedAddress);
+        console.log(`details check:`, profileSetDetails.isCreated)
+        setIsCreated(profileSetDetails.isCreated);
+        
+
+        } catch(error: any) {
+          console.log(error.message);
+        }
+  }
+  checkUserProfile()
+
+
+
 
 
     const getProduct = async() => {
@@ -182,6 +235,25 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
         );
       };
 
+      const addToCartFnc = async() => {
+        const provider = new Provider({
+          rpc: {
+            // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+            nodeUrl: "https://rpc.starknet-testnet.lava.build"
+          }
+        }) 
+        try {
+            const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
+            const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+        const profileSetDetails = await contract.getUserProfile((connection&&connection.selectedAddress));
+        setIsCreated(profileSetDetails.isCreated);
+        !profileSetDetails.isCreated ? setProfileState(true) : addToCart();
+        } catch (e:any) {
+          console.log(e);
+          setProfileState(true)
+        }
+      }
+
 
       const addToCart = async() => {
         const provider = new Provider({
@@ -244,7 +316,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
                       <button
                       type="button"
                       className='bg-[var(--afroroasters-brown)] text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem] justify-center items-center flex'
-                      onClick={addToCart}
+                      onClick={addToCartFnc}
                       disabled={addingCart}
                     >
                     <p className='text-sm'>ADD TO CART</p>
@@ -265,6 +337,9 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
         {sharedState && (
             <ConfirmPurchasePopUp itemName={` of ${name}`} price={price} id={itemId} amount={count} isCart={false} />
         )}
+
+        {profileState && ( <ProfileForm /> )}
+
     </div>
   )
 }
