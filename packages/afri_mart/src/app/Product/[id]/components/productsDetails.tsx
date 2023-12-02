@@ -18,6 +18,7 @@ import Productphoto from './productphoto';
 import rattingsContract from '@/ABI/rattingsContract.json';
 import { useRegisteredContext } from '@/context/registeredContext';
 import ProfileForm from '@/components/market-place/createProfile';
+import { useLoadingContext } from '@/context/connectionContext';
 
 type cartegory = {
   Agriculture: any,
@@ -49,6 +50,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const [addingCart, setAddingCart] = useState<boolean>(false);
     const { profileState, setProfileState } = useRegisteredContext();
     const [isCreated, setIsCreated] = useState<boolean>(false);
+    const {ShareLoad, setShareLoad} = useLoadingContext();
 
 
 

@@ -1,12 +1,39 @@
 // ProductRatingForm.tsx
-
+import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
 import React, { useState } from 'react';
+import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
+import reviewContractAbi from '../../../ABI/rattingsContract.json'
+import { MarketPlaceAddr, RattingAddr } from '../../../components/addresses';
 
-const ProductRatingForm: React.FC = () => {
+
+interface MyProps {
+  itemId: number;
+}
+
+
+const ProductRatingForm: React.FC<MyProps> = ({ itemId }) => {
   const [review, setReview] = useState<string>('');
   const [rating, setRating] = useState<number | null>(null);
 
-  const handleReviewChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const reviewProductFnc = async() => {
+    const provider = new Provider({
+      rpc: {
+        // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+        nodeUrl: "https://rpc.starknet-testnet.lava.build"
+      }
+    }) 
+    try {
+        const contract = new Contract(reviewContractAbi, RattingAddr(), provider)
+        const profileSetDetails = await contract.review_product(itemId);
+    } catch (e:any) {
+      console.log(e);
+      // setProfileState(true)
+    }
+  }
+
+
+  const handleReviewChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setReview(event.target.value);
   };
 
@@ -23,20 +50,21 @@ const ProductRatingForm: React.FC = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-8 p-4 bg-white rounded-md shadow-md">
-      <h2 className="text-xl font-semibold mb-4">Rate Your Purchased Product</h2>
+    <div className="fixed top-0 left-0 w-full h-full flex md:items-center justify-center bg-gray-700 bg-opacity-70">
+    <div className="max-w-md mx-auto mt-8 p-4 md:p-10 bg-white rounded-md shadow-md">
+      <h2 className="text-xl font-semibold mb-4">Whats your review on this product ?</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="review" className="block text-sm font-medium text-gray-600">
             Review (max 60 characters):
           </label>
-          <input
-            type="text"
+          <textarea
             id="review"
             value={review}
             onChange={handleReviewChange}
             maxLength={60}
-            className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-[var(--afroroasters-brown)]"
+            rows={5} // Adjust the number of rows as needed
+            className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
           />
         </div>
         <div className="mb-4">
@@ -59,11 +87,12 @@ const ProductRatingForm: React.FC = () => {
         </div>
         <button
           type="submit"
-          className="bg-[var(--afroroasters-brown)] text-white py-2 px-4 rounded-md hover:bg-[rgb(181, 111, 94)] focus:outline-none"
+          className="bg-[var(--afroroasters-brown)] text-white py-2 px-4 rounded-md hover:bg-[rgb(181, 111, 94)] focus:outline-none md:mt-7"
         >
           Submit
         </button>
       </form>
+    </div>
     </div>
   );
 };
