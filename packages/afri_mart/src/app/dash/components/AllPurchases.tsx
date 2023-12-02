@@ -5,6 +5,8 @@ import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import { useConnectionContext } from "@/context/connectionContext";
+import CompLoad from "./compLoad";
+
 
 
 const AllPurchases =  ()  => {  
@@ -12,6 +14,7 @@ const [allPurchase, setAllPurchase] = useState<any[]>([])
 const [allProductArray, setAllproductArray] = useState<any[]>([]);
 const [address, setAddress] = useState<string | undefined>('');
 const {ShareAddress, setShareAddress} = useConnectionContext()
+const [sectionload, setSectionLoad] = useState(true);
 
 
   const getAllpurchase = async () => {
@@ -90,6 +93,7 @@ useEffect(() => {
           console.log('products obtained array',products)
           //@ts-ignore
           setAllproductArray(products)
+          setSectionLoad(false)
         })
       }).catch((error)=>{
           console.log(error)
@@ -98,8 +102,8 @@ useEffect(() => {
   }, [allPurchase]); 
   
   return    ( <div className=" h-64 overflow-y-auto scrollbar  smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">   
-      
-      {allProductArray?.length == 0 ? <div className="text-center">No item purchased</div> : allProductArray?.map( (item:any,index : number) => {  
+      {sectionload && <CompLoad />}
+      {allProductArray?.length == 0 && !sectionload ? <div className="text-center">No item purchased</div> : allProductArray?.map( (item:any,index : number) => {  
           let eth = 1000000000000000000;
           let productname =  hexToReadableText(item.name.toString(16)) 
           let productprice = Number(BigInt(item.price)) / eth
@@ -111,6 +115,7 @@ useEffect(() => {
          <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} />
        </div> )             
     })}
+        
 </div>)
 };
 

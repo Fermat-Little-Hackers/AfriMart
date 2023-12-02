@@ -8,6 +8,7 @@ import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 
 
+
 const CartPrice = () => {
     const { sharedState, setSharedState} = useYourContext();
     const [profileOwner, setProfileOwner] = useState("");
@@ -15,6 +16,7 @@ const CartPrice = () => {
     const [account, setAccount] = useState();
     const [cartValue, setCartValue] = useState<any>();
     const [address, setAddress] = useState('');
+
     
 
     function formatDecimalTo5Places(inputNumber: any) {

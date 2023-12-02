@@ -6,12 +6,16 @@ import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import { setInterval } from "timers";
 import { useConnectionContext } from "@/context/connectionContext";
+import CompLoad from "./compLoad";
+
 
 
 const ListedItems = () => {
   const [allListedItem, setAllListed] = useState<any[]>([]);
   const [allProductArray, setAllproductArray] = useState<any[]>([]);
   const {ShareAddress, setShareAddress} = useConnectionContext()
+const [sectionload, setSectionLoad] = useState(true);
+
 
 
 
@@ -72,6 +76,7 @@ useEffect(() => {
       // console.log('product collected', products)
       //@ts-ignore
       setAllproductArray(products)
+      setSectionLoad(false)
     }).catch((error)=>{
         console.log(error)
     })
@@ -81,7 +86,8 @@ useEffect(() => {
   
 
   return    ( <div className="h-64 overflow-y-auto scrollbar scrollbar-thin smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">   
-      {allProductArray?.length == 0 ? <div className="text-center">No item Listed</div> : allProductArray.map((item,index) => {             
+      {sectionload && <CompLoad />}
+      {allProductArray?.length == 0 && !sectionload ? <div className="text-center">No item Listed</div> : allProductArray.map((item,index) => {             
        let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
        let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
         let cid = `${firstHash + secondHash}`

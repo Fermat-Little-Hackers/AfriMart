@@ -6,6 +6,7 @@ import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import UserWithPhotos from "./userWithPhotos";
 import { useConnectionContext } from "@/context/connectionContext";
+import { useLoadingContext } from "@/context/connectionContext";
 
 
 const UserDetails = () => {
@@ -15,6 +16,8 @@ const UserDetails = () => {
   const [address, setAddress] = useState<string | undefined>('');
   const [ipfsString, setIpfsString] = useState('');
   const {ShareAddress, setShareAddress} = useConnectionContext()
+  const {ShareLoad, setShareLoad} = useLoadingContext();
+
 
 
   const getUser = async() => {
@@ -43,6 +46,10 @@ const UserDetails = () => {
   useEffect(() => {
     getUser()
   }, [ShareAddress])
+
+  useEffect(() => {
+    setShareLoad(false)
+  }, [ipfsString])
   
 
   function hexToReadableText(hexString : any) {
