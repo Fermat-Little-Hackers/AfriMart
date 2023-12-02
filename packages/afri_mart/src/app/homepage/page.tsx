@@ -7,6 +7,7 @@ import OurPartners from "@/components/market-place/ourPartners";
 import { useState } from "react";
 import SelectOption from "./components/selecttab";
 import TrendingProducts from "../cart/components/trendingProducts";
+import Search from "@/components/market-place/search";
 
 const Homepage = () => {
   const [productTitle, setProductTitle] = useState("AGRICULTURE");
@@ -18,7 +19,7 @@ const Homepage = () => {
 
   return (
     <div>
-        <HomeSearch />
+        <Search />
         <SelectOption onClickAction={handleFilterClick} />
         <div className='flex space-x-24 xlg:space-x-0 mmx:gap-[20px] md:mt-10 md:mb-14 smx:space-x-0 lmx:space-x-0 md:px-10 lg:px-20'>
         <div className="md:w-[20%]">

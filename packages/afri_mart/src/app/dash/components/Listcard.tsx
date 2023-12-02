@@ -20,10 +20,10 @@ const Listcard : React.FC<listprops> = ({ title, amount, quantity, uri}) => {
                     <p className="smx:text-[15px]">{title}</p>
                     <p className="md:text-sm text-xs">Qty: {quantity}</p>
                 </div>
-                <p className="mt-2 text-center text-xl smx:text-[14px] items-center h-[100%] my-auto">{amount.toFixed(5)}Eth</p>
-                <div className="space-y-2">
+                <p className="mt-2 text-center text-[15px] smx:text-[14px] items-center h-[100%] my-auto">{amount.toFixed(5)}Eth</p>
+                <div className="space-y-2 flex items-center">
                 <div className="h-[30px] smx:h-[20px] mt-2 w-[100px] border border-black rounded-2xl text-center smx:text-[10px] items-center">EDIT</div>
-                <div className="h-[30px] smx:h-[20px] mt-2 w-[100px] border border-black rounded-2xl text-center smx:text-[10px] items-center">REVIEW</div>
+                {/* <div className="h-[30px] smx:h-[20px] mt-2 w-[100px] border border-black rounded-2xl text-center smx:text-[10px] items-center">REVIEW</div> */}
                 </div>
         </div>)
 }

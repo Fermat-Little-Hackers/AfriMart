@@ -11,7 +11,7 @@ const Puchasecard : React.FC<purchaseProps> = ({ title, amount, quantity, uri}) 
   const {data} = useFetchURI(uri)
   const trimmedUri = data?.image?.substring(7);
   return (
-    <div className="w-[500px] mb-8 smx:w-[500%] flex justify-between smx:space-x-2 border-b border-black">
+    <div className="w-[500px] mb-8 smx:w-[500%] shadow-lg md:pr-5 flex justify-between smx:space-x-2 border-b border-black">
             <div className="h-[80px] p-4 smx:h-[100%] w-[20%] smx:w-[30%] ">
             <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" className='w-full h-full object-cover'/>
             </div>
@@ -23,8 +23,8 @@ const Puchasecard : React.FC<purchaseProps> = ({ title, amount, quantity, uri}) 
                     <p>+</p>
                 </div>
             </div>
-            <p className="h-[50px] mt-2 text-center text-2xl smx:text-[15px]">{amount} ETH</p>
-            <div className="h-[30px] smx:h-[20px] mt-2 w-[100px] border border-black rounded-2xl text-center smx:text-[10px] items-center">REVIEW</div>
+            <p className="h-[50px] mt-2 text-center text-base smx:text-[15px]">{amount} ETH</p>
+            <div className="h-[30px] smx:h-[20px] mt-2 w-[100px] border border-black rounded-2xl text-center smx:text-[10px] items-center md:text-base">REVIEW</div>
     </div>
   )
 }
