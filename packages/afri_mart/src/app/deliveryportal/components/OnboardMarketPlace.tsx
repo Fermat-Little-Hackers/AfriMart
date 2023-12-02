@@ -10,43 +10,14 @@ import {
 
 import contractAbi from "../../../ABI/supplyChainFactory.json";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
+import { useAccountContext } from "@/context/connectionContext";
 
 const OnboardMarketPlace = () => {
   const [connection, setConnection] =
     useState<ConnectedStarknetWindowObject | null>();
-  const [account, setAccount] = useState();
-  const [address, setAddress] = useState("");
   const [marketPlaceAddress, setMarketAddress] = useState("");
+  const {ShareAccount: account} = useAccountContext();
 
-  useEffect(() => {
-    const connectToStarknet = async () => {
-      const connection = await connect({
-        modalMode: "neverAsk",
-        webWalletUrl: "https://web.argent.xyz",
-      });
-
-      if (connection && connection.isConnected) {
-        setConnection(connection);
-        setAccount(connection.account);
-        setAddress(connection.selectedAddress);
-      }
-
-      // if (connection?.chainId !== "SN_GOERLI") {
-      //   alert("you need to switch to GOERLI to proceed!");
-      //   try {
-      //     await window?.starknet?.request({
-      //       type: "wallet_switchStarknetChain",
-      //       params: {
-      //         chainId: "SN_GOERLI",
-      //       },
-      //     });
-      //   } catch (error: any) {
-      //     alert(error.message);
-      //   }
-      // }
-    };
-    connectToStarknet();
-  }, []);
 
   const onboardMarketPlace = async () => {
     // const provider = new Provider({

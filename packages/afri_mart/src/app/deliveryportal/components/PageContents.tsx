@@ -11,6 +11,7 @@ import RegisterShipment from "./RegisterShipment";
 import TrackShipment from "./TrackShipment";
 import UpdateShipment from "./UpdateShipment";
 import TrackAllItem from "./TrackAllItem";
+import WhitelistStaff from "./WhitelistStaff";
 
 const PageContents = () => {
   const { sharedState, setSharedState } = useSupplyChainContext();
@@ -36,13 +37,14 @@ const PageContents = () => {
       return <UpdateShipment />;
     } else if (sharedState == "TrackAllItem") {
       return <TrackAllItem />;
+    } else if (sharedState == "WhitelistAccount") {
+      return <WhitelistStaff/>;
     } else {
       return <Home />;
     }
   };
 
   return (
-    // <div className="border-2 border-black h-fit px-5 md:px-20 py-7 md:py-16">
     <div className="w-full">
       {renderContents()}
     </div>
