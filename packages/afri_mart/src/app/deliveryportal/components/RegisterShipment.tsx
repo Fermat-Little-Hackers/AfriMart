@@ -55,13 +55,12 @@ const ResgisterShipment = () => {
   const registerShipment: SubmitHandler<FormData> = async () => {
     console.log("Registering Shipment......");
     try {
+      let ipfsDetails = await main(imageBlob, Name, OrderId);
+      let length = (ipfsDetails?.ipnft).length;
+      let halfLength = Math.floor(length / 2);
 
-      let ipfsDetails = await main(imageBlob,Name,OrderId)
-      let length = (ipfsDetails?.ipnft).length; 
-      let halfLength = Math.floor(length / 2)
-      
-      let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
-      let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
+      let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength);
+      let secondhalf = (ipfsDetails?.ipnft).substring(halfLength);
 
       console.log('FIRST HALF', firstHalf);
       console.log('second HALF', secondhalf);
@@ -83,14 +82,18 @@ const ResgisterShipment = () => {
         address_to_call,
         account
       );
-      await contract.create_shipment(OrderId, Name, firstHalf, secondhalf, shipmentAddress, trackMode);
+      await contract.create_shipment(
+        OrderId,
+        Name,
+        firstHalf,
+        secondhalf,
+        shipmentAddress,
+        trackMode
+      );
     } catch (error: any) {
       console.log(error.message);
     }
   };
-
-
-
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];

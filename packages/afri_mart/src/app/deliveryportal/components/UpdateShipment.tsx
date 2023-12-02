@@ -1,8 +1,8 @@
 import { SupplyChainContractAddr } from "@/components/addresses";
 import React, { useState, useEffect } from "react";
 import { SubmitHandler } from "react-hook-form";
-import {CairoCustomEnum, Contract} from "starknet";
-import {connect} from "@argent/get-starknet";
+import { CairoCustomEnum, Contract } from "starknet";
+import { connect } from "@argent/get-starknet";
 import { ConnectedStarknetWindowObject } from "get-starknet-core";
 import contractAbi from "../../../ABI/supplyChainContract.json";
 import { useAccountContext } from "@/context/connectionContext";
@@ -26,80 +26,80 @@ const UpdateShipment = () => {
 
   const handleCurrentStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
-      if (e.target.value == "Processing") {
-        const processing = new CairoCustomEnum({
-          Processing: 'Processing',
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: undefined,
-        })
-        setCurrentStatus(processing)
-      } else if (e.target.value == "Shipped") {
-        const shipped = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: 'Shipped',
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: undefined,
-        })
-        setCurrentStatus(shipped)
-      } else if (e.target.value == "Arrived") {
-        const arrived = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: 'Arrived',
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: undefined,
-        })
-        setCurrentStatus(arrived)
-      } else if (e.target.value == "Enroute") {
-        const enroute = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: 'Enroute',
-          Delivered: undefined,
-          Cancelled: undefined,
-        })
-        setCurrentStatus(enroute)
-      } else if (e.target.value == "Delivered") {
-        const delivered = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: 'Delivered',
-          Cancelled: undefined,
-        })
-        setCurrentStatus(delivered)
-      } else if (e.target.value == "Cancelled") {
-        const cancelled = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: 'Cancelled',
-        })
-        setCurrentStatus(cancelled)
-      } else {
-        const _ = new CairoCustomEnum({
-          Processing: undefined,
-          Shipped: undefined,
-          Arrived: undefined,
-          Enroute: undefined,
-          Delivered: undefined,
-          Cancelled: undefined,
-          Default: "No selection"
-        })
-        setCurrentStatus(_);
-      }
-      console.log(CurrentStatus)
+    if (e.target.value == "Processing") {
+      const processing = new CairoCustomEnum({
+        Processing: "Processing",
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: undefined,
+      });
+      setCurrentStatus(processing);
+    } else if (e.target.value == "Shipped") {
+      const shipped = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: "Shipped",
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: undefined,
+      });
+      setCurrentStatus(shipped);
+    } else if (e.target.value == "Arrived") {
+      const arrived = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: "Arrived",
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: undefined,
+      });
+      setCurrentStatus(arrived);
+    } else if (e.target.value == "Enroute") {
+      const enroute = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: "Enroute",
+        Delivered: undefined,
+        Cancelled: undefined,
+      });
+      setCurrentStatus(enroute);
+    } else if (e.target.value == "Delivered") {
+      const delivered = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: "Delivered",
+        Cancelled: undefined,
+      });
+      setCurrentStatus(delivered);
+    } else if (e.target.value == "Cancelled") {
+      const cancelled = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: "Cancelled",
+      });
+      setCurrentStatus(cancelled);
+    } else {
+      const _ = new CairoCustomEnum({
+        Processing: undefined,
+        Shipped: undefined,
+        Arrived: undefined,
+        Enroute: undefined,
+        Delivered: undefined,
+        Cancelled: undefined,
+        Default: "No selection",
+      });
+      setCurrentStatus(_);
     }
+    console.log(CurrentStatus);
+  };
 
 
   const updateShipment: React.FormEventHandler<HTMLFormElement> = async (e) => {
@@ -158,8 +158,7 @@ const UpdateShipment = () => {
             />
           </div>
           <div className="mb-4">
-
-            <label 
+            <label
               htmlFor="CurrentStatus"
               className="block text-gray-600 text-sm font-semibold mb-2"
             >
