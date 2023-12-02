@@ -106,6 +106,7 @@ useEffect(() => {
           let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
           let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
            let cid = `${firstHash + secondHash}`
+           let available = Number(item.amountAvailable)
          return ( <div key={index} className="w-[20%] space-y-10">          
          <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} />
        </div> )             

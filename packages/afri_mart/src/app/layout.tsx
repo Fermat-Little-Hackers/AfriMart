@@ -16,6 +16,8 @@ import { ConnectionContextProvider, AccountContextProvider } from '../context/co
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ListProductContextProvider } from '../context/listProductContext';
 // import { ConnectkitProvider } from '../../connectkit';
+import { ChakraProvider } from '@chakra-ui/react'
+import { LoadingContextProvider } from '../context/connectionContext';
 
 import PagesLayout from './PagesLayout';
 
@@ -31,7 +33,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <body className={clsx("", inter.className)}>
+      <ChakraProvider>
         <ConnectionContextProvider>
+        <LoadingContextProvider>
           <AccountContextProvider>
             <ListProductContextProvider>
               <SupplyChainContextProvider>
@@ -47,7 +51,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               </SupplyChainContextProvider>
             </ListProductContextProvider>
           </AccountContextProvider>
+          </LoadingContextProvider>
         </ConnectionContextProvider>
+        </ChakraProvider>
       </body>
     </html >
   );
