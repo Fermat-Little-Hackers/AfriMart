@@ -41,3 +41,15 @@ export const LoadingContextProvider = ({ children })=>{
 }
 export const useLoadingContext = () => useContext(LoadingContext);
 
+const RatingContext = createContext();
+export const RatingContextProvider = ({ children })=>{
+  const [ratingLoad, setRatingLoad] = useState(null);
+
+  return (
+    <RatingContext.Provider value={{ ratingLoad, setRatingLoad}}>
+      {children}
+    </RatingContext.Provider>
+  );
+}
+export const useRatingContext = () => useContext(LoadingContext);
+
