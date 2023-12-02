@@ -150,13 +150,14 @@ trait aftimartTrait<TContractState> {
     fn releaseSellersPayment(ref self: TContractState, orderId: u256);
     fn getTotalCashInflow(self: @TContractState) -> (u256, u256);
     fn getPendingPayment(self: @TContractState) -> u256;
-    fn getItemsSold(self: @TContractState, user: ContractAddress) -> (Array::<u256>, Array::<u256>);
+    fn getItemsSold(self: @TContractState, user: ContractAddress) -> Array::<u256>;
     fn whitelistAdmin(ref self: TContractState, admin: ContractAddress);
     fn getAdmins(self: @TContractState) -> Array<ContractAddress>;
     fn revokeAdminRight(ref self: TContractState, admin: ContractAddress);
     fn beginProcessingDelivery(ref self: TContractState, orderId: u256);
     fn setSupplyChainFactory(ref self: TContractState, supplyChainFactory: ContractAddress);
     fn reEmburse(ref self: TContractState, amount: u256);
+    fn getPendingDelivery(self: @TContractState, user: ContractAddress) -> Array::<u256>;
 
 }
 
@@ -504,7 +505,7 @@ mod afrimart {
 
         fn checkOutCart(ref self: ContractState) {
             let caller = get_caller_address();
-            let noOfProducts = self.noOfProductsInCart.read(caller);
+            let mut noOfProducts = self.noOfProductsInCart.read(caller);
             let mut productNumber: u256 = 1;
             loop {
                 if productNumber > noOfProducts {
@@ -518,7 +519,8 @@ mod afrimart {
                 self._PurchaseProduct(product.itemID, product.amount);
                 self._removeItemFromCart(product.itemID, productNumber, caller);
 
-                productNumber = productNumber +1;
+                productNumber = productNumber + 1;
+                noOfProducts = noOfProducts - 1;
             };
             self.emit(cartCheckedOut{by: caller});
         }
@@ -770,13 +772,31 @@ mod afrimart {
             self.allOrders.write(orderId, orderDetails);
         }
 
-        fn getItemsSold(self: @ContractState, user: ContractAddress) -> (Array::<u256>, Array::<u256>) {
+        fn getItemsSold(self: @ContractState, user: ContractAddress) -> Array::<u256> {
+            let userId = self.userId.read(user);
+            let userProfile = self.allProfiles.read(self.userId.read(user));
+            let totalSales = userProfile.totalItemsSold;
+            let mut i: u256 = 1;
+            let mut processed = ArrayTrait::new();
+            loop {
+                if i > totalSales {
+                    break;
+                }
+                let orderId = self.itemsSold.read((user, i));
+                let order = self.allOrders.read(orderId);
+                    processed.append(orderId);
+                i = i + 1;
+            };
+            return processed;
+        }
+
+
+        fn getPendingDelivery(self: @ContractState, user: ContractAddress) -> Array::<u256> {
             let userId = self.userId.read(user);
             let userProfile = self.allProfiles.read(self.userId.read(user));
             let totalSales = userProfile.totalItemsSold;
             let mut i: u256 = 1;
             let mut pendingProcessing = ArrayTrait::new();
-            let mut processed = ArrayTrait::new();
             loop {
                 if i > totalSales {
                     break;
@@ -785,12 +805,10 @@ mod afrimart {
                 let order = self.allOrders.read(orderId);
                 if (order.processingDelivery == false) {
                     pendingProcessing.append(orderId);
-                } else {
-                    processed.append(orderId);
                 }
                 i = i + 1;
             };
-            return (pendingProcessing, processed);
+            return pendingProcessing;
         }
 
         fn setSupplyChainFactory(ref self: ContractState, supplyChainFactory: ContractAddress) {
