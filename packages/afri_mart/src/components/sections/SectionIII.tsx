@@ -9,11 +9,11 @@ import { FadeIn } from "../animations/FadeIn";
 export const SectionIII = () => {
     return (
         
-        <div className={clsx(' px-4 sm:px-6 lg:px-8',
-        " bg-[var(--rouge)] p-24 m-0 lg:p-0 lg:m-0 text-center w-full h-96"
+        <div className={clsx('p-4 ',
+        " bg-[var(--rouge)] text-center w-full "
         )}
         >
-            <div className={clsx(" h-64 p-24")}>
+            <div className={clsx(" ")}>
                 {/* <GrainnyBackground /> */}
             <FadeIn>
                 <h1 className="font-serif mx-auto text-4xl max-w-xl text-[var(--sand)]">READY FOR US TO CREATE
