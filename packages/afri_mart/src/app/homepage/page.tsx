@@ -10,6 +10,7 @@ import TrendingProducts from "../cart/components/trendingProducts";
 import LoadingOverlay from "@/components/Loading";
 import { useLoadingContext } from "@/context/connectionContext";
 
+import Search from "@/components/market-place/search";
 
 const Homepage = () => {
   const [productTitle, setProductTitle] = useState("AGRICULTURE");
@@ -31,10 +32,14 @@ const Homepage = () => {
        {ShareLoad && <LoadingOverlay/>}
         <HomeSearch />
         <SelectOption onClickAction={handleFilterClick} />
-        <div className='flex space-x-24 xlg:space-x-0 mmx:gap-[30px] smx:space-x-0 lmx:space-x-0 justify-center md:px-10 lg:px-20'>
+        <div className=' flex md:mt-5 md:mb-10 space-x-24 xlg:space-x-0 mmx:gap-[30px] smx:space-x-0 lmx:space-x-0 md:px-10 lg:px-20'>
+          <div>
         <Sidefilter onClickAction={handleFilterClick} />
+          </div>
+          <div className=" w-[100%]">
         <Filterdisplay title={productTitle} enumoption={enumOption} />
-      </div>
+          </div>
+        </div>
         <TrendingProducts />
       <OurPartners />
     </div>

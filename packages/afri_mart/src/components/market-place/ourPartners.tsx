@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import React from 'react'
-import logoAliExpress from '../../../public/image/partners/AliExpress-logo.svg';
+import logoAliExpress from '../../../public/image/partners/AliExpress-logo.png';
 import logoAya from '../../../public/image/partners/Aya logo.png';
 import logoStarknet from '../../../public/image/partners/Starknet Logo.webp';
 import logoSpeedafExpress from '../../../public/image/partners/speedafExpress.png';
@@ -24,19 +24,19 @@ const OurPartners = () => {
                   src={logoWeb3Bridge}
                   alt="Web 3 Bridge"
                   layout="fixed"
-                  width={3000}
+                  width={2500}
                   unoptimized
                 />
               </li>
               <li className="flex">
-                <Image src={logoAya} alt="Aya" layout="fixed" unoptimized width={3000} />
+                <Image src={logoAya} alt="Aya" layout="fixed" unoptimized width={2500} />
               </li>
               <li className="flex">
                 <Image
                   src={logoAliExpress}
                   alt="Ali Express"
                   layout="fixed"
-                  width={3000}
+                  width={2500}
                   unoptimized
                 />
               </li>
@@ -58,7 +58,7 @@ const OurPartners = () => {
                   src={logoSpeedafExpress}
                   alt="Speed of Express"
                   layout="fixed"
-                  width={3000}
+                  width={2500}
                   unoptimized
                 />
               </li>

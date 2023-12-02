@@ -24,8 +24,8 @@ export default function Home() {
             <Search />
             <CartContent />
             <TrendingProducts />
-            {/* <OurPartners /> */}
-            <Brands />
+            <OurPartners />
+            {/* <Brands /> */}
         </div>
     )
 }
