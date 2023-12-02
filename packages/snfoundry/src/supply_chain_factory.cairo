@@ -135,6 +135,7 @@ trait IDispatchFactory<TContractState>{
     fn confirmOwners(self: @TContractState, ownerAddress: ContractAddress) -> bool;
     fn confirmCompany(self: @TContractState, companyAddress: ContractAddress) -> bool;
     fn confirmBranchAdmins(self: @TContractState, branchAdminAddress: ContractAddress) -> bool;
+    fn confirmStaff(self: @TContractState, staffAddress: ContractAddress) -> bool;
 }
 
 #[starknet::contract]
@@ -466,10 +467,14 @@ mod DispatchCompanyFactory {
             self.isOwner.read(ownerAddress)
         }
         fn confirmCompany(self: @ContractState, companyAddress: ContractAddress) -> bool{
-            self.isDispatchAdmin.read(companyAddress)
+            self.isDispatchHqAdmin.read(companyAddress)
         }
         fn confirmBranchAdmins(self: @ContractState, branchAdminAddress: ContractAddress) -> bool{
             self.confirmBranchAdmin.read(branchAdminAddress)
+        }
+
+        fn confirmStaff(self: @ContractState, staffAddress: ContractAddress) -> bool{
+            self.isStaff.read(staffAddress)
         }
     }
 

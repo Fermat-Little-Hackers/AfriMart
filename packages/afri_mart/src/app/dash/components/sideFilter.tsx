@@ -50,14 +50,14 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
   const commonstyle = "w-[200px] cursor-pointer h-full p-2 bg-[var(--sand)] rounded-lg smx:hidden lmx:hidden ";
 
   return (
-    <div className="mt-12 flex shadow-lg rounded-lg cursor-pointer ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 gap-4">
-      <div className="flex flex-col gap-4">
+    <div className="mt-12 flex shadow-lg rounded-lg cursor-pointer ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 md:pr-0 gap-4 border-r-8 border-[var(--sienna)]">
+      <div className="flex flex-col gap-4 w-[100%]">
         <div
           // className={clsx(commonstyle,)}
           className={''}
           id="allPurchases"
           onClick={handleClick}
-          style={{ color: isAllPurchases ? "grey" : "black" }}
+          style={{ color: isAllPurchases ? "white" : "black", backgroundColor: isAllPurchases ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isAllPurchases ? '1.5rem': '' }}
         >
           All Purchases
         </div>
@@ -68,7 +68,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
           className={''}
           id="listedItems"
           onClick={handleClick}
-          style={{ color: isListedItem ? "grey" : "black" }}
+          style={{ color: isListedItem ? "white" : "black", backgroundColor: isListedItem ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isListedItem ? '1.5rem': ''}}
         >
           Listed Items
         </div>
@@ -78,7 +78,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
           className={''}
           id="pendingDelivery"
           onClick={handleClick}
-          style={{ color: isPendingDelivery ? "grey" : "black" }}
+          style={{ color: isPendingDelivery ? "white" : "black", backgroundColor: isPendingDelivery ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isPendingDelivery ? '1.5rem': ''}}
         >
           Pending Delivery
         </div>
@@ -88,7 +88,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
           className={''}
           id="soldItems"
           onClick={handleClick}
-          style={{ color: isSoldItem ? "grey" : "black" }}
+          style={{ color: isSoldItem ? "white" : "black", backgroundColor: isSoldItem ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: isSoldItem ? '1.5rem': ''}}
         >
           Sold Items
         </div>

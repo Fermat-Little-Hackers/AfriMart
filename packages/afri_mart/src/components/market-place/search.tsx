@@ -1,5 +1,5 @@
 'use client'
-import { FaShoppingCart, FaUser, FaBars, FaSearch } from 'react-icons/fa';
+import { FaShoppingCart, FaUser, FaBars, FaSearch, FaHome } from 'react-icons/fa';
 import Link from "next/link";
 import { useState, useEffect, useCallback } from 'react';
 import {useRegisteredContext} from '../../context/registeredContext'
@@ -99,9 +99,15 @@ useEffect(() => {
             </button>
           </div>
           <div className="flex flex-row gap-2 md:gap-5 md:mt-0 md:pl-0">
+            <Link href="/homepage">
+              <div className='border-solid bg-[var(--sienna)] shadow-lg border border-gray-100 h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>
+                <FaHome className="text-white" />
+              </div>
+            </Link>
+
             <Link href="/cart">
-              <div className='border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>
-                <FaShoppingCart />
+              <div className='border-solid bg-[var(--sienna)] shadow-lg border border-gray-100 h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>
+                <FaShoppingCart className="text-white" />
               </div>
             </Link>
             <button
@@ -109,8 +115,8 @@ useEffect(() => {
                 className='h-[2.7rem] rounded-3xl w-[2.7rem]'
                 onClick={handleProfileCheck}
             >
-              <div className='border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>
-                <FaUser />
+              <div className='border-solid bg-[var(--sienna)] shadow-lg border border-gray-100 h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>
+                <FaUser className="text-white" />
               </div>
             </button>
             {/* <div className='border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center'>

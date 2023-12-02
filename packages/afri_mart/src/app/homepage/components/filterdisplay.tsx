@@ -44,9 +44,9 @@ const Filterdisplay : React.FC<filterProps> = ({ title, enumoption})  => {
    
    
     return (
-        <div className=" h-80 overflow-y-auto scrollbar w-[100%] smx:w-[100%] shadow-lg rounded-lg ring-1 ring-red-100 lmx:w-[95%] mt-10 smx:mt-4 p-4">
+        <div className="md:max-h-[50rem] overflow-y-auto scrollbar w-[100%] smx:w-[100%] shadow-lg rounded-lg ring-1 ring-red-100 lmx:w-[95%] mt-10 smx:mt-4 p-4 md:p-10">
             <div className="w-full mx-auto">
-                <p>
+                <p className=" text-xl font-bold">
                 {title}
                 </p>                    
             </div>
