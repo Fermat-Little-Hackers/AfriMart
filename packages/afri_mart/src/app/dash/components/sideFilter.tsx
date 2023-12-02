@@ -50,7 +50,7 @@ const SideFilter: React.FC<ClickProps> = ({ onClickAction }) => {
   const commonstyle = "w-[200px] cursor-pointer h-full p-2 bg-[var(--sand)] rounded-lg smx:hidden lmx:hidden ";
 
   return (
-    <div className="mt-12 flex shadow-lg rounded-lg cursor-pointer ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 md:pr-0 gap-4 border-r-8 border-[var(--sienna)]">
+    <div className="mt-12 smx:hidden flex shadow-lg rounded-lg cursor-pointer ring-1 ring-red-100  w-[400px] smx:w-[100%] smx:mx-auto p-4 md:pr-0 gap-4 border-r-8 border-[var(--sienna)]">
       <div className="flex flex-col gap-4 w-[100%]">
         <div
           // className={clsx(commonstyle,)}

@@ -6,12 +6,16 @@ import { Account, Contract, Provider, constants, AccountInterface } from 'starkn
 import marketPlaceAbi from '@/ABI/marketPlace'
 import { MarketPlaceAddr } from '@/components/addresses'
 import Link from 'next/link'
+import { useLoadingContext } from "@/context/connectionContext";
+
 
 const CartList = () => {
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
   const [account, setAccount] = useState();
   const [address, setAddress] = useState('');
   const [cartDetails, setCartDetails] = useState<any[]>();
+  const {ShareLoad, setShareLoad} = useLoadingContext();
+
 
 
   const getUserProfile = async() => {
@@ -35,6 +39,7 @@ const CartList = () => {
 
 
 useEffect(() => {
+  setShareLoad(false)
   getUserProfile();
 }, [address])
 

@@ -11,6 +11,8 @@ import { MarketPlaceAddr } from '../addresses';
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
 //import { useRouter } from 'next/router';
 import { useRouter} from 'next/navigation'
+import { useLoadingContext } from "@/context/connectionContext";
+
 
 
 const startSearch = () => {
@@ -27,6 +29,7 @@ const Search = () => {
   const [account, setAccount] = useState();
   const [address, setAddress] = useState('');
   const [isCreated, setIsCreated] = useState<boolean>(false);
+  const {ShareLoad, setShareLoad} = useLoadingContext();
 
   const getUserProfile = async( ) => {
     const provider = new Provider({
@@ -62,7 +65,8 @@ useEffect(() => {
 
 
   const handleProfileCheck = () => {
-
+    
+    !isCreated && setShareLoad(false)
     !isCreated ? setSharedState(true) : router.push('/dash');
 
   }

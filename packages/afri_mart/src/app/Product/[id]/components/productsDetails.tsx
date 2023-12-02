@@ -16,6 +16,8 @@ import Image from 'next/image';
 import { CairoOption, CairoCustomEnum, CairoEnumRaw } from "starknet";
 import Productphoto from './productphoto';
 import rattingsContract from '@/ABI/rattingsContract.json';
+import { useLoadingContext } from "@/context/connectionContext";
+
 
 type cartegory = {
   Agriculture: any,
@@ -45,6 +47,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const [imgUri, setImgUri] = useState<any>();
     // const [imgUri2, setImgUri2] = useState<any>();
     const [addingCart, setAddingCart] = useState<boolean>(false);
+    const {ShareLoad, setShareLoad} = useLoadingContext();
+
 
 
 
@@ -121,6 +125,10 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
       getProduct();
       getProductReview();
     }, [])
+    
+    useEffect(() => {
+      setShareLoad(false)
+    }, [name])
     
 
     // const intervalId = setInterval(getProduct, 7000);
