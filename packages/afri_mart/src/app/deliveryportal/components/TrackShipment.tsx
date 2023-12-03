@@ -9,6 +9,7 @@ import { FaShoppingCart, FaUser, FaBars, FaSearch } from "react-icons/fa";
 import { CairoCustomEnum, CairoEnum, Contract, Provider } from "starknet";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { useAccountContext } from "@/context/connectionContext";
+import { useRouter } from "next/router";
 
 const TrackShipment = () => {
   const [trackingNumber, setTrackingNumber] = useState("");
@@ -16,7 +17,10 @@ const TrackShipment = () => {
   const [preLocations, setPreLocation] = useState("");
   const [curLocation, setCurrentLocation] = useState("");
   const [next, setNext] = useState("");
+  const [itemId, setItemId] = useState("")
   const {ShareAccount: account} = useAccountContext();
+  // const router = useRouter();
+  // const {item_id} = router.query
 
   function hexToReadableText(hexString: any): string {
     const bytes = Buffer.from(hexString, "hex");
@@ -31,6 +35,12 @@ const TrackShipment = () => {
     currentLocation: string;
     nextStop: string;
   }
+
+  // useEffect(() => {
+  //   if (item_id) {
+  //     setItemId(item_id);
+  //   }
+  // },[item_id])
 
   const manageTrackingNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -66,7 +76,7 @@ const TrackShipment = () => {
   };
 
   return (
-    <div className="">
+    <div className="" id="track-portal">
       <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Track Shipment</h3>
       <div className="justify-start p-5 md:p-10 text-left">
         <div className="flex items-center border-0 w-full md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl mx-20 ring-1 ring-[var(--terracota)]">
@@ -75,12 +85,13 @@ const TrackShipment = () => {
             name="search"
             id="search"
             placeholder="Tracking Number"
+            // value={itemId}
             onChange={(e) => manageTrackingNumber(e)}
             className="outline-none focus:outline-none w-full md:w-[100%] mr-4 md:mr-6 bg-transparent"
           />
           <button
             type="button"
-            className=" bg-gray-600 text-white px-2 md:px-4 py-2 rounded-3xl flex items-center"
+            className=" bg-[var(--sienna)] text-white px-2 md:px-4 py-2 rounded-3xl flex items-center"
             onClick={startSearch}
           >
             <FaSearch className="mr-2" /> Track

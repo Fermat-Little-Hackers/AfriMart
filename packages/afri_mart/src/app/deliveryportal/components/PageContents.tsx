@@ -45,7 +45,7 @@ const PageContents = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full md:border-r-8 border-[var(--sienna)]">
       {renderContents()}
     </div>
   );

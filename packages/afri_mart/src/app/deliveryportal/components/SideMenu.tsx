@@ -15,7 +15,10 @@ const SideMenu = () => {
   const [isCompanyAdmin, setIsCompanyAdmin] = useState();
   const [isBranchAdmin, setIsBranchAdmin] = useState();
   const [isStaff, setIsStaff] = useState();
-  const {ShareAddress} = useAccountContext();
+  const {ShareAccount: ShareAddress} = useAccountContext();
+
+
+  let isActive = { color: "white", backgroundColor: 'rgb(170, 76, 51)', height: '2rem', paddingLeft: '1.5rem'};
 
 
   const toggleTextVisibility = () => {
@@ -46,12 +49,12 @@ const SideMenu = () => {
           "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
       },
     });
-
+    console.log(`Share address: ${ShareAddress?.address}`)
     let factory_contract = new Contract(factory_abi, SupplyChainFactoryAddr(), provider);
-    let is_factory_admin =  await factory_contract.confirmOwners(ShareAddress);
-    let is_company_admin = await factory_contract.confirmCompany(ShareAddress);
-    let is_branch_admin = await factory_contract.confirmBranchAdmins(ShareAddress);
-    let is_staff = await factory_contract.confirmStaff(ShareAddress);
+    let is_factory_admin =  await factory_contract.confirmOwners(ShareAddress?.address);
+    let is_company_admin = await factory_contract.confirmCompany(ShareAddress?.address);
+    let is_branch_admin = await factory_contract.confirmBranchAdmins(ShareAddress?.address);
+    let is_staff = await factory_contract.confirmStaff(ShareAddress?.address);
 
     setIsFactoryAdmin(is_factory_admin);
     setIsCompanyAdmin(is_company_admin);
@@ -61,17 +64,20 @@ const SideMenu = () => {
 
   useEffect(() => {
     try {
-      setStatus()
+      if (ShareAddress != undefined) {
+        setStatus()
+        console.log(ShareAddress)
+      }
     } catch (err) {
       console.log(err)
     }
-  }, [])
+  }, [ShareAddress])
 
   return (
     <div
       className={`${
-        textVisible ? "border-2 border-red-100" : "border-0"
-      } md:border-2 md:border-red-100`}
+        textVisible ? "border-2" : "border-0"
+      } md:border-2 rounded-lg md:border-r-8 border-[var(--sienna)]`}
     >
       <div
         className={`border-solid border-2 border-black h-[2.7rem] rounded-3xl w-[2.7rem] flex items-center justify-center md:hidden cursor-pointer`}
@@ -82,13 +88,14 @@ const SideMenu = () => {
       <div
         className={`${
           textVisible ? "block md:flex" : "hidden md:flex"
-        } gap-6 flex flex-col p-5`}
+        } gap-6 flex flex-col pl-5 py-5`}
       >
         {/* <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div> */}
         <div
           className= {`hover:cursor-pointer`}
           onClick={handleClick}
-          style={sortColor("Home") ? { color: "gray" } : { color: "black" }}
+          style={sortColor("Home") ? isActive : { color: "black" }}
+          // style={{color: 'isAgric' ? 'white' : 'black', backgroundColor: 'isAgric' ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: 'isAgric' ? '1.5rem': ''}}
           id="Home"
         >
           {" "}
@@ -98,7 +105,7 @@ const SideMenu = () => {
           className= {`hover:cursor-pointer hidden ${isBranchAdmin ? 'block' : 'hidden'}`}
           onClick={handleClick}
           style={
-            sortColor("deployBranch") ? { color: "gray" } : { color: "black" }
+            sortColor("deployBranch") ? isActive : { color: "black" }
           }
           id="deployBranch"
         >
@@ -110,7 +117,7 @@ const SideMenu = () => {
           onClick={handleClick}
           style={
             sortColor("OnboardMarketPlace")
-              ? { color: "gray" }
+              ? isActive
               : { color: "black" }
           }
           id="OnboardMarketPlace"
@@ -123,7 +130,7 @@ const SideMenu = () => {
           onClick={handleClick}
           style={
             sortColor("RegisterBranchAdmins")
-              ? { color: "gray" }
+              ? isActive
               : { color: "black" }
           }
           id="RegisterBranchAdmins"
@@ -136,7 +143,7 @@ const SideMenu = () => {
           onClick={handleClick}
           style={
             sortColor("RegisterDirectors")
-              ? { color: "gray" }
+              ? isActive
               : { color: "black" }
           }
           id="RegisterDirectors"
@@ -149,7 +156,7 @@ const SideMenu = () => {
           onClick={handleClick}
           style={
             sortColor("RegisterSupplychain")
-              ? { color: "gray" }
+              ? isActive
               : { color: "black" }
           }
           id="RegisterSupplychain"
@@ -161,7 +168,7 @@ const SideMenu = () => {
           className= {`hover:cursor-pointer}`}
           onClick={handleClick}
           style={
-            sortColor("TrackSipment") ? { color: "gray" } : { color: "black" }
+            sortColor("TrackSipment") ? isActive : { color: "black" }
           }
           id="TrackSipment"
         >
@@ -173,7 +180,7 @@ const SideMenu = () => {
           onClick={handleClick}
           style={
             sortColor("RegisterNewShipment")
-              ? { color: "gray" }
+              ? isActive
               : { color: "black" }
           }
           id="RegisterNewShipment"
@@ -186,7 +193,7 @@ const SideMenu = () => {
           onClick={handleClick}
           style={
             sortColor("UpdateShipmentLocation")
-              ? { color: "gray" }
+              ? isActive
               : { color: "black" }
           }
           id="UpdateShipmentLocation"
@@ -198,7 +205,7 @@ const SideMenu = () => {
           className= {`hover:cursor-pointer hidden ${isFactoryAdmin || isCompanyAdmin || isBranchAdmin || isStaff ? 'block' : 'hidden'}`}
           onClick={handleClick}
           style={
-            sortColor("TrackAllItem") ? { color: "gray" } : { color: "black" }
+            sortColor("TrackAllItem") ? isActive : { color: "black" }
           }
           id="TrackAllItem"
         >
@@ -209,7 +216,7 @@ const SideMenu = () => {
           className= {`hover:cursor-pointer hidden ${isBranchAdmin ? 'block' : 'hidden'}`}
           onClick={handleClick}
           style={
-            sortColor("WhitelisAccount") ? { color: "gray" } : { color: "black" }
+            sortColor("WhitelisAccount") ? isActive: { color: "black" }
           }
           id="WhitelistAccount"
         >
