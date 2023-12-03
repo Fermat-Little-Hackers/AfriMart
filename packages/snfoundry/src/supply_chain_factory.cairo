@@ -88,6 +88,11 @@ trait IMarketPlace<TContractState> {
     fn registerSupplyChainChild(ref self: TContractState, supplyChainChild: ContractAddress);
 }
 
+#[starknet::interface]
+trait ISupplyChain<TContractState>{
+    fn revokeAdmin(ref self: TContractState);
+	fn assignNewAdmin(ref self: TContractState, newAdminAddress: ContractAddress);
+}
 
 
 #[starknet::interface]
@@ -136,15 +141,19 @@ trait IDispatchFactory<TContractState>{
     fn confirmCompany(self: @TContractState, companyAddress: ContractAddress) -> bool;
     fn confirmBranchAdmins(self: @TContractState, branchAdminAddress: ContractAddress) -> bool;
     fn confirmStaff(self: @TContractState, staffAddress: ContractAddress) -> bool;
+
+    fn removeAdmin(ref self: TContractState, adminAddress: ContractAddress);
+	fn assignNewAdmins(ref self: TContractState, oldAdminAddress: ContractAddress, newAdminAddress: ContractAddress);
 }
 
 #[starknet::contract]
 mod DispatchCompanyFactory {
-    use snfoundry::supply_chain_factory::IMarketPlaceDispatcherTrait;
+    use snfoundry::supply_chain_factory::ISupplyChainDispatcherTrait;
+use snfoundry::supply_chain_factory::IMarketPlaceDispatcherTrait;
     use core::result::ResultTrait;
     use core::option::OptionTrait;
     use core::serde::Serde;
-    use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher, ItemStatus};
+    use super::{ArrayTrait, ContractAddress, ClassHash, IDispatchFactory, FactoryAdmin, DispatchAdmin, Location, DispatchHq, DispatchBranch, OrderLocation, OrderStatus, OrderOrigin, AdminStats, BranchStats, OrdersStats, IMarketPlaceDispatcher, ItemStatus, ISupplyChainDispatcher};
     use starknet::{get_caller_address, get_contract_address, syscalls::deploy_syscall};
     use debug::PrintTrait;
     #[storage]
@@ -476,6 +485,27 @@ mod DispatchCompanyFactory {
         fn confirmStaff(self: @ContractState, staffAddress: ContractAddress) -> bool{
             self.isStaff.read(staffAddress)
         }
+
+        fn removeAdmin(ref self: ContractState, adminAddress: ContractAddress) {
+            let caller = get_caller_address();
+            assert(self.isDispatchHqAdmin.read(caller) == true, 'Unauthorized Personnel');
+            let admin_branch = self.stafftobranch.read(adminAddress);
+            let supplychain_dispatch = ISupplyChainDispatcher{contract_address: admin_branch};
+            supplychain_dispatch.revokeAdmin();
+            self.isDispatchAdmin.write(adminAddress, false);
+        }
+	    fn assignNewAdmins(ref self: ContractState, oldAdminAddress: ContractAddress, newAdminAddress: ContractAddress){
+            let caller = get_caller_address();
+            assert(self.isDispatchHqAdmin.read(caller) == true, 'Unauthorized Personnel');
+            assert(self.isDispatchAdmin.read(oldAdminAddress) == false, 'Revoke Old Admin First');
+            let admin_branch = self.stafftobranch.read(oldAdminAddress);
+            let supplychain_dispatch = ISupplyChainDispatcher{contract_address: admin_branch};
+            supplychain_dispatch.assignNewAdmin(newAdminAddress);
+            self.stafftobranch.write(newAdminAddress, admin_branch);
+            self.isDispatchAdmin.write(newAdminAddress, true);
+            
+        }
+        
     }
 
 

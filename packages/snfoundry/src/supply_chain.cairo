@@ -9,6 +9,9 @@ trait ISupplyChain<TContractState> {
 	fn update_shipment(ref self: TContractState, order_id: u256, next_location: felt252, new_status: OrderStatus);
 	fn is_admin(ref self: TContractState, address: ContractAddress) -> bool;
 
+	fn revokeAdmin(ref self: TContractState);
+	fn assignNewAdmin(ref self: TContractState, newAdminAddress: ContractAddress);
+
 }
 
 #[starknet::interface]
@@ -30,12 +33,10 @@ use super::ISupplyChain;
     #[storage]
     struct Storage {
 		name: felt252,
-		company_id: u16,
-		branch_id: u128,
-		admin_id: u128,
 		city: felt252,
 		state: felt252,
 		country: felt252,
+		adminAddress: ContractAddress,
 		factory_address: ContractAddress,
 		is_whitelisted: LegacyMap<ContractAddress, bool>,
 		is_Admin: LegacyMap<ContractAddress, bool>,
@@ -90,6 +91,7 @@ use super::ISupplyChain;
 		self.state.write(state);
 		self.country.write(country);
 		self.factory_address.write(factoryy_address);
+		self.adminAddress.write(msg_sender);
 		self.is_Admin.write(msg_sender, true);
 	}
 
@@ -148,6 +150,24 @@ use super::ISupplyChain;
 				next_location,
 				new_status
 			);
+		}
+
+		fn revokeAdmin(ref self: ContractState) {
+			let caller = get_caller_address();
+			let current_admin = self.adminAddress.read();
+			assert(self.factory_address.read() == caller, 'Unauthorized Personnel');
+			self.is_Admin.write(current_admin, false);
+
+
+		}
+
+		fn assignNewAdmin(ref self: ContractState, newAdminAddress: ContractAddress) {
+			let caller = get_caller_address();
+			let current_admin = self.adminAddress.read();
+			assert(self.factory_address.read() == caller, 'Unauthorized Personnel');
+			assert(current_admin != newAdminAddress, 'Revoked Address');
+			self.adminAddress.write(newAdminAddress);
+			self.is_Admin.write(newAdminAddress, true);
 		}
 	}
 
