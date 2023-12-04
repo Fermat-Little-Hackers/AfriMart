@@ -10,6 +10,8 @@ import {
 import contractAbi from "../../../ABI/supplyChainFactory.json";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 const DeployBranch = () => {
   const [connection, setConnection] =
@@ -17,16 +19,13 @@ const DeployBranch = () => {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
-  const {ShareAccount: account} = useAccountContext();
+  const {factoryContractWrite} = useAppContext();
+
 
   const deployBranch = async () => {
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        account
-      );
-      await contract.createBranch(city, state, country);
+
+      await factoryContractWrite.createBranch(city, state, country);
     } catch (error: any) {
       console.log(error.message);
     }

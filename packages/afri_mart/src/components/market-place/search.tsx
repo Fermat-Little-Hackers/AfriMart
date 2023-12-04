@@ -12,6 +12,8 @@ import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/
 //import { useRouter } from 'next/router';
 import { useRouter} from 'next/navigation'
 import { useLoadingContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 
 
@@ -26,20 +28,14 @@ const Search = () => {
   const [isRegistered, setIsRegistered] = useState(false);
   const { sharedState, setSharedState } = useRegisteredContext();
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
-  const [account, setAccount] = useState();
-  const [address, setAddress] = useState('');
   const [isCreated, setIsCreated] = useState<boolean>(false);
   const {ShareLoad, setShareLoad} = useLoadingContext();
+  const {readContract, readReviewContract,address} = useAppContext();
+
 
   const getUserProfile = async( ) => {
-    const provider = new Provider({
-        rpc: {
-          nodeUrl: "https://rpc.starknet-testnet.lava.build"
-        }
-      })
       try {
-        const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), provider)
-        const details = await contract.getUserProfile(address);
+        const details = await readContract.getUserProfile(address);
         // let eth = 1000000000000000000;
         console.log(`user`, details.isCreated);
         setIsCreated(details.isCreated);
@@ -49,20 +45,6 @@ const Search = () => {
   }
 
   getUserProfile();
-
-useEffect(() => {
-  const connectToStarknet = async() => {
-    const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-    if(connection && connection.isConnected) {
-      setConnection(connection)
-      setAccount(connection.account)
-      setAddress(connection.selectedAddress)
-    }
-  }
-  connectToStarknet()
-}, [])  
-
-
 
   const handleProfileCheck = () => {
     

@@ -9,6 +9,8 @@ import { MarketPlaceAddr } from '@/components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface, CairoCustomEnum } from 'starknet'
 import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
 import { useAccountContext } from '@/context/connectionContext';
+import { useAppContext } from '@/context/provider'
+
 
 
 
@@ -57,10 +59,11 @@ const FormField = () => {
     const dropdownOptions = ['Agriculture', 'Textile and Clothing', 'Accesories', 'Tools and Equipments', 'Digital Arts','Artifacts and Physical Arts'];
     const [selectedOption, setSelectedOption] = useState<string>('Agriculture');
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
-    const [account, setAccount] = useState();
     const [address, setAddress] = useState('');
     const [listing, setListing] = useState<boolean>();
-    const {ShareAccount, setShareAccount} = useAccountContext()
+    const {contract} = useAppContext();
+
+    
 
 
     const Fetchcategories = (Itemindex: number) => { 
@@ -77,12 +80,6 @@ const FormField = () => {
 
     const listProduct = async(e: { preventDefault: () => void; }) => {
         e.preventDefault();
-        const provider = new Provider({
-          rpc: {
-            // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-            nodeUrl: "https://rpc.starknet-testnet.lava.build"
-          }
-        })
           try {
             setListing(true);
             let ipfsDetails = await main(imageblob,name,name)
@@ -91,7 +88,6 @@ const FormField = () => {
             let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
             let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
             console.log(findCategoryIndex(selectedOption as string));
-            const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), ShareAccount)
             const details = await contract.listProduct(name, description, firstHalf, secondhalf, BigInt(price as number), amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
             setListing(false);
             alert("Item Listed Successfully");
@@ -137,20 +133,7 @@ const FormField = () => {
         };
     }
 
-  useEffect(() => {
-    const connectToStarknet = async() => {
-      const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-      if(connection && connection.isConnected) {
-        setConnection(connection)
-        setAccount(connection.account)
-        setAddress(connection.selectedAddress)
-      }
-    }
-    connectToStarknet()
-  }, [])  
-
-
-
+ 
     function findCategoryIndex(categoryName: string): number {
         const categories = [
           'Agriculture',

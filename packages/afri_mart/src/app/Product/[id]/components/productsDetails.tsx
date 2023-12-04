@@ -17,6 +17,8 @@ import { CairoOption, CairoCustomEnum, CairoEnumRaw } from "starknet";
 import Productphoto from './productphoto';
 import rattingsContract from '@/ABI/rattingsContract.json';
 import { useLoadingContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 
 type cartegory = {
@@ -48,19 +50,15 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     // const [imgUri2, setImgUri2] = useState<any>();
     const [addingCart, setAddingCart] = useState<boolean>(false);
     const {ShareLoad, setShareLoad} = useLoadingContext();
+  const {readContract, readReviewContract, contract} = useAppContext();
+
 
 
 
 
     const getProductReview = async() => {
-      const provider = new Provider({
-        rpc: {
-          nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-        }
-      })
         try {
-            const contract = new Contract(rattingsContract, RattingAddr(), provider);
-            const details = await contract.getProductRatting(itemId);
+            const details = await readReviewContract.getProductRatting(itemId);
             setRating(Number(details));
           // setProducts(details);
         } catch (error : any) {      
@@ -69,23 +67,13 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     }
 
 
-
-
-
     const handlePurchaseClick = () => {
         setSharedState(true);
     };
 
     const getUserProfile = async(user: any) => {
-        const provider = new Provider({
-            rpc: {
-              // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-              nodeUrl: "https://rpc.starknet-testnet.lava.build"
-            }
-          })
           try {
-            const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-            const details = await contract.getUserProfile(user);
+            const details = await readContract.getUserProfile(user);
             // let eth = 1000000000000000000;
             // console.log(details);
             setSellerName(hexToReadableText(details.name.toString(16)));
@@ -98,15 +86,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
 
 
     const getProduct = async() => {
-        const provider = new Provider({
-          rpc: {
-            nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-            // nodeUrl: "https://rpc.starknet-testnet.lava.build"
-          }
-        })
           try {
-          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-          const details = await contract.getProductDetails(itemId);
+          const details = await readContract.getProductDetails(itemId);
           // console.log(details);
           let eth = 1000000000000000000;
             setName(hexToReadableText(details.name.toString(16)))
@@ -139,19 +120,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
         return text;
       }
     
-      useEffect(() => {
-        const connectToStarknet = async() => {
-          const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-          if(connection && connection.isConnected) {
-            setConnection(connection)
-            setAccount(connection.account)
-            setAddress(connection.selectedAddress)
-          }
-        }
-        connectToStarknet()
-      }, [itemId])  
-
-
+    
     const ProductAmountButton = () => {
       
         const increaseCount = () => {
@@ -196,9 +165,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
           rpc: {
             nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
           }
-        })
-          try{
-          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
+        })  
+        try{
           const myCall = contract.populate("addItemToCart", [itemId, count]);
           const res = await contract.addItemToCart(myCall.calldata);
           deception();

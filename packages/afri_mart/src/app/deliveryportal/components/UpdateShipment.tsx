@@ -6,6 +6,8 @@ import { connect } from "@argent/get-starknet";
 import { ConnectedStarknetWindowObject } from "get-starknet-core";
 import contractAbi from "../../../ABI/supplyChainContract.json";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 
 
@@ -13,7 +15,8 @@ const UpdateShipment = () => {
   const [OrderId, setOrderId] = useState<any>();
   const [NextStop, setNextStop] = useState<any>();
   const [CurrentStatus, setCurrentStatus] = useState<CairoCustomEnum>();
-  const {ShareAccount: account} = useAccountContext();
+  const {account} = useAppContext();
+
 
 
   const handleOrderId = (e: React.ChangeEvent<HTMLInputElement>) => {

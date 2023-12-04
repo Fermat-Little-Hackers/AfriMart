@@ -5,6 +5,8 @@ import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import CompLoad from "./compLoad";
+import { useAppContext } from '@/context/provider'
+
 
 
 const PendingDelivery = () => {
@@ -17,13 +19,13 @@ const PendingDelivery = () => {
   const [isquantity, setisquantity] = useState(0);
   const [isamount, setIsamount] = useState(0);
 const [sectionload, setSectionLoad] = useState(true);
+  const {readContract, contract,address} = useAppContext();
+
 
 
   
   const processdelivered = async (orderID : number) => {
       try {
-      const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), connection?.account);
       await contract.beginProcessingDelivery(orderID);
       alert("Delivery Confirmed")
       } catch (error : any) {
@@ -32,17 +34,11 @@ const [sectionload, setSectionLoad] = useState(true);
   }
   
   const getAllpendingDeliveryItem = async () => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-      },
-    });
+   
 
     try {
-      const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
-      const allPendingData = await contract.getPendingDelivery(
-        connection?.selectedAddress?.toString()
+      const allPendingData = await readContract.getPendingDelivery(
+        address.toString()
       );
       setAllpendingDelivery([...allPendingData]);
     } catch (error : any) {
@@ -50,16 +46,10 @@ const [sectionload, setSectionLoad] = useState(true);
 }
 
 const GetOrder = async (args : any[]) => {
-  const provider = new Provider({
-    rpc: {
-      nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-    },
-  });
-
-  try {
-    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);  
+ 
+  try {  
     const promises = args.map(async (orderId) => {
-      let nextId = await contract.getOrderDetails(orderId.toString());
+      let nextId = await readContract.getOrderDetails(orderId.toString());
       return Number(nextId.itemID);
     });
     const results = await Promise.all(promises);
@@ -68,17 +58,11 @@ const GetOrder = async (args : any[]) => {
 };
 
 const GetItem = async (args : number[] | undefined) => {
-  const provider = new Provider({
-    rpc: {
-      nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-    },
-  });
 
-  try {
-    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);  
+  try { 
     //@ts-ignore
     const promises = args.map(async (productId) => {
-      let productdetail = await contract.getProductDetails(productId.toString());
+      let productdetail = await readContract.getProductDetails(productId.toString());
       return productdetail;
     });
     const results = await Promise.all(promises);

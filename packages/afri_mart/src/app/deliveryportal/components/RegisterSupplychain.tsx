@@ -11,6 +11,8 @@ import {
 import contractAbi from "../../../ABI/supplyChainFactory.json";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 const RegisterSupplychain = () => {
   const [companyRepAddr, setCompanyRepAddr] = useState("");
@@ -18,17 +20,13 @@ const RegisterSupplychain = () => {
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
-  const {ShareAccount: account} = useAccountContext();
+  const {factoryContractWrite} = useAppContext();
+
 
 
   const setSupplyChain = async () => {
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        account
-      );
-      await contract.setDispatchHqAdmin(
+      await factoryContractWrite.setDispatchHqAdmin(
         companyRepAddr,
         companyName,
         country,

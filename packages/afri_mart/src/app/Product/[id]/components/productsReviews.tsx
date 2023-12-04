@@ -6,7 +6,8 @@ import rattingsContract from '@/ABI/rattingsContract.json';
 import { MarketPlaceAddr, RattingAddr } from '@/components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface, CairoCustomEnum, CallData } from 'starknet'
 import marketPlaceAbi from '@/ABI/marketPlace';
-import marketplaceAbi from '@/ABI/marketPlace';
+import { useAppContext } from '@/context/provider'
+
 
 
 interface MyProps {
@@ -16,20 +17,14 @@ interface MyProps {
 const ProductsReviews: React.FC<MyProps> = ({ itemId }) => {
     const [products, setProducts] = useState<any[]>();
     const [buyerNames, setBuyerNames] = useState<string[]>();
+  const {readContract, readReviewContract} = useAppContext();
+
 
     const getProduct = async() => {
-      const provider = new Provider({
-        rpc: {
-          nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-        }
-      })
         try {
-            const contract = new Contract(rattingsContract, RattingAddr(), provider);
-            const details = await contract.viewReviews(itemId);
-
+            const details = await readReviewContract.viewReviews(itemId);
             getUserProfile(details);
             // const products = res.map((item:any) => item.toString())
-
           setProducts(details);
         } catch (error : any) {      
           console.log(error.message);
@@ -45,17 +40,10 @@ const ProductsReviews: React.FC<MyProps> = ({ itemId }) => {
   
         const getUserProfile = async(users: any) => {
             const buyersArray: string[] = [];
-            const provider = new Provider({
-                rpc: {
-                // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-                nodeUrl: "https://rpc.starknet-testnet.lava.build"
-                }
-            })
             try {
-                const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
                 for (const user of users) {
                     // Extract the 'buyer' property and append it to the buyersArray
-                    const details = await contract.getUserProfile(user.buyer);
+                    const details = await readContract.getUserProfile(user.buyer);
                     buyersArray.push((hexToReadableText(details.name.toString(16))));
                 }
 
@@ -71,10 +59,6 @@ const ProductsReviews: React.FC<MyProps> = ({ itemId }) => {
                 const text = new TextDecoder('utf-8').decode(bytes);
                 return text;
               }
-
-        
-
-
 
   return (
     <div className='bg-art-graphics p-5 md:p-12'>

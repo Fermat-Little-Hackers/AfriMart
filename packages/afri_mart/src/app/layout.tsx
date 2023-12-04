@@ -20,6 +20,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { LoadingContextProvider } from '../context/connectionContext';
 
 import PagesLayout from './PagesLayout';
+import AppProvider from '../context/provider'
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -43,7 +44,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   <YourContextProvider>
                     <StarknetProvider>
                       <QueryClientProvider client={queryClient}>
+                        <AppProvider>
                         <PagesLayout>{children}</PagesLayout>
+                        </AppProvider>
                       </QueryClientProvider>
                     </StarknetProvider>
                   </YourContextProvider>
