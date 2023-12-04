@@ -22,7 +22,7 @@ console.log(address);
 
   const getUser = async() => {
       try {
-      const user = await readContract.getUserProfile('0x01a7875bf5627Ce1ee8bA0BC29B4B1e0207121aFFF415D043D1538881FE69910');
+      const user = await readContract.getUserProfile(address.toString());
       // console.log('0x' + (user.name.toString(16)).toString())
         const res = hexToReadableText(user.name.toString(16))
         setProfileOwner(res)
