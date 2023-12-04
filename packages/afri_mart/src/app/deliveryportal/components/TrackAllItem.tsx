@@ -9,6 +9,8 @@ import { FaShoppingCart, FaUser, FaBars, FaSearch } from "react-icons/fa";
 import { CairoCustomEnum, CairoEnum, Contract, Provider } from "starknet";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 interface Item {
   id: number;
@@ -24,7 +26,8 @@ const TrackAllItem = () => {
   const [allItems, setAllItems] = useState<any[]>();
   const [orderId, setOrderId] = useState();
   const [status, setStatus] = useState("");
-  const {ShareAccount: account} = useAccountContext();
+  const {factoryContractRead} = useAppContext();
+
 
   function hexToReadableText(hexString: any): string {
     const bytes = Buffer.from(hexString, "hex");
@@ -38,19 +41,8 @@ const TrackAllItem = () => {
   }
 
   const itemStats = async () => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl:
-          "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
-      },
-    });
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        provider
-      );
-      let itemsStatus = await contract.trackAllItems();
+      let itemsStatus = await factoryContractRead.trackAllItems();
       setAllItems(itemsStatus);
       console.log(itemsStatus[0].OrderID);
     } catch (error: any) {

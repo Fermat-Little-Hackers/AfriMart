@@ -19,6 +19,9 @@ import rattingsContract from '@/ABI/rattingsContract.json';
 import { useRegisteredContext } from '@/context/registeredContext';
 import ProfileForm from '@/components/market-place/createProfile';
 import { useLoadingContext } from '@/context/connectionContext';
+import { useAppContext } from '@/context/provider'
+
+
 
 type cartegory = {
   Agriculture: any,
@@ -36,8 +39,6 @@ interface MyProps {
 const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const { sharedState, setSharedState} = useYourContext();
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
-    const [account, setAccount] = useState();
-    const [address, setAddress] = useState('');
     const [count, setCount] = useState(1);
     const [rating, setRating] = useState<number>( );
     const [name, setName] = useState<any>();
@@ -51,18 +52,14 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const { profileState, setProfileState } = useRegisteredContext();
     const [isCreated, setIsCreated] = useState<boolean>(false);
     const {ShareLoad, setShareLoad} = useLoadingContext();
+  const {readContract, readReviewContract, contract, address} = useAppContext();
+
 
 
 
     const getProductReview = async() => {
-      const provider = new Provider({
-        rpc: {
-          nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-        }
-      })
         try {
-            const contract = new Contract(rattingsContract, RattingAddr(), provider);
-            const details = await contract.getProductRatting(itemId);
+            const details = await readReviewContract.getProductRatting(itemId);
             setRating(Number(details));
           // setProducts(details);
         } catch (error : any) {      
@@ -73,17 +70,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
 
 
     const handlePurchaseClick = async() => {
-      const provider = new Provider({
-        rpc: {
-          // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-          nodeUrl: "https://rpc.starknet-testnet.lava.build"
-        }
-      }) 
       try {
-          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-          const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-        console.log(`addreses:`, connection&&connection.selectedAddress);
-      const profileSetDetails = await contract.getUserProfile(connection&&connection.selectedAddress);
+      const profileSetDetails = await readContract.getUserProfile(address);
       // const profileSetDetails: any = await contract.call("getUserProfile", [connection&&connection.selectedAddress]);
       console.log(`details check:`, profileSetDetails.isCreated)
       console.log(`address check:`, connection&&connection.selectedAddress)
@@ -97,22 +85,14 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     };
 
     const getUserProfile = async(user: any) => {
-        const provider = new Provider({
-            rpc: {
-              // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-              nodeUrl: "https://rpc.starknet-testnet.lava.build"
-            }
-          })
           try {
-            const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-            const details = await contract.getUserProfile(user);
+            const details = await readContract.getUserProfile(user);
+            // let eth = 1000000000000000000;
+            // console.log(details);
             setSellerName(hexToReadableText(details.name.toString(16)));
 
             // console.log(`checksss: ${hexToReadableText(details.name.toString(16))}`);
-
-            const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-            // console.log(`addreses:`, connection&&connection.selectedAddress);
-          const profileSetDetails = await contract.getUserProfile(connection&&connection.selectedAddress);
+          const profileSetDetails = await contract.getUserProfile(address);
           setIsCreated(profileSetDetails.isCreated);
           
 
@@ -123,21 +103,10 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
 
 
     const checkUserProfile = async() => {
-      const provider = new Provider({
-          rpc: {
-            // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-            nodeUrl: "https://rpc.starknet-testnet.lava.build"
-          }
-        })
         try {
-            const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-            const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-          // console.log(`addreses:`, connection&&connection.selectedAddress);
-        const profileSetDetails = await contract.getUserProfile(connection&&connection.selectedAddress);
+        const profileSetDetails = await readContract.getUserProfile(address);
         console.log(`details check:`, profileSetDetails.isCreated)
         setIsCreated(profileSetDetails.isCreated);
-        
-
         } catch(error: any) {
           console.log(error.message);
         }
@@ -145,19 +114,9 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
   checkUserProfile()
 
 
-
-
-
     const getProduct = async() => {
-        const provider = new Provider({
-          rpc: {
-            nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-            // nodeUrl: "https://rpc.starknet-testnet.lava.build"
-          }
-        })
           try {
-          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-          const details = await contract.getProductDetails(itemId);
+          const details = await readContract.getProductDetails(itemId);
           // console.log(details);
           let eth = 1000000000000000000;
             setName(hexToReadableText(details.name.toString(16)))
@@ -190,19 +149,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
         return text;
       }
     
-      useEffect(() => {
-        const connectToStarknet = async() => {
-          const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-          if(connection && connection.isConnected) {
-            setConnection(connection)
-            setAccount(connection.account)
-            setAddress(connection.selectedAddress)
-          }
-        }
-        connectToStarknet()
-      }, [itemId])  
-
-
+    
     const ProductAmountButton = () => {
       
         const increaseCount = () => {
@@ -266,9 +213,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
           rpc: {
             nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
           }
-        })
-          try{
-          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
+        })  
+        try{
           const myCall = contract.populate("addItemToCart", [itemId, count]);
           const res = await contract.addItemToCart(myCall.calldata);
           deception();

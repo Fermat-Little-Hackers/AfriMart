@@ -11,31 +11,24 @@ import { SupplyChainContractAddr, SupplyChainFactoryAddr } from "@/components/ad
 import { Contract, Provider } from "starknet";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 const WhitelistStaff = () => {
   const [connection, setConnection] =
     useState<ConnectedStarknetWindowObject | null>();
   const [staffAddress, setStaffAddress] = useState("");
-  const {ShareAccount, ShareAddress} = useAccountContext();
+  const {account, address, factoryContractRead} = useAppContext();
+
 
   const setStaff = async () => {
     try {
-
-        const provider = new Provider({
-        rpc: {
-            nodeUrl:
-            "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
-        },
-        });
-
-        let factory_contract = new Contract(factory_abi, SupplyChainFactoryAddr(), provider);
-        let address_to_call = factory_contract.getStaffBranch(ShareAddress);
-
+        let address_to_call = factoryContractRead.getStaffBranch(address);
 
       const contract = new Contract(
         contractAbi,
         address_to_call,
-        ShareAccount
+        address
       );
       await contract.whitelist_account(staffAddress);
     } catch (error: any) {

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
 import marketplaceAbi from '@/ABI/marketPlace';
 import CartPhoto from './cartPhoto';
+import { useAppContext } from '@/context/provider'
 
 
 interface MyProps {
@@ -15,17 +16,11 @@ const CartItem: React.FC<MyProps> =  ({ProductId, amount}) => {
   const [price, setPrice] = useState<Number>();
   const [imgUri, setImgUri] = useState<any>();
   const [name, setName] = useState<any>();
-
+  const {readContract} = useAppContext();
 
   const getProduct = async() => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-      }
-    })
       try {
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-      const details = await contract.getProductDetails(ProductId);
+      const details = await readContract.getProductDetails(ProductId);
       let eth = 1000000000000000000;
         setName(hexToReadableText(details.name.toString(16)))
         setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));

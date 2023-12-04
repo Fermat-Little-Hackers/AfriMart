@@ -6,9 +6,7 @@ import { MarketPlaceAddr, RattingAddr } from '../../components/addresses';
 import { Account, Contract, Provider, constants, AccountInterface } from 'starknet'
 import TrendingPhoto from "./trendingPhoto";
 import rattingsContract from '@/ABI/rattingsContract.json';
-
-
-
+import { useAppContext } from '@/context/provider'
 
 interface MyProps {
   productId: number;
@@ -20,22 +18,13 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
   // const [imgUri2, setImgUri2] = useState<any>();
   const [name, setName] = useState<any>();
   const [rating, setRating] = useState<number>();
+  const {readContract, readReviewContract} = useAppContext();
+
 
   const getProductDetails = async () => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl:
-          "https://starknet-goerli.infura.io/v3/571aaed99608415397cb4eb46ca740c4",
-      },
-    });
     try {
-      const contract = new Contract(
-        marketplaceAbi,
-        MarketPlaceAddr(),
-        provider
-      );
       let eth = 1000000000000000000;
-      const details = await contract.getProductDetails(productId);
+      const details = await readContract.getProductDetails(productId);
       setName(hexToReadableText(details.name.toString(16)))
       setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));
       
@@ -51,14 +40,8 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
 
 
   const getProductReview = async() => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-      }
-    })
       try {
-          const contract = new Contract(rattingsContract, RattingAddr(), provider);
-          const details = await contract.getProductRatting(productId);
+          const details = await readReviewContract.getProductRatting(productId);
           setRating(Number(details));
         // setProducts(details);
       } catch (error : any) {      

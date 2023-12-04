@@ -7,36 +7,28 @@ import marketplaceAbi from "@/ABI/marketPlace";
 import UserWithPhotos from "./userWithPhotos";
 import { useConnectionContext } from "@/context/connectionContext";
 import { useLoadingContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 
 const UserDetails = () => {
   const [profileOwner, setProfileOwner] = useState("");
-  const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
-  const [account, setAccount] = useState();
-  const [address, setAddress] = useState<string | undefined>('');
   const [ipfsString, setIpfsString] = useState('');
-  const {ShareAddress, setShareAddress} = useConnectionContext()
   const {ShareLoad, setShareLoad} = useLoadingContext();
+  const {readContract,address} = useAppContext();
 
+console.log(address);
 
 
   const getUser = async() => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx"
-
-      }
-    })
       try {
-      const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-      setAddress(connection?.selectedAddress)
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-      const user = await contract.getUserProfile(ShareAddress?.toString());
+      const user = await readContract.getUserProfile(address.toString());
       // console.log('0x' + (user.name.toString(16)).toString())
         const res = hexToReadableText(user.name.toString(16))
         setProfileOwner(res)
         const hash1 = hexToReadableText(user.profileImg1.toString(16))
         const hash2 = hexToReadableText(user.profileImg2.toString(16))
+        console.log(hash1)
         setIpfsString(`${hash1 + hash2}`)
       } catch (error : any) {
   
@@ -45,7 +37,7 @@ const UserDetails = () => {
   }
   useEffect(() => {
     getUser()
-  }, [ShareAddress])
+  }, [address])
 
   useEffect(() => {
     setShareLoad(false)
@@ -64,7 +56,7 @@ const UserDetails = () => {
       <div className=" float-right">
         <div className="font-bold text-lg">{profileOwner}</div>
         <div> {
-                    ShareAddress ? `${ShareAddress.slice(0, 8)}.....${ShareAddress.slice(-8)}` : ''
+                    address ? `${address.slice(0, 8)}.....${address.slice(-8)}` : ''
                 }</div>
       </div>
     </div>

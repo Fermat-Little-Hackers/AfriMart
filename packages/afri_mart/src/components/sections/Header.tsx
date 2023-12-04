@@ -7,7 +7,7 @@ import Link from "next/link";
 import WalletBar from "../WalletBar";
 import Image from "next/image";
 import afri_mart_logo from "../../../public/AfriMart_Logo_small-NO-BG.png";
-import ConnectButtoN from '../../../connectkit';
+import ConnectButtoN from '../../../connectkit/connect';
 import { usePathname } from 'next/navigation';
 
 

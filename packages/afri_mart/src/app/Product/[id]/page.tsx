@@ -13,13 +13,16 @@ import { Account, Contract, Provider, constants, AccountInterface } from 'starkn
 import { useEffect, useState } from "react";
 import { useLoadingContext } from "@/context/connectionContext";
 import LoadingOverlay from "@/components/Loading";
+import { useAppContext } from '@/context/provider'
+
 
 
 export default function Home() {
-    const { account, address, status } = useAccount();
     const [cartegory, setCartegory] = useState<String>();
     const [cartegory2, setCartegory2] = useState<Number>();
   const {ShareLoad, setShareLoad} = useLoadingContext();
+  const {readContract, readReviewContract, contract} = useAppContext();
+
 
 
     const id = useParams();
@@ -40,15 +43,9 @@ export default function Home() {
 
 
     const getProduct = async() => {
-        const provider = new Provider({
-          rpc: {
-            // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-            nodeUrl: "https://rpc.starknet-testnet.lava.build"
-          }
-        })
+
           try {
-          const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-          const details = await contract.getProductDetails(id.id);
+          const details = await readContract.getProductDetails(id.id);
             setCartegory2(findCategoryIndex(details.cartegory.activeVariant()))
             setCartegory(details.cartegory.activeVariant());
           } catch (error : any) {      

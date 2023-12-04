@@ -7,6 +7,7 @@ import marketplaceAbi from "@/ABI/marketPlace";
 import { setInterval } from "timers";
 import { useConnectionContext } from "@/context/connectionContext";
 import CompLoad from "./compLoad";
+import { useAppContext } from '@/context/provider'
 
 
 
@@ -15,24 +16,16 @@ const ListedItems = () => {
   const [allProductArray, setAllproductArray] = useState<any[]>([]);
   const {ShareAddress, setShareAddress} = useConnectionContext()
 const [sectionload, setSectionLoad] = useState(true);
-
-
+const {readContract,address} = useAppContext();
 
 
 
   const getAllListing = async () => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-      },
-    });
-
+ 
     try {
-      const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
-      const allPurchaseData = await contract.getProductsListedByUser(
-        ShareAddress.toString(),
-        ShareAddress.toString()
+      const allPurchaseData = await readContract.getProductsListedByUser(
+        address.toString(),
+        address.toString()
       );
       setAllListed([...allPurchaseData]);
     } catch (error : any) {
@@ -40,17 +33,10 @@ const [sectionload, setSectionLoad] = useState(true);
 }
   
 const getProduct = async (args : number[] | undefined) => {
-  const provider = new Provider({
-    rpc: {
-      nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-    },
-  });
-
-  try {
-    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);  
+  try { 
     //@ts-ignore
     const promises = args.map(async (productId) => {
-      let productdetail = await contract.getProductDetails(productId.toString());
+      let productdetail = await readContract.getProductDetails(productId.toString());
       return productdetail;
     });
     const results = await Promise.all(promises);
