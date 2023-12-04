@@ -82,13 +82,13 @@ const FormField = () => {
         e.preventDefault();
           try {
             setListing(true);
-            let ipfsDetails = await main(imageblob,name,name)
+            let ipfsDetails = await main(imageblob,name,description)
             let length = (ipfsDetails?.ipnft).length; 
             let halfLength = Math.floor(length / 2)
             let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
             let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
             console.log(findCategoryIndex(selectedOption as string));
-            const details = await contract.listProduct(name, description, firstHalf, secondhalf, BigInt(price as number), amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
+            const details = await contract.listProduct('user', 'userdes', firstHalf, secondhalf, BigInt(price as number), amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
             setListing(false);
             alert("Item Listed Successfully");
             setSharedState(false);
