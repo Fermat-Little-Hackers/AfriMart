@@ -47,7 +47,7 @@ const FormField = () => {
     const [country, setCountry] = useState<string | null>(null);
     const [firstIpfshash, setFirstipfshash] = useState<string | null>(null);
     const [secondIpfshash, setSecondipfshash] = useState<string | null>(null);
-    const { sharedState, setSharedState } = useRegisteredContext();
+    const { profileState, setProfileState } = useRegisteredContext();
     // const [waitText, setWaitText] = useState(`Confirm you intend to make a purchase ${itemName} worth $${price} from AfriMart`);
     const [imageSrc, setImageSrc] = useState('/image/wait.svg');
     const [isDisabled, setIsDisabled] = useState(false);
@@ -67,7 +67,7 @@ const FormField = () => {
     };
 
     const handleCancelProfile = () => {
-        setSharedState(false);
+      setProfileState(false);
         setIsDisabled(false);
         setImageSrc((prevSrc) => (prevSrc === '/image/wait.svg' ? '/image/loading.svg' : '/image/wait.svg'));
         // setWaitText( 'Confirm you intend to make a purchase wort $650 from AfriMart');
@@ -125,7 +125,7 @@ const FormField = () => {
       try {
       await contract.createProfile(name,country,region,firsthalf,secondHalf);
       alert("Profile created")
-      setSharedState(false);
+      setProfileState(false);
       setIsDisabled(false);
       } catch (error : any) {
         console.log(error.message)

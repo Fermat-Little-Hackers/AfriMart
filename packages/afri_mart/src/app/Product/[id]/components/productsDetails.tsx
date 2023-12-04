@@ -16,7 +16,9 @@ import Image from 'next/image';
 import { CairoOption, CairoCustomEnum, CairoEnumRaw } from "starknet";
 import Productphoto from './productphoto';
 import rattingsContract from '@/ABI/rattingsContract.json';
-import { useLoadingContext } from "@/context/connectionContext";
+import { useRegisteredContext } from '@/context/registeredContext';
+import ProfileForm from '@/components/market-place/createProfile';
+import { useLoadingContext } from '@/context/connectionContext';
 import { useAppContext } from '@/context/provider'
 
 
@@ -37,8 +39,6 @@ interface MyProps {
 const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const { sharedState, setSharedState} = useYourContext();
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
-    const [account, setAccount] = useState();
-    const [address, setAddress] = useState('');
     const [count, setCount] = useState(1);
     const [rating, setRating] = useState<number>( );
     const [name, setName] = useState<any>();
@@ -49,9 +49,10 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const [imgUri, setImgUri] = useState<any>();
     // const [imgUri2, setImgUri2] = useState<any>();
     const [addingCart, setAddingCart] = useState<boolean>(false);
+    const { profileState, setProfileState } = useRegisteredContext();
+    const [isCreated, setIsCreated] = useState<boolean>(false);
     const {ShareLoad, setShareLoad} = useLoadingContext();
-  const {readContract, readReviewContract, contract} = useAppContext();
-
+  const {readContract, readReviewContract, contract, address} = useAppContext();
 
 
 
@@ -67,8 +68,20 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     }
 
 
-    const handlePurchaseClick = () => {
-        setSharedState(true);
+
+    const handlePurchaseClick = async() => {
+      try {
+      const profileSetDetails = await readContract.getUserProfile(address);
+      // const profileSetDetails: any = await contract.call("getUserProfile", [connection&&connection.selectedAddress]);
+      console.log(`details check:`, profileSetDetails.isCreated)
+      console.log(`address check:`, connection&&connection.selectedAddress)
+      setIsCreated(profileSetDetails.isCreated);
+      !profileSetDetails.isCreated ? setProfileState(true) : setSharedState(true);
+      } catch (e:any) {
+        console.log(e);
+        setProfileState(true)
+      }
+
     };
 
     const getUserProfile = async(user: any) => {
@@ -77,12 +90,28 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
             // let eth = 1000000000000000000;
             // console.log(details);
             setSellerName(hexToReadableText(details.name.toString(16)));
+
             // console.log(`checksss: ${hexToReadableText(details.name.toString(16))}`);
+          const profileSetDetails = await contract.getUserProfile(address);
+          setIsCreated(profileSetDetails.isCreated);
+          
 
           } catch(error: any) {
             console.log(error.message);
           }
     }
+
+
+    const checkUserProfile = async() => {
+        try {
+        const profileSetDetails = await readContract.getUserProfile(address);
+        console.log(`details check:`, profileSetDetails.isCreated)
+        setIsCreated(profileSetDetails.isCreated);
+        } catch(error: any) {
+          console.log(error.message);
+        }
+  }
+  checkUserProfile()
 
 
     const getProduct = async() => {
@@ -159,6 +188,25 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
         );
       };
 
+      const addToCartFnc = async() => {
+        const provider = new Provider({
+          rpc: {
+            // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+            nodeUrl: "https://rpc.starknet-testnet.lava.build"
+          }
+        }) 
+        try {
+            const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
+            const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+        const profileSetDetails = await contract.getUserProfile((connection&&connection.selectedAddress));
+        setIsCreated(profileSetDetails.isCreated);
+        !profileSetDetails.isCreated ? setProfileState(true) : addToCart();
+        } catch (e:any) {
+          console.log(e);
+          setProfileState(true)
+        }
+      }
+
 
       const addToCart = async() => {
         const provider = new Provider({
@@ -220,7 +268,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
                       <button
                       type="button"
                       className='bg-[var(--afroroasters-brown)] text-white px-4 py-2 rounded-3xl w-[8rem] md:w-[8rem] justify-center items-center flex'
-                      onClick={addToCart}
+                      onClick={addToCartFnc}
                       disabled={addingCart}
                     >
                     <p className='text-sm'>ADD TO CART</p>
@@ -241,6 +289,9 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
         {sharedState && (
             <ConfirmPurchasePopUp itemName={` of ${name}`} price={price} id={itemId} amount={count} isCart={false} />
         )}
+
+        {profileState && ( <ProfileForm /> )}
+
     </div>
   )
 }

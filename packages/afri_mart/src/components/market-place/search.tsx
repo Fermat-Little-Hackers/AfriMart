@@ -26,7 +26,7 @@ const startSearch = () => {
 const Search = () => {
   const router = useRouter();
   const [isRegistered, setIsRegistered] = useState(false);
-  const { sharedState, setSharedState } = useRegisteredContext();
+  const { profileState, setProfileState} = useRegisteredContext();
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
   const [isCreated, setIsCreated] = useState<boolean>(false);
   const {ShareLoad, setShareLoad} = useLoadingContext();
@@ -46,22 +46,30 @@ const Search = () => {
 
   getUserProfile();
 
-  const handleProfileCheck = () => {
-    
-    !isCreated && setShareLoad(false)
-    !isCreated ? setSharedState(true) : router.push('/dash');
+
+  const handleProfileCheck = async() => {
+    try {
+        const profileSetDetails = await readContract.getUserProfile((connection&&connection.selectedAddress));
+        setIsCreated(profileSetDetails.isCreated);
+        !profileSetDetails.isCreated ? setProfileState(true) : router.push('/dash');
+    } catch (e:any) {
+      console.log(e);
+      setProfileState(true)
+    }
+
+
 
   }
 
   const handleStateChange = useCallback(() => {
     // logic to handle the state change goes here
-    console.log('State changed:', sharedState);
+    console.log('State changed:', profileState);
     // ROUTE TO THE USER PROFILE PAGE
-  }, [sharedState]);
+  }, [profileState]);
 
   useEffect(() => {
     handleStateChange();
-  }, [sharedState, handleStateChange]);
+  }, [profileState, handleStateChange]);
 
 
     return(
@@ -110,7 +118,7 @@ const Search = () => {
             </div> */}
           </div>
         </div>
-        {sharedState && ( <ProfileForm /> )}
+        {profileState && ( <ProfileForm /> )}
     </div>
     )
 }

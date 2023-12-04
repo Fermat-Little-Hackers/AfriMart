@@ -20,7 +20,7 @@ const startSearch = () => {
 const HomeSearch = () => {
   const router = useRouter();
   const [isRegistered, setIsRegistered] = useState(false);
-  const { sharedState, setSharedState } = useRegisteredContext();
+  const { profileState, setProfileState } = useRegisteredContext();
   const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
   const [account, setAccount] = useState();
   const [isCreated, setIsCreated] = useState<boolean>(false);
@@ -42,19 +42,19 @@ const HomeSearch = () => {
 
   const handleProfileCheck = () => {
 
-    !isCreated ? setSharedState(true) : router.push('/dash');
+    !isCreated ? setProfileState(true) : router.push('/dash');
 
   }
 
   const handleStateChange = useCallback(() => {
     // logic to handle the state change goes here
-    console.log('State changed:', sharedState);
+    console.log('State changed:', profileState);
     // ROUTE TO THE USER PROFILE PAGE
-  }, [sharedState]);
+  }, [profileState]);
 
   useEffect(() => {
     handleStateChange();
-  }, [sharedState, handleStateChange]);
+  }, [profileState, handleStateChange]);
 
 
 
@@ -102,7 +102,7 @@ const HomeSearch = () => {
             </div> */}
           </div>
       </div>
-      {sharedState && ( <ProfileForm /> )}
+      {profileState && ( <ProfileForm /> )}
     </div>
   );
 };

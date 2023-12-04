@@ -79,7 +79,7 @@ const ProductsReviews: React.FC<MyProps> = ({ itemId }) => {
                 </div>
                 <div className="w-[80%] flex flex-col gap-1">
                     <p className='font-bold'> {buyerNames ? buyerNames[index] : 'Loading Buyer...'}</p>
-                    <p>{(hexToReadableText(product.review1.toString(16)))} {(hexToReadableText(product.review2.toString(16)))}</p>
+                    <p>{(hexToReadableText(product.review1.toString(16)))}{(hexToReadableText(product.review2.toString(16)))}</p>
                         <div>
                             <Stars amount={Number(product.rating)}/>
                         </div>

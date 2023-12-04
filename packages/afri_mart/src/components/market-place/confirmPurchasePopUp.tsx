@@ -111,7 +111,7 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount, isCart }: ConfirmPu
     const Eth = 1000000000000000000;
     const defAmount = 100000000000000;
     let Tfee = amount == 1 && Eth * price < defAmount ? defAmount : (Eth * price) * amount;
-    // console.log(`amount....${Tfee}`)
+    console.log(`amount....${Math.ceil(Tfee)}`)
     const CONTRACT_ADDRESS = MarketPlaceAddr();
     const ERC20contract = new Contract(erc20abi.erc20abi, ERC_ADDRESS, account)
     const erc20Call = ERC20contract.populate('approve', [CONTRACT_ADDRESS, Tfee])
