@@ -19,42 +19,42 @@ function ConnectButtoN() {
 
   const [retrievedValue, setRetrievedValue] = useState('')
 
-  useEffect(() => {
-    const connectToStarknet = async() => {
-      try {
-        const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+//   useEffect(() => {
+//     const connectToStarknet = async() => {
+//       try {
+//         const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
   
-        if(connection && connection.isConnected) {
-          setConnection(connection)
-          setAccount(connection.account)
-          setAddress(connection.selectedAddress)
-          setShareAddress(connection.selectedAddress)
-          setShareAccount(connection.account)
-          console.log('shared')
-        }
-      } catch (error) {
-        console.log(error)
-      }
+//         if(connection && connection.isConnected) {
+//           setConnection(connection)
+//           setAccount(connection.account)
+//           setAddress(connection.selectedAddress)
+//           setShareAddress(connection.selectedAddress)
+//           setShareAccount(connection.account)
+//           console.log('shared')
+//         }
+//       } catch (error) {
+//         console.log(error)
+//       }
      
-      //@ts-ignore
-      // console.log(connection.chainId)
-      //@ts-ignore
-      // if(connection.chainId != 'SN_GOERLI') {
-      //   try {
-      //     await window?.starknet?.request({
-      //       type: "wallet_switchStarknetChain",
-      //       params: {
-      //         chainId: "SN_GOERLI"
-      //       }
-      //     });
-      //   }
-      //   catch(error : any) {
-      //     console.log(error)
-      //   }
-      // }
-}
-    connectToStarknet()
-  }, [])
+//       //@ts-ignore
+//       // console.log(connection.chainId)
+//       //@ts-ignore
+//       // if(connection.chainId != 'SN_GOERLI') {
+//       //   try {
+//       //     await window?.starknet?.request({
+//       //       type: "wallet_switchStarknetChain",
+//       //       params: {
+//       //         chainId: "SN_GOERLI"
+//       //       }
+//       //     });
+//       //   }
+//       //   catch(error : any) {
+//       //     console.log(error)
+//       //   }
+//       // }
+// }
+//     connectToStarknet()
+//   }, [])
 
   const connectWallet = async() => {
     const connection = await connect({ webWalletUrl: "https://web.argent.xyz" })
@@ -75,7 +75,7 @@ function ConnectButtoN() {
     setConnection(undefined)
     setAccount(undefined)
     setAddress('')
-    setShareAddress('')
+    setShareAddress(Number(0))
     setShareAccount(null)
 
 

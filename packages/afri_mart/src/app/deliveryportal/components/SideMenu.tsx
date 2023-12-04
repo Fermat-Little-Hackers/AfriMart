@@ -3,19 +3,24 @@ import React, { HTMLInputTypeAttribute, useEffect, useState } from "react";
 // import {useSupplyChainContext} from "../../../context/supplyChainContext"
 import { useSupplyChainContext } from "../../../context/supplyChainContext";
 import { FaShoppingCart, FaUser, FaBars, FaTimes } from "react-icons/fa";
-import {Provider, Contract} from "starknet";
+import { Provider, Contract } from "starknet";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
-import factory_abi from "../../../ABI/supplyChainFactory.json"
-import { useAccountContext } from "@/context/connectionContext";
+import factory_abi from "../../../ABI/supplyChainFactory.json";
+import {
+  useAccountContext,
+  useConnectionContext,
+} from "@/context/connectionContext";
 
 const SideMenu = () => {
+  const [account, setAccount] = useState();
+  const [staffAddress, setStaffAddress] = useState("");
   const { sharedState, setSharedState } = useSupplyChainContext();
   const [textVisible, setTextVisible] = useState(false);
-  const [isFactoryAdmin, setIsFactoryAdmin] = useState();
-  const [isCompanyAdmin, setIsCompanyAdmin] = useState();
-  const [isBranchAdmin, setIsBranchAdmin] = useState();
-  const [isStaff, setIsStaff] = useState();
-  const {ShareAccount: ShareAddress} = useAccountContext();
+  const [isFactoryAdmin, setIsFactoryAdmin] = useState<boolean>();
+  const [isCompanyAdmin, setIsCompanyAdmin] = useState<boolean>();
+  const [isBranchAdmin, setIsBranchAdmin] = useState<boolean>();
+  const [isStaff, setIsStaff] = useState<boolean>();
+  const {ShareAddress} = useConnectionContext();
 
 
   let isActive = { color: "white", backgroundColor: 'rgb(170, 76, 51)', height: '2rem', paddingLeft: '1.5rem'};
@@ -49,29 +54,40 @@ const SideMenu = () => {
           "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
       },
     });
-    console.log(`Share address: ${ShareAddress?.address}`)
+    console.log(`Share address: ${ShareAddress}`)
     let factory_contract = new Contract(factory_abi, SupplyChainFactoryAddr(), provider);
-    let is_factory_admin =  await factory_contract.confirmOwners(ShareAddress?.address);
-    let is_company_admin = await factory_contract.confirmCompany(ShareAddress?.address);
-    let is_branch_admin = await factory_contract.confirmBranchAdmins(ShareAddress?.address);
-    let is_staff = await factory_contract.confirmStaff(ShareAddress?.address);
+    let is_factory_admin =  await factory_contract.confirmOwners(ShareAddress);
+    let is_company_admin = await factory_contract.confirmCompany(ShareAddress);
+    let is_branch_admin = await factory_contract.confirmBranchAdmins(ShareAddress);
+    let is_staff = await factory_contract.confirmStaff(ShareAddress);
 
     setIsFactoryAdmin(is_factory_admin);
     setIsCompanyAdmin(is_company_admin);
     setIsBranchAdmin(is_branch_admin);
     setIsStaff(is_staff);
-  }
+    // setIsFactoryAdmin(false);
+    // setIsCompanyAdmin(false);
+    // setIsBranchAdmin(false);
+    // setIsStaff(false);
+    console.log("status set")
+  };
+
+  // useEffect(() => {
+    
+  // }, []);
 
   useEffect(() => {
+    // setAccount(ShareAddress);
     try {
-      if (ShareAddress != undefined) {
+      if (ShareAddress != Number(0)) {
         setStatus()
+        console.log('Status set')
         console.log(ShareAddress)
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }, [ShareAddress])
+  }, [ShareAddress, isBranchAdmin, isCompanyAdmin, isFactoryAdmin, isStaff])
 
   return (
     <div
@@ -92,7 +108,7 @@ const SideMenu = () => {
       >
         {/* <div className="my-[41px] mx-auto w-[150px] hover:cursor-pointer" id="Agric" onClick={handleClick} style={{color: isAgric ? 'grey' : 'black'}}>AGRICULTURE</div> */}
         <div
-          className= {`hover:cursor-pointer`}
+          className={`hover:cursor-pointer`}
           onClick={handleClick}
           style={sortColor("Home") ? isActive : { color: "black" }}
           // style={{color: 'isAgric' ? 'white' : 'black', backgroundColor: 'isAgric' ? 'rgb(170, 76, 51)' : '', height: '2rem', paddingLeft: 'isAgric' ? '1.5rem': ''}}
@@ -102,7 +118,9 @@ const SideMenu = () => {
           Home{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isBranchAdmin ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isBranchAdmin ? "block" : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("deployBranch") ? isActive : { color: "black" }
@@ -113,7 +131,9 @@ const SideMenu = () => {
           Deploy Branch{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isFactoryAdmin ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isFactoryAdmin ? "block" : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("OnboardMarketPlace")
@@ -126,7 +146,9 @@ const SideMenu = () => {
           Onboard Market Place{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isCompanyAdmin ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isCompanyAdmin ? "block" : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("RegisterBranchAdmins")
@@ -136,10 +158,12 @@ const SideMenu = () => {
           id="RegisterBranchAdmins"
         >
           {" "}
-          Register Branch Admins{" "}
+          Manage Branch Admins{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isFactoryAdmin ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isFactoryAdmin ? "block" : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("RegisterDirectors")
@@ -152,7 +176,9 @@ const SideMenu = () => {
           Register Directors{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isFactoryAdmin ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isFactoryAdmin ? "block" : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("RegisterSupplychain")
@@ -165,7 +191,7 @@ const SideMenu = () => {
           Register Supplychain{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer}`}
+          className={`hover:cursor-pointer}`}
           onClick={handleClick}
           style={
             sortColor("TrackSipment") ? isActive : { color: "black" }
@@ -176,7 +202,9 @@ const SideMenu = () => {
           Track Shipment{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isStaff ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isStaff ? "block" : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("RegisterNewShipment")
@@ -189,7 +217,9 @@ const SideMenu = () => {
           Register New Shipment{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isStaff ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isStaff ? "block" : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("UpdateShipmentLocation")
@@ -202,7 +232,11 @@ const SideMenu = () => {
           Update Shipment Location{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isFactoryAdmin || isCompanyAdmin || isBranchAdmin || isStaff ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isFactoryAdmin || isCompanyAdmin || isBranchAdmin || isStaff
+              ? "block"
+              : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("TrackAllItem") ? isActive : { color: "black" }
@@ -213,7 +247,9 @@ const SideMenu = () => {
           Pending Deliveries{" "}
         </div>
         <div
-          className= {`hover:cursor-pointer hidden ${isBranchAdmin ? 'block' : 'hidden'}`}
+          className={`hover:cursor-pointer ${
+            isBranchAdmin ? "block" : "hidden"
+          }`}
           onClick={handleClick}
           style={
             sortColor("WhitelisAccount") ? isActive: { color: "black" }

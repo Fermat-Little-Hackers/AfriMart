@@ -21,7 +21,7 @@ const {ShareAddress, setShareAddress} = useConnectionContext()
     });
 
     try {
-      const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
+      // const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allsoldData = await contract.getItemsSold(
         ShareAddress?.toString()

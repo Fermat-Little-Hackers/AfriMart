@@ -23,8 +23,8 @@ const AllPurchases = () => {
     });
 
     try {
-      const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
-      setAddress(connection?.selectedAddress)
+      // const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
+      // setAddress(connection?.selectedAddress)
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
       const allPurchaseData = await contract.getProductsBoughtByUser(
         ShareAddress?.toString(),

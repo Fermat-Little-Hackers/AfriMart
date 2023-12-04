@@ -25,8 +25,8 @@ const UserDetails = () => {
       }
     })
       try {
-      const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-      setAddress(connection?.selectedAddress)
+      // const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+      // setAddress(connection?.selectedAddress)
       const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
       const user = await contract.getUserProfile(ShareAddress?.toString());
       // console.log('0x' + (user.name.toString(16)).toString())

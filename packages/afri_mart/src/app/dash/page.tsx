@@ -21,16 +21,16 @@ const Dashboard = () => {
     setTitle(message);
   };
 
-  useEffect(() => {
-    const connectToStarknet = async () => {
-      let connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-      console.log(connection)
-      if (connection && connection.isConnected) {
-        setShareAddress(connection.selectedAddress)
-      }
-    }
-    connectToStarknet()
-  }, [])
+  // useEffect(() => {
+  //   const connectToStarknet = async () => {
+  //     let connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
+  //     console.log(connection)
+  //     if (connection && connection.isConnected) {
+  //       setShareAddress(connection.selectedAddress)
+  //     }
+  //   }
+  //   connectToStarknet()
+  // }, [])
   return (
     <div>
       {/* {loadState && <LoadingOverlay/>} */}
