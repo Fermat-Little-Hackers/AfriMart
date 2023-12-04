@@ -189,16 +189,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
       };
 
       const addToCartFnc = async() => {
-        const provider = new Provider({
-          rpc: {
-            // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-            nodeUrl: "https://rpc.starknet-testnet.lava.build"
-          }
-        }) 
         try {
-            const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
-            const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-        const profileSetDetails = await contract.getUserProfile((connection&&connection.selectedAddress));
+        const profileSetDetails = await readContract.getUserProfile(address.toString());
         setIsCreated(profileSetDetails.isCreated);
         !profileSetDetails.isCreated ? setProfileState(true) : addToCart();
         } catch (e:any) {
