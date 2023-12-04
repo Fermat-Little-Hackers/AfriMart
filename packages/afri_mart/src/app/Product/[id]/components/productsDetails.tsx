@@ -200,7 +200,12 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
       }
 
 
-      const addToCart = async() => {  
+      const addToCart = async() => {
+        const provider = new Provider({
+          rpc: {
+            nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+          }
+        })  
         try{
           const myCall = contract.populate("addItemToCart", [itemId, count]);
           const res = await contract.addItemToCart(myCall.calldata);
