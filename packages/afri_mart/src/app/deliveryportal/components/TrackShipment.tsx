@@ -79,7 +79,7 @@ const TrackShipment = () => {
     <div className="" id="track-portal">
       <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Track Shipment</h3>
       <div className="justify-start p-5 md:p-10 text-left">
-        <div className="flex items-center border-0 w-full md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl mx-20 ring-1 ring-[var(--terracota)]">
+        <div className="flex items-center border-0 md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl mx-20 ring-1 ring-[var(--terracota)]">
           <input
             type="search"
             name="search"
