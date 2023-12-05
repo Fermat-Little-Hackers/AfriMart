@@ -10,6 +10,8 @@ import { CairoCustomEnum, CairoEnum, Contract, Provider } from "starknet";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { useAccountContext } from "@/context/connectionContext";
 import { useRouter } from "next/router";
+import { useAppContext } from '@/context/provider'
+
 
 const TrackShipment = () => {
   const [trackingNumber, setTrackingNumber] = useState("");
@@ -17,10 +19,8 @@ const TrackShipment = () => {
   const [preLocations, setPreLocation] = useState("");
   const [curLocation, setCurrentLocation] = useState("");
   const [next, setNext] = useState("");
-  const [itemId, setItemId] = useState("")
-  const {ShareAccount: account} = useAccountContext();
-  // const router = useRouter();
-  // const {item_id} = router.query
+  const {factoryContractRead} = useAppContext();
+
 
   function hexToReadableText(hexString: any): string {
     const bytes = Buffer.from(hexString, "hex");
@@ -48,19 +48,8 @@ const TrackShipment = () => {
   };
 
   const startSearch = async () => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl:
-          "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
-      },
-    });
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        provider
-      );
-      let loc = await contract.trackeItem(trackingNumber);
+      let loc = await factoryContractRead.trackeItem(trackingNumber);
       setLocation(loc);
 
       let result = hexToReadableText(loc.previousLocation.toString(16));

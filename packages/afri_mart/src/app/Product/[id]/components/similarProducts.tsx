@@ -9,6 +9,8 @@ import { useState } from "react";
 import {useContractRead} from '@starknet-react/core'
 import { IconTeapot } from '@tabler/icons-react';
 import Link from 'next/link';
+import { useAppContext } from '@/context/provider'
+
 
 interface MyProps {
   cartegory: string;
@@ -17,22 +19,19 @@ interface MyProps {
 
 const SimilarProducts:React.FC<MyProps>= ({cartegory, cartegoryIndex}) => {
   const [products, setProducts] = useState<string[]>();
+  const {readContract} = useAppContext();
+
 
   const getProduct = async() => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-      }
-    })
       try {
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
+      
       const myCustomEnum = new CairoCustomEnum({
         cartegory: cartegoryIndex ? cartegoryIndex : 0,
         });
 
         //@ts-ignore
         const myCalldata = CallData.compile(myCustomEnum);
-        const res: any = await contract.call("getProductsByCategory", myCalldata) as bigint;
+        const res: any = await readContract.call("getProductsByCategory", myCalldata) as bigint;
         const products = res.map((item:any) => item.toString())
         setProducts(products);
       } catch (error : any) {      

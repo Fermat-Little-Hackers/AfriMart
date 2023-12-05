@@ -10,21 +10,19 @@ import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { Contract } from "starknet";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 const RegisterDirectors = () => {
   const [connection, setConnection] =
     useState<ConnectedStarknetWindowObject | null>();
   const [directorAddress, setDirectorAddress] = useState("");
-  const {ShareAccount: account} = useAccountContext();
+  const {factoryContractWrite} = useAppContext();
+
 
   const setDirector = async () => {
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        account
-      );
-      await contract.setFactoryAdmin(directorAddress);
+      await factoryContractWrite.setFactoryAdmin(directorAddress);
     } catch (error: any) {
       console.log(error.message);
     }

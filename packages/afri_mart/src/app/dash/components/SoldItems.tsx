@@ -5,28 +5,23 @@ import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import { useConnectionContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
 
 
 const SoldItems = () => {
 const [allSold, setAllSold] = useState<any[]>([])
 const [allProductSold, setAllproductSold] = useState<any[]>([]);
-const {ShareAddress, setShareAddress} = useConnectionContext()
+const {readContract,address} = useAppContext();
+
 
 
   const getAllsolditem = async () => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-      },
-    });
-
     try {
-      // const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
-      const allsoldData = await contract.getItemsSold(
-        ShareAddress?.toString()
+      const allsoldData = await readContract.getItemsSold(
+        address.toString(),
       );
       setAllSold([...allsoldData]);
+        console.log(allsoldData);
     } catch (error : any) {
       console.log(error)
   };
@@ -34,16 +29,9 @@ const {ShareAddress, setShareAddress} = useConnectionContext()
 
 
 const GetOrder = async (args : any[]) => {
-  const provider = new Provider({
-    rpc: {
-      nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-    },
-  });
-
   try {
-    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);  
     const promises = args.map(async (orderId) => {
-      let nextId = await contract.getOrderDetails(orderId.toString());
+      let nextId = await readContract.getOrderDetails(orderId.toString());
       return Number(nextId.itemID);
     });
     const results = await Promise.all(promises);
@@ -53,17 +41,10 @@ const GetOrder = async (args : any[]) => {
 
 
 const GetProductSold = async (args : number[] | undefined) => {
-  const provider = new Provider({
-    rpc: {
-      nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-    },
-  });
-
   try {
-    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);  
     //@ts-ignore
     const promises = args.map(async (productId) => {
-        let productdetail = await contract.getProductDetails(productId.toString());
+        let productdetail = await readContract.getProductDetails(productId.toString());
         return productdetail;
     });
     const results = await Promise.all(promises);
@@ -87,6 +68,8 @@ useEffect(() => {
   if(allSold.length > 0){
     GetOrder(allSold).then((orderidsArray)=>{
       GetProductSold(orderidsArray).then((products)=>{
+          console.log('products sold obtained array',products)
+          
         //@ts-ignore
         setAllproductSold(products)
       })

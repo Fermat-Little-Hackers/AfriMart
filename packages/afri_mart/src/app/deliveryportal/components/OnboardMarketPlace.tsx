@@ -11,12 +11,14 @@ import {
 import contractAbi from "../../../ABI/supplyChainFactory.json";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 const OnboardMarketPlace = () => {
   const [connection, setConnection] =
     useState<ConnectedStarknetWindowObject | null>();
   const [marketPlaceAddress, setMarketAddress] = useState("");
-  const {ShareAccount: account} = useAccountContext();
+  const {factoryContractWrite} = useAppContext();
 
 
   const onboardMarketPlace = async () => {
@@ -27,12 +29,7 @@ const OnboardMarketPlace = () => {
     //   },
     // });
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        account
-      );
-      await contract.setMarketPlace(marketPlaceAddress);
+      await factoryContractWrite.setMarketPlace(marketPlaceAddress);
     } catch (error: any) {
       console.log(error.message);
     }

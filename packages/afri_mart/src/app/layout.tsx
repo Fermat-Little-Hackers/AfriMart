@@ -12,7 +12,7 @@ import { ProviderInterface, RpcProvider, provider } from 'starknet';
 import clsx from 'clsx';
 import { RegisteredContextProvider } from '../context/registeredContext';
 import { YourContextProvider } from '../context/YourContext';
-import { ConnectionContextProvider, AccountContextProvider } from '../context/connectionContext'
+import { ConnectionContextProvider, AccountContextProvider, RatingContextProvider } from '../context/connectionContext'
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ListProductContextProvider } from '../context/listProductContext';
 // import { ConnectkitProvider } from '../../connectkit';
@@ -20,6 +20,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { LoadingContextProvider } from '../context/connectionContext';
 
 import PagesLayout from './PagesLayout';
+import AppProvider from '../context/provider'
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -35,6 +36,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <body className={clsx("", inter.className)}>
       <ChakraProvider>
         <ConnectionContextProvider>
+        <RatingContextProvider>
         <LoadingContextProvider>
           <AccountContextProvider>
             <ListProductContextProvider>
@@ -43,7 +45,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   <YourContextProvider>
                     <StarknetProvider>
                       <QueryClientProvider client={queryClient}>
+                        <AppProvider>
                         <PagesLayout>{children}</PagesLayout>
+                        </AppProvider>
                       </QueryClientProvider>
                     </StarknetProvider>
                   </YourContextProvider>
@@ -52,6 +56,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </ListProductContextProvider>
           </AccountContextProvider>
           </LoadingContextProvider>
+        </RatingContextProvider>
         </ConnectionContextProvider>
         </ChakraProvider>
       </body>

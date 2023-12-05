@@ -5,24 +5,18 @@ import { Account, Contract, Provider, constants, AccountInterface, CairoCustomEn
 import marketPlaceAbi from '@/ABI/marketPlace'
 import { MarketPlaceAddr } from '@/components/addresses'
 import Link from 'next/link'
+import { useAppContext } from '@/context/provider'
+
 
 
 const TrendingProducts = () => {
   const [products, setProducts] = useState<Number[]>();
-
-
+  const {readContract} = useAppContext();
 
 
   const getProduct = async() => {
-    const provider = new Provider({
-      rpc: {
-        // nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
-        nodeUrl: "https://rpc.starknet-testnet.lava.build"
-      }
-    })
       try {
-      const contract = new Contract(marketPlaceAbi, MarketPlaceAddr(), provider);
-        const res: any = await contract.call("getAllProducts", []);
+        const res: any = await readContract.call("getAllProducts", []);
         setProducts(getRandomNumbersFromArray(res));
         // console.log(`RANDOM PRODUCTS`, getRandomNumbersFromArray(res));
         // const products = res.map((item:any) => item.toString())

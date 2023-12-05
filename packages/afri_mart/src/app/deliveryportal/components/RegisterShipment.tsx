@@ -9,6 +9,8 @@ import { Contract, Provider } from "starknet";
 import { SupplyChainContractAddr, SupplyChainFactoryAddr } from "@/components/addresses";
 import main from "../../../../utils/upload.mjs";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 interface FormData {
   profilePicture: FileList | null;
@@ -25,7 +27,8 @@ const ResgisterShipment = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [imageBlob, setImageBlob] = useState<File | undefined>();
   const [imageHash, setImageHash] = useState<Array<String>>();
-  const {ShareAccount: account, ShareAddress} = useAccountContext();
+  const {factoryContractWrite, factoryContractRead, address, account} = useAppContext();
+
 
   const {
     register,
@@ -66,15 +69,7 @@ const ResgisterShipment = () => {
       console.log('second HALF', secondhalf);
       setImageHash([firstHalf,secondhalf]);
 
-      const provider = new Provider({
-        rpc: {
-          nodeUrl:
-            "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
-        },
-      });
-
-      let factory_contract = new Contract(factory_abi, SupplyChainFactoryAddr(), provider);
-      let address_to_call = factory_contract.getStaffBranch(ShareAddress);
+      let address_to_call = factoryContractRead.getStaffBranch(address);
 
 
       const contract = new Contract(

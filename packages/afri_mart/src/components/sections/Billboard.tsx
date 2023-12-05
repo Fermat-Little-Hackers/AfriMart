@@ -4,7 +4,7 @@ import React from 'react';
 import styles from './ScrollingText.module.css';
 
 const Billboard = ( ) => {
-    const text = 'lorem ipsum dolor sit amet lorem ipsum dolor'
+    const text = 'At AfriMart we believe that by providing a user-friendly, globally accessible platform, we can empower local businesses and artisans to reach a broader audience thereby fostering economic growth in African countries.'
   return (
     <Container className="bg-art-bg w-full h-[3rem] text-center py-2 mb-20">
     <div className={styles.scrollingTextContainer}>

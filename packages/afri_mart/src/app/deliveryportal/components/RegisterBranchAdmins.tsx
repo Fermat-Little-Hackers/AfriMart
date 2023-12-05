@@ -10,6 +10,8 @@ import {
 import contractAbi from "../../../ABI/supplyChainFactory.json";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { useAccountContext } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 const RegisterBranchAdmins = () => {
   const [connection, setConnection] =
@@ -19,43 +21,32 @@ const RegisterBranchAdmins = () => {
   const [oldAdmin, setOldAdmin] = useState("");
   const [newAdmin, setNewAdmin] = useState("");
   const { ShareAccount: account } = useAccountContext();
+  const {factoryContractWrite} = useAppContext();
+
 
   const setAdmin = async () => {
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        account
-      );
-      await contract.setDispatchAdmin(adminAddress);
+      await factoryContractWrite.setDispatchAdmin(adminAddress);
     } catch (error: any) {
       console.log(error.message);
     }
   };
   const removeAdmin = async () => {
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        account
-      );
-      await contract.removeAdmin(adminToRemove);
+      await factoryContractWrite.removeAdmin(adminToRemove);
     } catch (error: any) {
       console.log(error.message);
     }
   };
   const assignNewAdmin = async () => {
     try {
-      const contract = new Contract(
-        contractAbi,
-        SupplyChainFactoryAddr(),
-        account
-      );
-      await contract.assignNewAdmins (oldAdmin, newAdmin);
+      await factoryContractWrite.setDispatchAdmin(adminAddress);
     } catch (error: any) {
       console.log(error.message);
     }
   };
+
+
   const handleAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAdminAddress(event.target.value);
     console.log("name changed");

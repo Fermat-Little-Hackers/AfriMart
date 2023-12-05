@@ -5,48 +5,37 @@ import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import { useConnectionContext } from "@/context/connectionContext";
-import Link from "next/link";
+import CompLoad from "./compLoad";
+import { useAppContext } from '@/context/provider'
 
 
-const AllPurchases = () => {
-  const [allPurchase, setAllPurchase] = useState<any[]>([])
-  const [allProductArray, setAllproductArray] = useState<any[]>([]);
-  const [address, setAddress] = useState<string | undefined>('');
-  const { ShareAddress, setShareAddress } = useConnectionContext()
+
+
+const AllPurchases =  ()  => {  
+const [allPurchase, setAllPurchase] = useState<any[]>([])
+const [allProductArray, setAllproductArray] = useState<any[]>([]);
+
+const [sectionload, setSectionLoad] = useState(true);
+const {readContract,address} = useAppContext();
+const [orderArray, setOrderArray] = useState<number[]>();
+
 
 
   const getAllpurchase = async () => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-      },
-    });
-
     try {
-      // const connection = await connect({ modalMode: 'neverAsk', webWalletUrl: 'https://web.argent.xyz' });
-      // setAddress(connection?.selectedAddress)
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
-      const allPurchaseData = await contract.getProductsBoughtByUser(
-        ShareAddress?.toString(),
-        ShareAddress?.toString()
+      const allPurchaseData = await readContract.getProductsBoughtByUser(
+        address.toString(),
+        address.toString()
       );
       setAllPurchase([...allPurchaseData]);
-    } catch (error: any) {
-    };
-  }
+    } catch (error : any) {
+  };
+}
 
-
-  const GetOrder = async (args: any[]) => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-      },
-    });
-
-    try {
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
+  const GetOrder = async (args : any[]) => {
+    try { 
       const promises = args.map(async (orderId) => {
-        let nextId = await contract.getOrderDetails(orderId.toString());
+        let nextId = await readContract.getOrderDetails(orderId.toString());
         return Number(nextId.itemID);
       });
       const results = await Promise.all(promises);
@@ -54,18 +43,11 @@ const AllPurchases = () => {
     } catch (error: any) { }
   };
 
-  const GetItem = async (args: number[] | undefined) => {
-    const provider = new Provider({
-      rpc: {
-        nodeUrl: 'https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx',
-      },
-    });
-
-    try {
-      const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider);
+  const GetItem = async (args : number[] | undefined) => {
+    try { 
       //@ts-ignore
       const promises = args.map(async (productId) => {
-        let productdetail = await contract.getProductDetails(productId.toString());
+        let productdetail = await readContract.getProductDetails(productId.toString());
         return productdetail;
       });
       const results = await Promise.all(promises);
@@ -84,35 +66,44 @@ const AllPurchases = () => {
   }, [])
 
   useEffect(() => {
-    if (allPurchase.length > 0) {
-      GetOrder(allPurchase).then((orderidsArray) => {
-        // console.log('order id array collected', orderidsArray)
-        GetItem(orderidsArray).then((products) => {
-          console.log('products obtained array', products)
-          //@ts-ignore
-          setAllproductArray(products)
+    if(allPurchase){
+      setTimeout(() => {
+      if(allPurchase.length > 0 || allPurchase.length == 0){
+        GetOrder(allPurchase).then((orderidsArray)=>{
+          // console.log('order id array collected', orderidsArray)
+          console.log(`orders`, orderidsArray)
+          setOrderArray(orderidsArray?orderidsArray:[]);
+          GetItem(orderidsArray).then((products)=>{
+            // console.log('products obtained array',products)
+            //@ts-ignore
+            setAllproductArray(products)
+            setSectionLoad(false)
+          })
+        }).catch((error)=>{
+          setSectionLoad(false)
+            console.log(error)
         })
-      }).catch((error) => {
-        console.log(error)
-      })
+      }
+    }, 1000);
     }
-  }, [allPurchase]);
-
-  return (<div className=" max-h-[80vh] md:min-h-[17rem]  overflow-y-auto scrollbar  smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">
-
-    {allProductArray?.length == 0 ? <div className="text-center">No item purchased</div> : allProductArray?.map((item: any, index: number) => {
-      let eth = 1000000000000000000;
-      let productname = hexToReadableText(item.name.toString(16))
-      let productprice = Number(BigInt(item.price)) / eth
-      let firstHash = hexToReadableText(item.imageUri1.toString(16))
-      let secondHash = hexToReadableText(item.imageUri2.toString(16))
-      let cid = `${firstHash + secondHash}`
-      let available = Number(item.amountAvailable)
-      return (<div key={index} className="w-[20%] space-y-10">
-        <Puchasecard title={productname} amount={productprice} quantity={0} item_id = {Number(item.id)} uri={cid} />
-      </div>)
+  }, [allPurchase]); 
+  
+  return    ( <div className=" h-64 overflow-y-auto scrollbar  smx:border-2 lmx:border-2 lmx:p-6 smx:p-4 smx:border-black lmx:border-black mx-auto w-[100%] smx:w-[80%] lmx:w-[90%] p-6 mt-2">   
+      {sectionload && <CompLoad />}
+      {allProductArray?.length == 0 && !sectionload ? <div className="text-center">No item purchased</div> : allProductArray?.map( (item:any,index : number) => {  
+          let eth = 1000000000000000000;
+          let productname =  hexToReadableText(item.name.toString(16)) 
+          let productprice = Number(BigInt(item.price)) / eth
+          let firstHash =  hexToReadableText(item.imageUri1.toString(16)) 
+          let secondHash =  hexToReadableText(item.imageUri2.toString(16)) 
+           let cid = `${firstHash + secondHash}`
+           let available = Number(item.amountAvailable)
+         return ( <div key={index} className="w-[20%] space-y-10">          
+         <Puchasecard title={productname} amount={productprice} quantity={0} uri={cid} orderId={allPurchase ? Number(allPurchase[index]) : 0}/>
+       </div> )             
     })}
-  </div>)
+        
+</div>)
 };
 
 export default AllPurchases;

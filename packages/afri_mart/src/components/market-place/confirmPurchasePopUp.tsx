@@ -8,6 +8,8 @@ import { MarketPlaceAddr } from '../../components/addresses';
 import {type ConnectedStarknetWindowObject, connect, disconnect, } from '@argent/get-starknet'
 import {EthAddr} from '../../components/addresses';
 import erc20abi from '../../ABI/erc20.json'
+import { useAppContext } from '@/context/provider'
+
 
 interface ConfirmPurchasePopUpProps {
   itemName: string;
@@ -25,10 +27,12 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount, isCart }: ConfirmPu
   const [imageSrc, setImageSrc] = useState("/image/wait.svg");
   const [isDisabled, setIsDisabled] = useState(false);
   // const [connection, setConnection] = useState('');
-  const [account, setAccount] = useState<ProviderInterface | AccountInterface | undefined>();
-  const [address, setAddress] = useState('');
-  const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
+  // const [account, setAccount] = useState<ProviderInterface | AccountInterface | undefined>();
+  // const [address, setAddress] = useState('');
+  // const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
   const [paid, setPaid] = useState<boolean>(false);
+  const {readContract, readReviewContract, contract, account} = useAppContext();
+
 
   const handleProcessPayment = () => {
     setIsDisabled(true);
@@ -74,8 +78,6 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount, isCart }: ConfirmPu
     const CONTRACT_ADDRESS = MarketPlaceAddr();
     const ERC20contract = new Contract(erc20abi.erc20abi, ERC_ADDRESS, account)
     const erc20Call = ERC20contract.populate('approve', [CONTRACT_ADDRESS, Tfee])
-
-    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
     const collective_inputs = [id, amount];
     const myCall = contract.populate('purchaseProduct', collective_inputs)
 
@@ -109,12 +111,10 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount, isCart }: ConfirmPu
     const Eth = 1000000000000000000;
     const defAmount = 100000000000000;
     let Tfee = amount == 1 && Eth * price < defAmount ? defAmount : (Eth * price) * amount;
-    // console.log(`amount....${Tfee}`)
+    console.log(`amount....${Math.ceil(Tfee)}`)
     const CONTRACT_ADDRESS = MarketPlaceAddr();
     const ERC20contract = new Contract(erc20abi.erc20abi, ERC_ADDRESS, account)
     const erc20Call = ERC20contract.populate('approve', [CONTRACT_ADDRESS, Tfee])
-
-    const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), account)
     // const collective_inputs = [ ];
     const myCall = contract.populate('checkOutCart', [])
 
@@ -143,20 +143,6 @@ function ConfirmPurchasePopUp({ itemName, price, id, amount, isCart }: ConfirmPu
     })
 }
 
-
-
-
-useEffect(() => {
-  const connectToStarknet = async() => {
-    const connection = await connect({ modalMode: "neverAsk", webWalletUrl: "https://web.argent.xyz" })
-    if(connection && connection.isConnected) {
-      setConnection(connection)
-      setAccount(connection.account)
-      setAddress(connection.selectedAddress)
-    }
-  }
-  connectToStarknet()
-}, []) 
 
 
 
