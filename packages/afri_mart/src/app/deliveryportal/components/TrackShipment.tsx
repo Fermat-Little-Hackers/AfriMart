@@ -9,6 +9,7 @@ import { FaShoppingCart, FaUser, FaBars, FaSearch } from "react-icons/fa";
 import { CairoCustomEnum, CairoEnum, Contract, Provider } from "starknet";
 import { SupplyChainFactoryAddr } from "@/components/addresses";
 import { useAccountContext } from "@/context/connectionContext";
+import { useRouter } from "next/router";
 import { useAppContext } from '@/context/provider'
 
 
@@ -35,6 +36,12 @@ const TrackShipment = () => {
     nextStop: string;
   }
 
+  // useEffect(() => {
+  //   if (item_id) {
+  //     setItemId(item_id);
+  //   }
+  // },[item_id])
+
   const manageTrackingNumber = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setTrackingNumber(e.target.value);
@@ -58,21 +65,22 @@ const TrackShipment = () => {
   };
 
   return (
-    <div className="">
+    <div className="" id="track-portal">
       <h3 className="mb-5 md:mb-7 text-4xl text-bold font-semibold md:text-2xl mx-20 my-10">Track Shipment</h3>
       <div className="justify-start p-5 md:p-10 text-left">
-        <div className="flex items-center border-0 w-full md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl mx-20 ring-1 ring-[var(--terracota)]">
+        <div className="flex items-center border-0 md:w-[30rem] h-10 p-5 md:p-5 pr-0 md:pl-5 md:pr-0 rounded-3xl mx-20 ring-1 ring-[var(--terracota)]">
           <input
             type="search"
             name="search"
             id="search"
             placeholder="Tracking Number"
+            // value={itemId}
             onChange={(e) => manageTrackingNumber(e)}
             className="outline-none focus:outline-none w-full md:w-[100%] mr-4 md:mr-6 bg-transparent"
           />
           <button
             type="button"
-            className=" bg-gray-600 text-white px-2 md:px-4 py-2 rounded-3xl flex items-center"
+            className=" bg-[var(--sienna)] text-white px-2 md:px-4 py-2 rounded-3xl flex items-center"
             onClick={startSearch}
           >
             <FaSearch className="mr-2" /> Track
@@ -82,7 +90,7 @@ const TrackShipment = () => {
         <div className="flex flex-row h-[15rem] gap-5 mx-20 mt-7">
           <div className="flex flex-col">
             <h1 className="text-3xl font-bold">Location Info</h1>
-            <p>Order ID: {trackingNumber}</p>
+            <p>Order ID: {location?.orderID.toString()}</p>
             <p>Delivery Status: {location?.deliveryStatus.activeVariant()}</p>
             <p>Previous Location: {preLocations}</p>
             <p>Current Location: {curLocation}</p>

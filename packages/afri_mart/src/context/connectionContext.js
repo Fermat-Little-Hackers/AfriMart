@@ -1,23 +1,20 @@
-'use client'
-import { createContext, useState, useContext } from 'react';
-
+"use client";
+import { createContext, useState, useContext } from "react";
 
 const ConnectionContext = createContext();
-export const ConnectionContextProvider = ({ children })=>{
-    const [ShareAddress, setShareAddress] = useState(null);
+export const ConnectionContextProvider = ({ children }) => {
+  const [ShareAddress, setShareAddress] = useState(Number(0));
 
-    return (
-      <ConnectionContext.Provider value={{ ShareAddress, setShareAddress }}>
-        {children}
-      </ConnectionContext.Provider>
-    );
-}
+  return (
+    <ConnectionContext.Provider value={{ ShareAddress, setShareAddress }}>
+      {children}
+    </ConnectionContext.Provider>
+  );
+};
 export const useConnectionContext = () => useContext(ConnectionContext);
 
-
-
 const AccountContext = createContext();
-export const AccountContextProvider = ({ children })=>{
+export const AccountContextProvider = ({ children }) => {
   const [ShareAccount, setShareAccount] = useState(null);
 
   return (
@@ -25,12 +22,11 @@ export const AccountContextProvider = ({ children })=>{
       {children}
     </AccountContext.Provider>
   );
-}
+};
 export const useAccountContext = () => useContext(AccountContext);
 
-
 const LoadingContext = createContext();
-export const LoadingContextProvider = ({ children })=>{
+export const LoadingContextProvider = ({ children }) => {
   const [ShareLoad, setShareLoad] = useState(null);
 
   return (
@@ -38,7 +34,7 @@ export const LoadingContextProvider = ({ children })=>{
       {children}
     </LoadingContext.Provider>
   );
-}
+};
 export const useLoadingContext = () => useContext(LoadingContext);
 
 const RatingContext = createContext();

@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Puchasecard from "./Puchasecard";
-import {type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
+import { type ConnectedStarknetWindowObject, connect, disconnect } from '@argent/get-starknet'
 import { Contract, Provider, constants } from 'starknet'
 import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
@@ -40,7 +40,7 @@ const [orderArray, setOrderArray] = useState<number[]>();
       });
       const results = await Promise.all(promises);
       return results
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
 
   const GetItem = async (args : number[] | undefined) => {
@@ -52,18 +52,18 @@ const [orderArray, setOrderArray] = useState<number[]>();
       });
       const results = await Promise.all(promises);
       return results
-    } catch (error: any) {}
+    } catch (error: any) { }
   };
 
-  function hexToReadableText(hexString : any) {
-    const bytes = Buffer.from(hexString, 'hex'); 
+  function hexToReadableText(hexString: any) {
+    const bytes = Buffer.from(hexString, 'hex');
     const text = new TextDecoder('utf-8').decode(bytes);
     return text;
   }
 
-useEffect(() => {
-  getAllpurchase()
-}, [])
+  useEffect(() => {
+    getAllpurchase()
+  }, [])
 
   useEffect(() => {
     if(allPurchase){
