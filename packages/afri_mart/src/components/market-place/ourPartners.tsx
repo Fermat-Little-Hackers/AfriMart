@@ -6,6 +6,7 @@ import logoStarknet from '../../../public/image/partners/Starknet Logo.webp';
 import logoSpeedafExpress from '../../../public/image/partners/speedafExpress.png';
 import starknetLogo from '../../../public/image/partners/starknet logo.png';
 import logoWeb3Bridge from '../../../public/image/partners/web3bridge.webp'
+import logoOpenBuild from '../../../public/image/partners/openbuild-logo.svg'
 import { Container } from '../Container';
 
 const OurPartners = () => {
@@ -55,13 +56,23 @@ const OurPartners = () => {
               </li>
               <li className="flex">
                 <Image
-                  src={logoSpeedafExpress}
+                  src={logoOpenBuild}
                   alt="Speed of Express"
                   layout="fixed"
                   width={2500}
                   unoptimized
                 />
+              </li> 
+              <li className="flex">
+                <Image
+                  src={logoSpeedafExpress}
+                  alt="Speed of Express"
+                  layout="fixed"
+                  width={2000}
+                  unoptimized
+                />
               </li>
+
             </ul>
           </li>
         </ul>
