@@ -11,7 +11,7 @@ const ProductDescription : React.FC<productprops> = ({uri}) => {
     const name = data?.name;
     const description = data?.description;
     return (
-        <p>{description ? name : "loading..."}</p>
+        <p>{description ? description : "loading..."}</p>
     )
 }
 

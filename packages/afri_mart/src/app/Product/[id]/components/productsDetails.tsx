@@ -123,7 +123,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
           const details = await readContract.getProductDetails(itemId);
           // console.log(details);
           let eth = 1000000000000000000;
-            // setName(hexToReadableText(details.name.toString(16)))
+            setName(hexToReadableText(details.name.toString(16)))
             setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));            
             setPrice(Number(BigInt(details.price)) / eth);
             let cart:CairoEnumRaw = details.cartegory;
@@ -250,7 +250,9 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
 
         <div className=" h-fit w-[100%] flex flex-col justify-between mt-5 md:mt-0 gap-4">
             <div className='flex flex-col gap-4 md:p-0'>
-              <ProductName uri={imgUri} />
+              {/* <ProductName uri={imgUri} /> */}
+              <h1 className='text-3xl font-semibold'>{name ? name : "loading..."}</h1>
+
             <div className="mr-10 w-[100%] h-fit md:h-[45%]  md:mt-5">
               <ProductDescription uri={imgUri} />
             </div>

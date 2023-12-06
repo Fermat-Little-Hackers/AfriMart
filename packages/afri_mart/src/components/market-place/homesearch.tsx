@@ -40,9 +40,17 @@ const HomeSearch = () => {
 
   getUserProfile();
 
-  const handleProfileCheck = () => {
+  const handleProfileCheck = async() => {
 
-    !isCreated ? setProfileState(true) : router.push('/dash');
+    try {
+      const profileSetDetails = await readContract.getUserProfile(address);
+      setIsCreated(profileSetDetails.isCreated);
+      !profileSetDetails.isCreated ? setProfileState(true) : router.push('/dash');
+  } catch (e:any) {
+    console.log(e);
+    setProfileState(true)
+  }
+
 
   }
 

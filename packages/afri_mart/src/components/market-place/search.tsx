@@ -49,7 +49,7 @@ const Search = () => {
 
   const handleProfileCheck = async() => {
     try {
-        const profileSetDetails = await readContract.getUserProfile((connection&&connection.selectedAddress));
+        const profileSetDetails = await readContract.getUserProfile(address);
         setIsCreated(profileSetDetails.isCreated);
         !profileSetDetails.isCreated ? setProfileState(true) : router.push('/dash');
     } catch (e:any) {
