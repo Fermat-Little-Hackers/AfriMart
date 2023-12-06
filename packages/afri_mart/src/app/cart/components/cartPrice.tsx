@@ -17,14 +17,24 @@ const CartPrice = () => {
     const [connection, setConnection] = useState<ConnectedStarknetWindowObject | null>();
     const [account, setAccount] = useState();
     const [cartValue, setCartValue] = useState<any>();
-    const [address, setAddress] = useState('');
-    const {readContract} = useAppContext();
+    // const [address, setAddress] = useState('');
+    const {readContract, address} = useAppContext();
 
     
 
     function formatDecimalTo5Places(inputNumber: any) {
         // Convert the input number to a fixed string with 5 decimal places
         const formattedNumber = Number(inputNumber).toFixed(5);
+      
+        // Convert the formatted string back to a number if needed
+        const result = Number(formattedNumber);
+      
+        return result;
+      }
+
+    function formatDecimalTo7Places(inputNumber: any) {
+        // Convert the input number to a fixed string with 5 decimal places
+        const formattedNumber = Number(inputNumber).toFixed(7);
       
         // Convert the formatted string back to a number if needed
         const result = Number(formattedNumber);
@@ -42,11 +52,11 @@ const CartPrice = () => {
     const getCartValue = async() => {
         try {
         let Eth = 1000000000000000000;
-        const cartValue = await readContract.getCartValue(address.toString());
+        const cartValue = await readContract.getCartValue(address);
         //   const res = hexToReadableText(user.name.toString(16))
         // console.log(res)
-        //    console.log('cart value', cartValue)
-            setCartValue(Number(cartValue) / Eth);
+          //  console.log('cart value', cartValue)
+          setCartValue(Number(cartValue) / Eth);
         } catch (error : any) {
     
           console.log(error.message)
@@ -70,13 +80,13 @@ const CartPrice = () => {
             </div>
             <div className='flex flex-row w-[100%] gap-5'>
                 <div className='w-[60%]'> <p> Delivery Fee</p></div>
-                <div className='w-[40%]'><p>{cartValue ? formatDecimalTo5Places((cartValue * 10) / 100) : '0.00'} Eth </p></div>
+                <div className='w-[40%]'><p>{cartValue ? formatDecimalTo7Places((cartValue * 10) / 100) : '0.00'} Eth </p></div>
             </div>
             <hr className='mt-4 border-1 border-zinc-800'></hr>
 
             <div className='flex flex-row w-[100%] gap-5'>
                 <div className='w-[60%] font-bold text-xl'> <p> Total Fee</p></div>
-                <div className='w-[40%] font-bold text-xl'><p>{cartValue ? formatDecimalTo5Places(cartValue + ((cartValue * 10) / 100)) : '0.00'} Eth</p></div>
+                <div className='w-[40%] font-bold text-xl'><p>{cartValue ? formatDecimalTo7Places(cartValue + ((cartValue * 10) / 100)) : '0.00'} Eth</p></div>
             </div>
         </div>
         <div className='mt-12'>

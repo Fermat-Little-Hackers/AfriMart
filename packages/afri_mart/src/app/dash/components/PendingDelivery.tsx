@@ -6,6 +6,7 @@ import { MarketPlaceAddr } from '../../../components/addresses';
 import marketplaceAbi from "@/ABI/marketPlace";
 import CompLoad from "./compLoad";
 import { useAppContext } from '@/context/provider'
+import useFetchURI from "../../../../hooks/useFetchURI";
 
 
 

@@ -16,7 +16,7 @@ const Soldcard  : React.FC<listprops> = ({ title, amount, quantity, uri})  => {
    <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" className='w-full h-full object-cover' />
     </div>
     <div className='items-center h-[100%] my-auto'>
-        <p className="smx:text-[15px]">{title}</p>
+        <p className="smx:text-[15px]">{data?.name}</p>
         <p className="md:text-sm text-xs">Qty: {quantity}</p>
     </div>
     <p className="text-base smx:text-[14px] items-center h-[100%] my-auto">{amount.toFixed(5)}Eth</p>

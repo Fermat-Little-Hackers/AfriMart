@@ -31,7 +31,7 @@ const Puchasecard : React.FC<purchaseProps> = ({ title, amount, uri, orderId})  
               <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" className='w-full h-full object-cover'/>
               </div>
               <div className='items-center h-[100%] my-auto'>
-                  <p className="smx:text-[15px]">{title} </p>
+                  <p className="smx:text-[15px]">{data?.name} </p>
               </div>
               <div className='my-auto items-center h-[100%]'>
               <p className="h-[50px] text-center my-auto text-base smx:text-[15px]">{amount} ETH</p>

@@ -88,7 +88,7 @@ const FormField = () => {
             let firstHalf = (ipfsDetails?.ipnft).substring(0, halfLength)
             let secondhalf = (ipfsDetails?.ipnft).substring(halfLength)
             console.log(findCategoryIndex(selectedOption as string));
-            const details = await contract.listProduct('user', 'userdes', firstHalf, secondhalf, BigInt(price as number), amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
+            const details = await contract.listProduct(name, 'itemDesc', firstHalf, secondhalf, BigInt(price as number), amount, resolveCartegory(findCategoryIndex(selectedOption as string)));
             setListing(false);
             alert("Item Listed Successfully");
             setSharedState(false);
@@ -283,7 +283,6 @@ const FormField = () => {
                 name="description"
                 type="text"
                 onChange={handleDescriptionChange}
-                maxLength={31}
                 autoComplete="description"
                 required
                 className="block w-full rounded-md px-2 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
