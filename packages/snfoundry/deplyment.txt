@@ -1,7 +1,7 @@
 Marketplace class Hash = 0x0575a2967324226ec218839b54f645b342409f55c99aefc9a6a3a3c134595ddd;
-Supply chain factory class hash= 0x040fe75f78f42ffddb5ed7b930af96a599b8cd397ffd33abf56129bd4882c1a6;
+Supply chain factory class hash= 0x046adb94cb0e2e275d89ba1b73277750bd8d43265992267034c0b2b9d65d15c4;
 Ratting contract class hash = 0x028d8d3e483b650fb2e68bb2ad564b1bd3a58bdfeb2af8f9c338261a8c805c8a;
-supply chain class hash = 0x0370a0d6d4d8f09c0801bee8631b995381fdb757e2788763763dcc85d54920d6;
+supply chain class hash = 0x01b1e449ecf08fa4ba1a12dcec29b9280442106651d0f013d2e4eab346250be0;
 Eth contract = 0x049D36570D4e46f48e99674bd3fcc84644DdD6b96F7C741B1562B82f9e004dC7;
 
 SupplyChainFactoryAddr = 0x064bebfcffb0f8378a183c42c9b035a02050551d964a5d05df8f6b4d18b3aaec;

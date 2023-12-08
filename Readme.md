@@ -16,7 +16,7 @@ Our vision is to bridge the gap between African producers and the global market.
 Afrimart is powered by 4 smart contracts working in sync to serve the purpose and visons of Afrimart, they can be accessed here;
 - Marketplace Contract: [0x01408fdf618ba2682b99f8f909aec3cbbfcf252368de3c1bff16f14bed437b39](https://goerli.voyager.online/contract/0x01408fdf618ba2682b99f8f909aec3cbbfcf252368de3c1bff16f14bed437b39).
 - Reviews / Ratings Contract: [0x07ba0dd1d03cb9ea2ecd285903e8b73029579d7a9b4a4f093c3f1499893b4111](https://goerli.voyager.online/contract/0x07ba0dd1d03cb9ea2ecd285903e8b73029579d7a9b4a4f093c3f1499893b4111).
-- SupplyChain Factory Contract: [0x05324a686dc70ebd4637572d9af95a1f3c8a670f4f1a947457b37d3123c453fa](https://goerli.voyager.online/contract/0x05324a686dc70ebd4637572d9af95a1f3c8a670f4f1a947457b37d3123c453fa).
+- SupplyChain Factory Contract: [0x02eda17570ab55205884c3b2fdb5c9c57931becbd430a41ab9283e8b9865a7fe](https://goerli.voyager.online/contract/0x02eda17570ab55205884c3b2fdb5c9c57931becbd430a41ab9283e8b9865a7fe).
 - SupplyChain Contract.
 
 ## Features
