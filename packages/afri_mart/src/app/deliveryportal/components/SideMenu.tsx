@@ -10,17 +10,20 @@ import {
   useAccountContext,
   useConnectionContext,
 } from "@/context/connectionContext";
+import { useAppContext } from '@/context/provider'
+
 
 const SideMenu = () => {
   const [account, setAccount] = useState();
   const [staffAddress, setStaffAddress] = useState("");
   const { sharedState, setSharedState } = useSupplyChainContext();
   const [textVisible, setTextVisible] = useState(false);
-  const [isFactoryAdmin, setIsFactoryAdmin] = useState<boolean>();
-  const [isCompanyAdmin, setIsCompanyAdmin] = useState<boolean>();
-  const [isBranchAdmin, setIsBranchAdmin] = useState<boolean>();
-  const [isStaff, setIsStaff] = useState<boolean>();
+  const [isFactoryAdmin, setIsFactoryAdmin] = useState<boolean>(false);
+  const [isCompanyAdmin, setIsCompanyAdmin] = useState<boolean>(false);
+  const [isBranchAdmin, setIsBranchAdmin] = useState<boolean>(false);
+  const [isStaff, setIsStaff] = useState<boolean>(false);
   const {ShareAddress} = useConnectionContext();
+  const {readContract,address} = useAppContext();
 
 
   let isActive = { color: "white", backgroundColor: 'rgb(170, 76, 51)', height: '2rem', paddingLeft: '1.5rem'};
@@ -54,21 +57,22 @@ const SideMenu = () => {
           "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx",
       },
     });
-    console.log(`Share address: ${ShareAddress}`)
+    console.log(`Share address: ${address}`)
     let factory_contract = new Contract(factory_abi, SupplyChainFactoryAddr(), provider);
-    let is_factory_admin =  await factory_contract.confirmOwners(ShareAddress);
-    let is_company_admin = await factory_contract.confirmCompany(ShareAddress);
-    let is_branch_admin = await factory_contract.confirmBranchAdmins(ShareAddress);
-    let is_staff = await factory_contract.confirmStaff(ShareAddress);
+    let is_factory_admin =  await factory_contract.confirmOwners(address);
+    let is_company_admin = await factory_contract.confirmCompany(address);
+    let is_branch_admin = await factory_contract.confirmBranchAdmins(address);
+    let is_staff = await factory_contract.confirmStaff(address);
 
     setIsFactoryAdmin(is_factory_admin);
     setIsCompanyAdmin(is_company_admin);
     setIsBranchAdmin(is_branch_admin);
     setIsStaff(is_staff);
+
     // setIsFactoryAdmin(false);
     // setIsCompanyAdmin(false);
     // setIsBranchAdmin(false);
-    // setIsStaff(false);
+    // setIsStaff(true);
     console.log("status set")
   };
 
@@ -79,11 +83,11 @@ const SideMenu = () => {
   useEffect(() => {
     // setAccount(ShareAddress);
     try {
-      if (ShareAddress != Number(0)) {
+      // if (ShareAddress != Number(0)) {
         setStatus()
         console.log('Status set')
         console.log(ShareAddress)
-      }
+      // }
     } catch (err) {
       console.log(err);
     }
@@ -232,11 +236,7 @@ const SideMenu = () => {
           Update Shipment Location{" "}
         </div>
         <div
-          className={`hover:cursor-pointer ${
-            isFactoryAdmin || isCompanyAdmin || isBranchAdmin || isStaff
-              ? "block"
-              : "hidden"
-          }`}
+          className={`hover:cursor-pointer`}
           onClick={handleClick}
           style={
             sortColor("TrackAllItem") ? isActive : { color: "black" }
