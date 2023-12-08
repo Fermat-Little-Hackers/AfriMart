@@ -16,10 +16,10 @@ const SideMenu = () => {
   const [staffAddress, setStaffAddress] = useState("");
   const { sharedState, setSharedState } = useSupplyChainContext();
   const [textVisible, setTextVisible] = useState(false);
-  const [isFactoryAdmin, setIsFactoryAdmin] = useState<boolean>();
-  const [isCompanyAdmin, setIsCompanyAdmin] = useState<boolean>();
-  const [isBranchAdmin, setIsBranchAdmin] = useState<boolean>();
-  const [isStaff, setIsStaff] = useState<boolean>();
+  const [isFactoryAdmin, setIsFactoryAdmin] = useState<boolean>(false);
+  const [isCompanyAdmin, setIsCompanyAdmin] = useState<boolean>(false);
+  const [isBranchAdmin, setIsBranchAdmin] = useState<boolean>(false);
+  const [isStaff, setIsStaff] = useState<boolean>(false);
   const {ShareAddress} = useConnectionContext();
 
 
@@ -65,10 +65,11 @@ const SideMenu = () => {
     setIsCompanyAdmin(is_company_admin);
     setIsBranchAdmin(is_branch_admin);
     setIsStaff(is_staff);
+
     // setIsFactoryAdmin(false);
     // setIsCompanyAdmin(false);
     // setIsBranchAdmin(false);
-    // setIsStaff(false);
+    // setIsStaff(true);
     console.log("status set")
   };
 
@@ -79,11 +80,11 @@ const SideMenu = () => {
   useEffect(() => {
     // setAccount(ShareAddress);
     try {
-      if (ShareAddress != Number(0)) {
+      // if (ShareAddress != Number(0)) {
         setStatus()
         console.log('Status set')
         console.log(ShareAddress)
-      }
+      // }
     } catch (err) {
       console.log(err);
     }
