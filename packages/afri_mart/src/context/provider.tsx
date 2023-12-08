@@ -98,7 +98,7 @@ const AppProvider = ({ children }: IAppProvider) => {
     const makeContractReadConnection = () =>{
         const provider = new Provider({
             rpc: {
-              nodeUrl: "https://starknet-goerli.g.alchemy.com/v2/mIOPEtzf3iXMb8KvqwdIvXbKmrtyorYx" 
+              nodeUrl: "https://rpc.starknet-testnet.lava.build" 
             }
           })
             const contract = new Contract(marketplaceAbi, MarketPlaceAddr(), provider)
