@@ -524,6 +524,50 @@
           }
         ],
         "state_mutability": "view"
+      },
+      {
+        "name": "confirmStaff",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "staffAddress",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "name": "removeAdmin",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "adminAddress",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "name": "assignNewAdmins",
+        "type": "function",
+        "inputs": [
+          {
+            "name": "oldAdminAddress",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "newAdminAddress",
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
       }
     ]
   },
