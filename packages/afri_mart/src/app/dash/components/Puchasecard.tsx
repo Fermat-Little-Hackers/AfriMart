@@ -1,47 +1,207 @@
-import { useRatingContext } from '@/context/connectionContext';
-import useFetchURI from '../../../../hooks/useFetchURI'
-import ProductRatingForm from './ProductRatingForm';
-import { useState } from 'react';
-import Link from 'next/link';
+import { useRatingContext } from "@/context/connectionContext";
+import { useReviewContext } from "@/context/reviewContext";
+import useFetchURI from "../../../../hooks/useFetchURI";
+// import ProductRatingForm from './ProductRatingForm';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import {
+  Account,
+  Contract,
+  Provider,
+  constants,
+  AccountInterface,
+} from "starknet";
+import { RattingAddr } from "../../../components/addresses";
+import reviewContractAbi from "../../../ABI/rattingsContract.json";
+import {
+  type ConnectedStarknetWindowObject,
+  connect,
+  disconnect,
+} from "@argent/get-starknet";
 
 interface purchaseProps {
-    title : string,
-    amount : number,
-    quantity : number,
-    uri : string,
-    orderId : number,
+  title: string;
+  amount: number;
+  quantity: number;
+  uri: string;
+  orderId: number;
 }
 
-const Puchasecard : React.FC<purchaseProps> = ({ title, amount, uri, orderId})  => {
-  const { ratingLoad, setRatingLoad} = useRatingContext();
+const Puchasecard: React.FC<purchaseProps> = ({
+  title,
+  amount,
+  uri,
+  orderId,
+}) => {
+  const { ratingLoad, setRatingLoad } = useRatingContext();
+  const {reviewState, setReviewState } = useReviewContext();
+  const [order, setOrder] = useState<number>();
+  const [review, setReview] = useState<string>("");
+  const [rating, setRating] = useState<number | null>(null);
+  const [id, setId] = useState<number>(0);
+  // const { ratingLoad, setRatingLoad} = useRatingContext();
+
   // const [ratingLoad, setRatingLoad] = useState<boolean>();
-  console.log(`orderId purchase card:`, orderId);
+  // console.log(`orderId purchase card clicked:`, orderId);
+  // console.log(`orderId purchase uri:`, uri);
   const handleReview = () => {
+    // console.log(`orderId purchase card clicked:`, orderId);
+    setOrder(orderId);
+    setReviewState(orderId);
     setRatingLoad(true);
-    console.log(`setting review`)
-  }
+    // console.log(order)
+    // console.log(`setting review`);
+    // console.log(`orderId purchase card clickedddd:`, orderId);
+  };
 
-
-  const {data} = useFetchURI(uri)
+  const itId = orderId;
+  const { data } = useFetchURI(uri);
   const trimmedUri = data?.image?.substring(7);
+
+  const handleReviewChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setReview(event.target.value);
+  };
+
+  const handleRatingChange = (value: number) => {
+    setRating(value);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    reviewProductFnc();
+    // Add your logic here to submit the review and rating
+    // console.log('Review:', orderId);
+    // console.log('Rating:', rating);
+  };
+
+  const reviewProductFnc = async () => {
+    const connection = await connect({
+      modalMode: "neverAsk",
+      webWalletUrl: "https://web.argent.xyz",
+    });
+    // console.log(`to submit new`,reviewState);
+    // console.log(`to submit check`,itId);
+    try {
+      let halfLength = Math.floor(review.length / 2);
+      const contract = new Contract(
+        reviewContractAbi,
+        RattingAddr(),
+        connection && connection.account
+      );
+      const profileSetDetails = await contract.review_product(
+        reviewState,
+        rating,
+        review.substring(0, halfLength),
+        review.substring(halfLength)
+      );
+      setRatingLoad(false);
+      alert("PRODUCT REVIEW SUCCESSFUL");
+    } catch (e: any) {
+      console.log(e);
+      // setProfileState(true)
+    }
+  };
+
+  const cancelReview = () => {
+    setRatingLoad(false);
+  };
+
   return (
     <div className="w-[500px] mb-8 smx:w-[500%] flex justify-between smx:space-x-2 ring-1 ring-[var(--terracota)] p-2 rounded-lg">
-            <Link href={'/deliveryportal#track-portal'} className='flex flex-row justify-evenly text-center'>
-              <div className="h-[100%] smx:h-[100%] w-[20%] smx:w-[30%] ">
-              <img src={`https://ipfs.io/ipfs/${trimmedUri}`} alt="" className='w-full h-full object-cover'/>
-              </div>
-              <div className='items-center h-[100%] my-auto'>
-                  <p className="smx:text-[15px]">{title} </p>
-              </div>
-              <div className='my-auto items-center h-[100%]'>
-              <p className="h-[50px] text-center my-auto text-base smx:text-[15px]">{amount} ETH</p>
-              </div>
-            </Link>
-            <button className=' bg-[var(--sienna)] my-auto text-white px-2 md:px-4 py-2 rounded-lg flex items-center text-sm text-center' onClick={handleReview}>Review</button>
+      <Link
+        href={"/deliveryportal#track-portal"}
+        className="flex flex-row justify-evenly text-center"
+      >
+        <div className="h-[100%] smx:h-[100%] w-[20%] smx:w-[30%] ">
+          <img
+            src={`https://ipfs.io/ipfs/${trimmedUri}`}
+            alt=""
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="items-center h-[100%] my-auto">
+          <p className="smx:text-[15px]">{data?.name} </p>
+        </div>
+        <div className="my-auto items-center h-[100%]">
+          <p className="h-[50px] text-center my-auto text-base smx:text-[15px]">
+            {amount} ETH
+          </p>
+        </div>
+      </Link>
+      <button
+        className=" bg-[var(--sienna)] my-auto text-white px-2 md:px-4 py-2 rounded-lg flex items-center text-sm text-center"
+        onClick={handleReview}
+      >
+        Review
+      </button>
 
-        {ratingLoad && (<ProductRatingForm itemId={orderId} />)}
+      {ratingLoad && (
+        <div className="fixed top-0 left-0 w-full h-full flex md:items-center justify-center bg-gray-700 bg-opacity-30">
+          <div className="max-w-md w-[90vw] h-fit mt-[16vh] md:w-[60vw] mx-auto md:mt-8 p-5 md:p-10 bg-white rounded-md shadow-md">
+            <h2 className="text-xl font-semibold mb-4">
+              Whats your review on this product ?
+            </h2>
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label
+                  htmlFor="review"
+                  className="block text-sm font-medium text-gray-600"
+                >
+                  Review (max 60 characters):
+                </label>
+                <textarea
+                  id="review"
+                  value={review}
+                  onChange={handleReviewChange}
+                  maxLength={60}
+                  rows={5} // Adjust the number of rows as needed
+                  className="mt-1 p-2 w-full border rounded-md focus:outline-none focus:border-blue-500"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-600 mb-2">
+                  Rating:
+                </label>
+                <div>
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <label
+                      key={value}
+                      className="inline-flex items-center mr-4"
+                    >
+                      <input
+                        type="radio"
+                        name="rating"
+                        value={value}
+                        checked={rating === value}
+                        onChange={() => handleRatingChange(value)}
+                        className="form-radio text-[var(--afroroasters-brown)] focus:outline-none focus:border-[var(--afroroasters-brown)] focus:shadow-outline-blue"
+                      />
+                      <span className="ml-2">{value}⭐</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="bg-[var(--afroroasters-brown)] text-white py-2 px-4 rounded-md hover:bg-[rgb(181, 111, 94)] focus:outline-none md:mt-7 mr-7"
+              >
+                Submit
+              </button>
+              <button
+                type="button"
+                className="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-[rgb(181, 111, 94)] focus:outline-none md:mt-7"
+                onClick={cancelReview}
+              >
+                Cancel
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Puchasecard
+export default Puchasecard;

@@ -5,6 +5,7 @@ import { Account, Contract, Provider, constants, AccountInterface } from 'starkn
 import marketplaceAbi from '@/ABI/marketPlace';
 import CartPhoto from './cartPhoto';
 import { useAppContext } from '@/context/provider'
+import ProductName from './productName';
 
 
 interface MyProps {
@@ -59,7 +60,7 @@ function formatDecimalTo5Places(inputNumber: any) {
         </div> */}
         <CartPhoto uri={imgUri}/>
         <div className='flex flex-col w-[35%] md:w-[50%] gap-1'>
-            <div><p className="md:text-xl text-sm font-bold">{name ? name : " loading.... "}</p></div>
+            <ProductName uri={imgUri}/>
             <div> <p className='text-sm'>Qty: {amount ? Number(amount) : '0'}</p> </div>
         </div>
         <div className="flex items-center justify-center">

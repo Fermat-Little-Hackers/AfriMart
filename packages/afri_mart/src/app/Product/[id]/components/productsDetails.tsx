@@ -20,7 +20,9 @@ import { useRegisteredContext } from '@/context/registeredContext';
 import ProfileForm from '@/components/market-place/createProfile';
 import { useLoadingContext } from '@/context/connectionContext';
 import { useAppContext } from '@/context/provider'
-
+import useFetchURI from '../../../../../hooks/useFetchURI'
+import ProductName from './productName';
+import ProductDescription from './productDescription';
 
 
 type cartegory = {
@@ -52,7 +54,8 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     const { profileState, setProfileState } = useRegisteredContext();
     const [isCreated, setIsCreated] = useState<boolean>(false);
     const {ShareLoad, setShareLoad} = useLoadingContext();
-  const {readContract, readReviewContract, contract, address} = useAppContext();
+    const {readContract, readReviewContract, contract, address} = useAppContext();
+
 
 
 
@@ -83,6 +86,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
       }
 
     };
+    
 
     const getUserProfile = async(user: any) => {
           try {
@@ -120,16 +124,17 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
           // console.log(details);
           let eth = 1000000000000000000;
             setName(hexToReadableText(details.name.toString(16)))
-            setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));
+            setImgUri(hexToReadableText(details.imageUri1.toString(16)) + hexToReadableText(details.imageUri2.toString(16)));            
             setPrice(Number(BigInt(details.price)) / eth);
             let cart:CairoEnumRaw = details.cartegory;
             setSeller(`0x${details.seller.toString(16)}`);
-            setDescription(hexToReadableText(details.description.toString(16)));
+            // setDescription(hexToReadableText(details.description.toString(16)));
             getUserProfile(`0x${details.seller.toString(16)}`);
           } catch (error : any) {      
             console.log(error.message);
           }
     }
+
 
     useEffect(() => {
       getProduct();
@@ -138,7 +143,7 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
     
     useEffect(() => {
       setShareLoad(false)
-    }, [name])
+    }, [sellerName])
     
 
     // const intervalId = setInterval(getProduct, 7000);
@@ -223,6 +228,11 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
         // console.log('check222');
       }, 7000);
     }
+
+    // const {data} = useFetchURI(imgUri);
+    // setName(data&&data.name);
+    // setDescription(data&&data.description);
+
       
 
   return (
@@ -240,11 +250,11 @@ const ProductsDetails: React.FC<MyProps> = ({ itemId }) => {
 
         <div className=" h-fit w-[100%] flex flex-col justify-between mt-5 md:mt-0 gap-4">
             <div className='flex flex-col gap-4 md:p-0'>
-                <h1 className='text-3xl font-semibold'>{name ? name : "loading..."}</h1>
+              {/* <ProductName uri={imgUri} /> */}
+              <h1 className='text-3xl font-semibold'>{name ? name : "loading..."}</h1>
+
             <div className="mr-10 w-[100%] h-fit md:h-[45%]  md:mt-5">
-            <p>
-              {description ? description : 'loading description....'}
-            </p>
+              <ProductDescription uri={imgUri} />
             </div>
                 <p>{price ? price : '0.00'} Eth</p>
                 <ProductAmountButton />

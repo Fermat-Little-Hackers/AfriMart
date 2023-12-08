@@ -1,6 +1,7 @@
 ![Image description](./packages/afri_mart/public/afrimart%20barner.png)
 #  AFRIMART README FILE
 ### *Where cultural treasures tell timeless stories.*
+#### *[AFRIMART WEBSITE](https://afri-mart-afri-mart.vercel.app/)*
 
 ## Introduction
 
@@ -9,6 +10,14 @@ Welcome to AfriMart E-commerce Platform, a revolutionary project aimed at empowe
 ## Vision
 
 Our vision is to bridge the gap between African producers and the global market. We believe that by providing a user-friendly, globally accessible platform, we can empower local businesses and artisans to reach a broader audience, fostering economic growth in African countries.
+
+## Smart Contracts
+
+Afrimart is powered by 4 smart contracts working in sync to serve the purpose and visons of Afrimart, they can be accessed here;
+- Marketplace Contract: [0x01408fdf618ba2682b99f8f909aec3cbbfcf252368de3c1bff16f14bed437b39](https://goerli.voyager.online/contract/0x01408fdf618ba2682b99f8f909aec3cbbfcf252368de3c1bff16f14bed437b39).
+- Reviews / Ratings Contract: [0x07ba0dd1d03cb9ea2ecd285903e8b73029579d7a9b4a4f093c3f1499893b4111](https://goerli.voyager.online/contract/0x07ba0dd1d03cb9ea2ecd285903e8b73029579d7a9b4a4f093c3f1499893b4111).
+- SupplyChain Factory Contract: [0x02eda17570ab55205884c3b2fdb5c9c57931becbd430a41ab9283e8b9865a7fe](https://goerli.voyager.online/contract/0x02eda17570ab55205884c3b2fdb5c9c57931becbd430a41ab9283e8b9865a7fe).
+- SupplyChain Contract.
 
 ## Features
 
@@ -42,7 +51,7 @@ Our platform is designed to provide a seamless experience for sellers, buyers, a
    - Upon registration, sellers create a profile, providing necessary details about their business and products.
 
 2. **Product Listing**
-   - From the seller's dashboard, they can easily list their products on our marketplace.
+   - From the seller's dashboard, they can easily list their products on our marketplace by accesing the listed items section then clicking on the list product button.
    - Sellers provide product details, images, pricing, and other relevant information.
 
 3. **Order Notification**

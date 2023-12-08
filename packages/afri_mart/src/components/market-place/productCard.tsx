@@ -7,6 +7,7 @@ import { Account, Contract, Provider, constants, AccountInterface } from 'starkn
 import TrendingPhoto from "./trendingPhoto";
 import rattingsContract from '@/ABI/rattingsContract.json';
 import { useAppContext } from '@/context/provider'
+import ProductName from "./productName";
 
 interface MyProps {
   productId: number;
@@ -67,6 +68,7 @@ const ProductCard: React.FC<MyProps> = ({ productId }) => {
       <TrendingPhoto uri={imgUri} />
       <div className="flex flex-col gap-1 p-4 ">
         <p className=" font-bold text-[15px] ">{name? (name.length > 12 ? `${name.slice(0, 10)}...` : name) : 'loading...'}</p>
+        {/* <ProductName uri={imgUri} /> */}
         <p>{price ? price : '0.00'} ETH</p>
         <Stars amount={rating ? rating : 0} />
       </div>

@@ -15,6 +15,7 @@ import { GreatDesign } from "@/components/sections/GreatDesign";
 import { Brands } from "@/components/sections/Brands";
 import { LandingSections } from "@/components/sections/LandingSections";
 import Billboard from "@/components/sections/Billboard";
+import OurPartners from "@/components/market-place/ourPartners";
 
 export default function Home() {
   const { account, address, status } = useAccount();
@@ -23,7 +24,8 @@ export default function Home() {
       <HeroSection />
       <Billboard />
       <SectionII />
-      <Brands />
+      {/* <Brands /> */}
+      <OurPartners />
       <LandingSections />
       <GreatDesign />
       <ResourceShop />
