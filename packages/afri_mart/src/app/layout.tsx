@@ -18,6 +18,7 @@ import { ListProductContextProvider } from '../context/listProductContext';
 // import { ConnectkitProvider } from '../../connectkit';
 import { ChakraProvider } from '@chakra-ui/react'
 import { LoadingContextProvider } from '../context/connectionContext';
+import { ReviewContextProvider } from '../context/reviewContext';
 
 import PagesLayout from './PagesLayout';
 import AppProvider from '../context/provider'
@@ -37,6 +38,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <ChakraProvider>
         <ConnectionContextProvider>
         <RatingContextProvider>
+        <ReviewContextProvider>
         <LoadingContextProvider>
           <AccountContextProvider>
             <ListProductContextProvider>
@@ -56,6 +58,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </ListProductContextProvider>
           </AccountContextProvider>
           </LoadingContextProvider>
+          </ReviewContextProvider>
         </RatingContextProvider>
         </ConnectionContextProvider>
         </ChakraProvider>

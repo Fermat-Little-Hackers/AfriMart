@@ -17,6 +17,7 @@ const TrendingProducts = () => {
   const getProduct = async() => {
       try {
         const res: any = await readContract.call("getAllProducts", []);
+        console.log(`Products`, res);
         setProducts(getRandomNumbersFromArray(res));
         // console.log(`RANDOM PRODUCTS`, getRandomNumbersFromArray(res));
         // const products = res.map((item:any) => item.toString())
@@ -36,24 +37,28 @@ const TrendingProducts = () => {
 
   function getRandomNumbersFromArray(inputArray: number[]): number[] {
     const outputArray: number[] = [];
-  
+    console.log(`length:`, inputArray.length);
     // Check if the inputArray has at least 1 number
     if (inputArray.length === 0) {
       throw new Error('Input array must have at least 1 number.');
     }
   
     // Repeat numbers until outputArray has at least 8 numbers
-    while (outputArray.length < 8) {
       // Copy numbers from the inputArray
       for (const number of inputArray) {
         outputArray.push(number);
-  
-        // Break the loop if outputArray has at least 8 numbers
-        if (outputArray.length === 8) {
-          break;
+      }
+
+      if (outputArray.length < 8) {
+        for (const number of inputArray) {
+          outputArray.push(number);
+    
+          // Break the loop if outputArray has at least 8 numbers
+          if (outputArray.length === 8) {
+            break;
+          } 
         }
       }
-    }
   
     // Shuffle the outputArray using Fisher-Yates algorithm
     for (let i = outputArray.length - 1; i > 0; i--) {
@@ -63,7 +68,8 @@ const TrendingProducts = () => {
   
     // Select the first 8 numbers
     const selectedNumbers = outputArray.slice(0, 8);
-  
+    
+    console.log(`SELECTED`, selectedNumbers);
     return selectedNumbers;
   }
 
