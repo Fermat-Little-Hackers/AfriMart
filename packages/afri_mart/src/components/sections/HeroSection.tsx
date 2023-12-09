@@ -26,7 +26,7 @@ export const HeroSection = () => {
                     />
                     <AnimatedText text="Where cultural treasures tell timeless stories" className="text-[var(--sand)] mt-2" />
                     <div className="flex justify-center gap-4 mx-auto mt-8 z-50">
-                        <Link href="">
+                        <Link href="https://youtu.be/NRvc2ig8MGU">
                             <button className="py-2 px-8 ring-1 ring-white rounded-3xl" >Watch Demo</button>
                         </Link>
                         <Link href="./homepage">
